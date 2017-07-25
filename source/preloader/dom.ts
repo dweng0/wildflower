@@ -1,6 +1,6 @@
 export class DomHandler {
       defaultElementId: string = 'gui';
-      private element: HTMLCanvasElement;
+      element: HTMLCanvasElement;
       constructor(id?: string) {
             let elementId = (id) ? id : this.defaultElementId
             this.element = <HTMLCanvasElement>document.getElementById(elementId);
