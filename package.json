@@ -1,0 +1,44 @@
+{
+  "name": "wildflower",
+  "version": "1.0.0",
+  "description": "Babylon test",
+  "main": "index.js",
+  "bin": {
+    "builder": "./lib/index.js"
+  },
+  "scripts": {
+    "pretest":"tsc",
+    "test": "nyc mocha",
+    "watch": "mocha-typescript-watch",
+    "prepare":"tsc"
+  },
+  "author": "Jay Martin-Smith",
+  "license": "MIT",
+  "dependencies": {
+    "eslint": "^4.1.1",
+    "grunt": "^1.0.1",
+    "grunt-bump": "^0.8.0",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-exec": "^2.0.0",
+    "node-dir": "^0.1.17",
+    "sass": "^1.0.0-beta.1",
+    "ts-emitter": "^0.3.1",
+    "tslint": "^5.4.3",
+    "typescript": "^2.4.1",
+    "typings": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.0.1",
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^8.0.5",
+    "@types/underscore": "^1.8.1",
+    "chai": "^4.1.0",
+    "mocha": "^3.4.2",
+    "mocha-typescript": "^1.1.7",
+    "nyc": "^11.0.3",
+    "source-map-support": "^0.4.15",
+    "ts-node": "^3.2.0",
+    "web-request": "^1.0.7"
+  }
+}
