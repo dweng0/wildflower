@@ -1,6 +1,6 @@
 {
   "name": "wildflower",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Babylon test",
   "main": "index.js",
   "bin": {
@@ -23,6 +23,7 @@
     "grunt-exec": "^2.0.0",
     "node-dir": "^0.1.17",
     "sass": "^1.0.0-beta.1",
+    "systemjs": "^0.20.16",
     "ts-emitter": "^0.3.1",
     "tslint": "^5.4.3",
     "typescript": "^2.4.1",
@@ -35,6 +36,8 @@
     "@types/node": "^8.0.5",
     "@types/underscore": "^1.8.1",
     "chai": "^4.1.0",
+    "jsdom": "11.1.0",
+    "jsdom-global": "3.0.2",
     "mocha": "^3.4.2",
     "mocha-typescript": "^1.1.7",
     "nyc": "^11.0.3",
