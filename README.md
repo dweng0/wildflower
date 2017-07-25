@@ -11,6 +11,6 @@ Testing out Babylon JS, using TDD
 
 Use webpack to compile the source code into the lib folder
 
-User npm test to run unit tests from the /test file
+user npm run test to watch and compile on change
 
 

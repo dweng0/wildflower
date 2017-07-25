@@ -10,28 +10,24 @@ describe('Game initialization', () => {
        * Testing the game to make sure it has got the canvas
        */
       it('Should have a canvas', () => {
-            expect(game._canvas).to.exist;
-            expect(game._canvas).to.be.an.instanceof(HTMLCanvasElement);
+            expect(false).to.be.true;
       });
 
       it('Should have access to BABYLON', () => {
-            let hasBabylon = game.hasBabylon();
-           expect(hasBabylon).to.equal(true);
+        expect(false).to.be.true;
       });
 
       /**
        * Testing the loader to make sure it has loaded
        */
       it('Should have a the assets loader', () => {
-            expect(game._assetsManager).to.exist;
-            expect(game._assetsManager).to.be.an.instanceof(AssetsManager);
+          expect(false).to.be.true;
       });
 
       /**
       * Make sure the networok interface has loaded
       */
       it("should have network interface", () => {
-            expect(game._interface).to.exist;
-            expect(game._interface).to.be.an.instanceof(Interface);
+          expect(false).to.be.true;
       });
 });

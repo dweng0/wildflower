@@ -8,10 +8,9 @@ describe('DOM Interaction', () => {
   domHandler.element.id = "renderCanvas";
 
   it('Should get element by id', () => {
-        expect(domHandler.getCanvas()).to.equal(HTMLCanvasElement);
+      expect(false).to.be.true;
   });
   it('should return an element id specified by the user', () => {
-      let domHandler = new DomHandler('renderCanvas');
-      expect(domHandler.getCanvas()).to.equal(HTMLCanvasElement);
+       expect(false).to.be.true;
   });
 });

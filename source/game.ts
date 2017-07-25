@@ -11,7 +11,6 @@ export class Game {
       _interface: Interface;
 
       constructor(canvasId?: string) {
-            console.log('Wildflower launched');
             let domHandler = new DomHandler(canvasId);
             this._canvas = domHandler.getCanvas();
       }

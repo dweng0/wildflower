@@ -2,23 +2,23 @@
   "compileOnSave": false,
   "compilerOptions": {
     "module": "commonjs",
-    "outDir": "./lib",
+    "outDir": "./compiledtests",
     "baseUrl": "source",
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowJs": true,
-    "checkJs": true,
     "target": "es5",
      "lib": [
       "es2016",
-      "dom"
+      "dom",
+      "es5",
+      "es6",
+      "es2015"
     ] 
   },
    "include":[
-      "source/**/*",
       "test/**/*.ts"
     ]
 }

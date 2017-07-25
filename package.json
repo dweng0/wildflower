@@ -1,16 +1,15 @@
 {
   "name": "wildflower",
-  "version": "1.0.3-alpha.11",
+  "version": "1.0.3-alpha.12",
   "description": "Babylon test",
   "main": "index.js",
-  "bin": {
-    "builder": "./lib/index.js"
+  "nyc": {
+    "sourceMap": false,
+    "instrument": false
   },
   "scripts": {
-    "pretest": "tsc",
-    "test": "nyc mocha",
-    "watch": "mocha-typescript-watch",
-    "prepare": "tsc"
+    "build": "webpack",
+    "test": "karma start"
   },
   "author": "Jay Martin-Smith",
   "license": "MIT",
@@ -32,17 +31,27 @@
   "devDependencies": {
     "@types/babylon": "^6.16.2",
     "@types/chai": "^4.0.1",
+    "@types/jsdom": "^11.0.1",
     "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.5",
+    "@types/sinon": "^2.3.3",
     "@types/underscore": "^1.8.1",
     "awesome-typescript-loader": "^3.2.1",
     "chai": "^4.1.0",
     "html-webpack-plugin": "^2.29.0",
     "jsdom": "11.1.0",
     "jsdom-global": "3.0.2",
+    "karma": "^1.7.0",
+    "karma-chai": "^0.1.0",
+    "karma-mocha": "^1.3.0",
+    "karma-mocha-reporter": "^2.2.3",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-sinon": "^1.0.5",
+    "karma-webpack": "^2.0.4",
     "mocha": "^3.4.2",
     "mocha-typescript": "^1.1.7",
-    "nyc": "^11.0.3",
+    "phantomjs": "^2.1.7",
+    "sinon": "^2.3.8",
     "source-map-loader": "^0.2.1",
     "source-map-support": "^0.4.15",
     "ts-node": "^3.2.0",
