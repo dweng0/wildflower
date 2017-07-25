@@ -1,3 +1,5 @@
+--require systemjs
 --ui mocha-typescript
 --require source-map-support/register
+-r jsdom-global/register
 lib/test/**/*.js
