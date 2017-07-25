@@ -1,6 +1,6 @@
 {
   "name": "wildflower",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Babylon test",
   "main": "index.js",
   "bin": {
@@ -35,14 +35,18 @@
     "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.5",
     "@types/underscore": "^1.8.1",
+    "awesome-typescript-loader": "^3.2.1",
     "chai": "^4.1.0",
+    "html-webpack-plugin": "^2.29.0",
     "jsdom": "11.1.0",
     "jsdom-global": "3.0.2",
     "mocha": "^3.4.2",
     "mocha-typescript": "^1.1.7",
     "nyc": "^11.0.3",
+    "source-map-loader": "^0.2.1",
     "source-map-support": "^0.4.15",
     "ts-node": "^3.2.0",
-    "web-request": "^1.0.7"
+    "web-request": "^1.0.7",
+    "webpack": "^3.3.0"
   }
 }
