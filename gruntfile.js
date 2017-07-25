@@ -3,7 +3,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     exec:{
         compile:{
-            command:"tsc",
+            command:"npm test",
             stdout:true,
             stderr:true
         }

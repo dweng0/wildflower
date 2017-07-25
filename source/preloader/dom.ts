@@ -1,14 +1,14 @@
 
 export class DomHandler {
       defaultElementId: string = 'gui';
-      private element: HTMLElement;
+      private element: HTMLCanvasElement;
       constructor(id?: string) {
             console.log('Wildflower launched');
             let elementId = (id) ? id : this.defaultElementId
-            this.element = document.getElementById(elementId);
+            this.element = <HTMLCanvasElement>document.getElementById(elementId);
       }
 
-      getCanvas(): HTMLElement {
+      getCanvas(): HTMLCanvasElement {
             return this.element;
       }
 }

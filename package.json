@@ -7,10 +7,10 @@
     "builder": "./lib/index.js"
   },
   "scripts": {
-    "pretest":"tsc",
+    "pretest": "tsc",
     "test": "nyc mocha",
     "watch": "mocha-typescript-watch",
-    "prepare":"tsc"
+    "prepare": "tsc"
   },
   "author": "Jay Martin-Smith",
   "license": "MIT",
@@ -29,6 +29,7 @@
     "typings": "^2.1.1"
   },
   "devDependencies": {
+    "@types/babylon": "^6.16.2",
     "@types/chai": "^4.0.1",
     "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.5",
