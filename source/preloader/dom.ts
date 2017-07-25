@@ -1,7 +1,3 @@
-import * as test from 'ts-node';
-import 'jsdom';
-import 'jsdom-global';
-
 export class DomHandler {
       defaultElementId: string = 'gui';
       private element: HTMLCanvasElement;

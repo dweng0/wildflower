@@ -1,6 +1,4 @@
 import { DomHandler } from './preloader/dom';
-import 'jsdom';
-import 'jsdom-global';
 
 export class Game {
       _canvas: HTMLCanvasElement;
@@ -10,4 +8,10 @@ export class Game {
             this._canvas = domHandler.getCanvas();
       }
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+      // Create the game using the 'renderCanvas'
+      debugger;
+      let game = new Game('renderCanvas');
+});
 

@@ -3,7 +3,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     exec:{
         compile:{
-            command:"npm test",
+            command:"webpack",
             stdout:true,
             stderr:true
         }

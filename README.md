@@ -6,3 +6,11 @@
 ## Project goal
 
 Testing out Babylon JS, using TDD
+
+## Usage
+
+Use webpack to compile the source code into the lib folder
+
+User npm test to run unit tests from the /test file
+
+
