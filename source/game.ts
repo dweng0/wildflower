@@ -4,6 +4,7 @@ import { AssetsManager } from './core/assetsmanager';
 import { Interface } from './core/interface';
 
 export class Game {
+      private _url: "http://google.com";
       _canvas: HTMLCanvasElement;
 
       _assetsManager: AssetsManager;
@@ -15,7 +16,7 @@ export class Game {
 
             this._canvas = domHandler.getCanvas();
             this._assetsManager = new AssetsManager();
-            this._interface = new Interface();
+            this._interface = new Interface(this._url);
       }
 
       hasBabylon(): boolean {

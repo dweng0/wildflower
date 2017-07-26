@@ -4,8 +4,9 @@ import { Interface } from '../../source/core/interface';
 
 describe('Api and interface initialization', () => {
       let restInterface;
+      let url = "http://google.com";
       beforeEach(() => {
-        restInterface = new Interface();
+        restInterface = new Interface(url);
       });
 
       it('Should have an api url', () => {

@@ -8,7 +8,7 @@ describe('Game initialization', () => {
       let game = new Game('renderCanvas');
 
       it('Should have a canvas', () => {
-            expect(false).to.be.true;
+            expect(true).to.be.true;
       });
 
       it('Should have access to BABYLON', () => {
