@@ -13,7 +13,6 @@ export class Game {
 
       constructor(canvasId?: string) {
             let domHandler = new DomHandler(canvasId);
-
             this._canvas = domHandler.getCanvas();
             this._assetsManager = new AssetsManager();
             this._interface = new Interface(this._url);

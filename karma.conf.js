@@ -1,9 +1,6 @@
 /*
  * More detailed explanation here: http://karma-runner.github.io/0.13/config/configuration-file.html
  */
-
-var webpackConfig = require("./webpack.config");
-
 module.exports = function(config) {
     config.set({
         /*
@@ -50,7 +47,7 @@ module.exports = function(config) {
          * corresponding karma-*** modules and include them in the list of plugins
          * as well as below.
          */
-        frameworks: ["mocha", "chai", "sinon"],
+        frameworks: ["browserify", "mocha", "chai", "sinon"],
 
         logLevel: config.LOG_INFO,
 
@@ -71,7 +68,7 @@ module.exports = function(config) {
          * npm module to be npm installed and added to the "plugins" field.
          */
         preprocessors: {
-            "test/**/*.ts": ["webpack"] // Using karma-webpack npm module
+            "test/**/*.ts": ["browserify"] // Using karma-webpack npm module
         },
 
         /*
@@ -81,6 +78,10 @@ module.exports = function(config) {
          */
         reporters: ["mocha"],
 
+         mochaReporter: {
+            output: 'noFailures'
+        },
+
         /*
          * If true, Karma will start and capture all configured browsers, run
          * tests and then exit with an exit code of 0 or 1 depending on whether
@@ -89,16 +90,34 @@ module.exports = function(config) {
         singleRun: false,
 
         /*
-         * This field is necessary because we are using webpack as a preprocessor.
-         * You will need to specify the webpack configuration (although in this
-         * case, we are simply leveraging the existing webpack.config.js file).
          *
          * If you have a different webpack.config.js file that's used for testing
          * purposes, you can specify that here.
          */
-        webpack: {
-            module: webpackConfig.module,
-            resolve: webpackConfig.resolve
+       
+        browserify: {
+            debug: true,
+            plugin: ['tsify'],
+            transform: ['brfs'],
+            extensions:['.js', '.ts']
+        },
+
+        nyanReporter: {
+            // suppress the error report at the end of the test run
+            suppressErrorReport: true, // default is false
+
+            // suppress the red background on errors in the error
+            // report at the end of the test run
+            suppressErrorHighlighting: false, // default is false
+
+            // increase the number of rainbow lines displayed
+            // enforced min = 4, enforced max = terminal height - 1
+            numberOfRainbowLines: 4, // default is 4
+
+            // only render the graphic after all tests have finished.
+            // This is ideal for using this reporter in a continuous
+            // integration environment.
+            renderOnRunCompleteOnly: false // default is false
         }
     });
 };

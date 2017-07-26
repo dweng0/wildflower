@@ -27,7 +27,6 @@ describe('Game initialization', () => {
             let callback = sinon.spy();
             let gameTest = new Game('renderCanvas');
             gameTest.onBeforeLoad(callback);
-
             expect(callback.calledOnce).to.be.true;
       });
 
