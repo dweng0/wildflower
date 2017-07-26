@@ -49,6 +49,7 @@
     "karma-sinon": "^1.0.5",
     "karma-webpack": "^2.0.4",
     "mocha": "^3.4.2",
+    "mocha-phantomjs": "^4.1.0",
     "mocha-typescript": "^1.1.7",
     "phantomjs": "^2.1.7",
     "sinon": "^2.3.8",

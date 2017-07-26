@@ -1,4 +1,5 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var webpack = require('webpack');
 var pjson = require('./package.json');
 
 module.exports = {
@@ -33,7 +34,8 @@ module.exports = {
     externals: {
         "babylonjs": "BABYLON"
     },
-      plugins: [new HtmlWebpackPlugin({
+      plugins: [
+          new HtmlWebpackPlugin({
             "title":"WildFlower "+pjson.version,
             "template":"source/index.ejs"
       })]
