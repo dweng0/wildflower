@@ -1,16 +1,19 @@
 import {UrlManifest, ManifestItem, MapManifest} from '../../source/interface/urlmanifest';
 
 export class DummyManifestData {
+      baseUrl: string;
       handshake: string;
       map: MapManifest;
       mapModels: Array<ManifestItem>;
       characters: Array<ManifestItem>;
       constructor() {
-            this.handshake = "http://google.com";
+            this.baseUrl = "http://localhost:9876";
+            this.handshake = "http://localhost:9876";
             this.map = {
-                  texture: "lol",
-                  heightMap: "lol",
-                  skybox: "lol"
+                  baseUrl: "/testmap",
+                  texture: "/textureIdstuff",
+                  heightMap: "/heightmapstuff",
+                  skybox: "/skyboxstuff"
             }
             this.mapModels = [];
             this.characters = [];

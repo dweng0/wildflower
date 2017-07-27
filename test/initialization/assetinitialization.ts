@@ -5,13 +5,13 @@ import * as BABYLON from 'babylonjs';
 
 describe('Asset initialization', () => {
     let canvas = document.createElement('canvas');
-    
     let dummData = new DummyManifestData();
     let scene = new BABYLON.Scene(new BABYLON.Engine(canvas));
-    let restInterface = new AssetsManager(dummData, scene);
-
+    let asset = new AssetsManager(dummData, scene);
     it('Should load manifest of assets needed', () => {
-          expect(false).to.be.true;
+      asset.loadInstanceAssets("Beef").then(() => {console.log('=======success')}
+      ).catch(() => { console.log('error=========')});
+      expect(asset.loadInstanceAssets("test")).to.eventually.be.true;
     });
 
     it('Should handle failure to load assets', () => {
