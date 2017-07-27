@@ -5,9 +5,6 @@ import { Interface } from './core/interface';
 
 import {UrlManifest} from './interface/urlmanifest';
 
-/** promise polyfill*/
-global.Promise = require('es6-promise').Promise;
-
 export class Game {
       private _url: "http://google.com";
       private _scene: BABYLON.Scene;
@@ -100,6 +97,6 @@ export class Game {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-      let game = new Game('renderCanvas');
+      let game = new Game(12, 'renderCanvas');
 });
 

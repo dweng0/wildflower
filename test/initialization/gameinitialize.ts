@@ -5,7 +5,7 @@ import { AssetsManager } from '../../source/core/assetsmanager';
 import { Interface } from '../../source/core/interface';
 
 describe('Game initialization', () => {
-      let game = new Game('renderCanvas');
+      let game = new Game(12, 'renderCanvas');
 
       it('Should have a canvas', () => {
             expect(false).to.be.true;
@@ -23,31 +23,24 @@ describe('Game initialization', () => {
           expect(game._interface).to.be.instanceOf(Interface);
       });
 
-       it("Should callback when a handshake has been made with server", () => {
-            let callback = sinon.spy();
-            let gameTest = new Game('renderCanvas');
-            gameTest.onBeforeLoad(callback);
-            expect(callback.calledOnce).to.be.true;
+      it("Expect onbefore load to be callsed ", () => {
+          expect(false).to.be.true;
       });
 
-      it("should callback when assets have been loaded", () => {
-            let callback = sinon.spy();
-            let assetTest = new Game('renderCanvas');
-            assetTest.onAssetLoad(callback);
-            expect(callback.calledOnce).to.be.true;
+      it("Expect load to load manifest", () => {
+          expect(false).to.be.true;
       });
 
-        it("should callback when individual assets have been loaded", () => {
-            let callback = sinon.spy();
-            let assetTest = new Game('renderCanvas');
-            assetTest.onAssetLoad(callback);
-            expect(callback.calledOnce).to.be.true;
+      it("have called onbeforebabylonload", () => {
+         expect(false).to.be.true;
       });
 
-      it("should callback when babylon is loaded", () => {
-            let callback = sinon.spy();
-            let babylonTest = new Game('renderCanvas');
-            babylonTest.onAssetLoad(callback);
-            expect(callback.calledOnce).to.be.true;
+      it("should set engine and scene", () => {
+         expect(false).to.be.true;
       });
+
+      it("Should sucessfully load assets ", () => {
+           expect(false).to.be.true;
+      });
+
 });

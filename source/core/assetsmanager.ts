@@ -102,4 +102,22 @@ export class AssetsManager {
             textureLoad.onError = fail.bind(this);
             return textureLoad;
       }
+
+         /**
+     * Load mech components for the game
+     * @param taskName
+     * @param meshNames
+     * @param rootUrl
+     * @param sceneFileName
+     * @param success
+     * @param fail
+     */
+    loadMesh(taskName: string, meshNames: any, rootUrl: string, sceneFileName: string, success: () => any, fail: () => any) {
+        console.log('loading mesh', taskName);
+        let meshLoader = this._assets.addMeshTask(taskName, meshNames, rootUrl, sceneFileName);
+        meshLoader.onSuccess = success.bind(this);
+        meshLoader.onError = fail.bind(this);
+        return meshLoader;
+    }
+
 }

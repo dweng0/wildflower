@@ -9,7 +9,12 @@ module.exports = function(grunt) {
     },
     exec:{
         compile:{
-            command:"browserify "+__dirname+"/source/game.ts -p [ tsify --noImplicitAny ] > "+__dirname+"/lib/bundle.js && karma start",
+            command:"browserify "+__dirname+"/source/game.ts -p [ tsify --noImplicitAny ] > "+__dirname+"/lib/bundle.js",
+            stdout:true,
+            stderr:true
+        },
+        karma: {
+            command:"karma start",
             stdout:true,
             stderr:true
         }
