@@ -13,7 +13,7 @@ Testing out Babylon JS, using TDD
 
 ## Usage
 
-Use webpack to compile the source code into the lib folder
+Use browserify to compile the source code into the lib folder
 
 user npm run test to watch and compile on change
 
