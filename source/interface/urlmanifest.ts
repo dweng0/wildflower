@@ -3,9 +3,15 @@ export interface ManifestItem {
       url: string;
 }
 
+export interface MapManifest {
+      texture: string;
+      heightMap: string;
+      skybox: string;
+}
+
 export interface UrlManifest {
       handshake: string;
-      map: string;
+      map: MapManifest;
       mapModels: Array<ManifestItem>;
       characters: Array<ManifestItem>;
 }

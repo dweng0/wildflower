@@ -32,6 +32,7 @@
   "devDependencies": {
     "@types/babylon": "^6.16.2",
     "@types/chai": "^4.0.1",
+    "@types/es6-promise": "0.0.32",
     "@types/jsdom": "^11.0.1",
     "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.5",
@@ -42,6 +43,7 @@
     "brfs": "^1.4.3",
     "browserify": "^14.4.0",
     "chai": "^4.1.0",
+    "es6-promise": "^4.1.1",
     "grunt-browserify": "^5.0.0",
     "html-webpack-plugin": "^2.29.0",
     "jsdom": "11.1.0",

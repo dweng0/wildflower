@@ -14,6 +14,7 @@ export class Interface {
       private _testMode: boolean = false;
       _handShakeUrl: string;
       _manifestUrl: string;
+      manifest: UrlManifest;
      constructor(url: string, testMode?: boolean) {
       this._handShakeUrl = url;
       this._testMode = testMode;
@@ -43,7 +44,10 @@ export class Interface {
             if (!this._manifestUrl) {
                   throw new Error("No manifest url found. Handshake with server is requried");
             }
-            this.fetch(this._manifestUrl, callback, (err) => {
+            this.fetch(this._manifestUrl, (data) => {
+                  this.manifest = data;
+                  callback(data);
+            }, (err) => {
                   if (errCall) {
                         errCall(err);
                   }

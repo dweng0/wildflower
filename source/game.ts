@@ -3,18 +3,27 @@ import { DomHandler } from './preloader/dom';
 import { AssetsManager } from './core/assetsmanager';
 import { Interface } from './core/interface';
 
+import {UrlManifest} from './interface/urlmanifest';
+
+/** promise polyfill*/
+global.Promise = require('es6-promise').Promise;
+
 export class Game {
       private _url: "http://google.com";
+      private _scene: BABYLON.Scene;
+      private _engine: BABYLON.Engine;
+
       _canvas: HTMLCanvasElement;
-
       _assetsManager: AssetsManager;
-
       _interface: Interface;
 
-      constructor(canvasId?: string) {
+      onBeforeLoad: () => any;
+      onBeforeBabylonLoad: () => any;
+      onBeforeAssetsLoad: () => any;
+
+      constructor(campaignId: number, canvasId?: string) {
             let domHandler = new DomHandler(canvasId);
             this._canvas = domHandler.getCanvas();
-            this._assetsManager = new AssetsManager();
             this._interface = new Interface(this._url);
       }
 
@@ -22,28 +31,63 @@ export class Game {
             return (BABYLON) ? true : false;
       }
 
-      /**
-      * This function should be called before the assets manager is used, here we can focus on handshaking the server getting a manifest and/or instructions about what to load
-      * @param callback {function}
-      */
-      onBeforeLoad(callback: () => any): void {
+      setEngine(): boolean {
+            if (!this._canvas) {
+                  return false;
+            }
+            this._engine = new BABYLON.Engine(this._canvas, true);
+            this._engine.loadingUIText = "Loading... (assets)";
 
+            window.addEventListener('resize', () => {
+                  this._engine.resize();
+            });
+
+            return true;
       }
 
-      /**
-      * We have a manifest, we can expect this function to primarily work with the assets manager to load assets
-      * @param callback
-      */
-      onAssetLoad(callback: () => any): void {
-
+      setScene(): boolean {
+            if (!this._engine) {
+                  return false;
+            }
+            this._scene = new BABYLON.Scene(this._engine);
+            return true;
       }
 
-      /**
-       * By this point, our API interface should be green light, our assets should be loaded and we should be setting up scene/doing babylon stuff
-       * @param callback {function}
-       */
-      onBabylonLoad(callback: () => any): void {
+      load(): Promise<boolean> {
+            this.onBeforeLoad();
+            return new Promise<boolean>((resolve, reject) => {
+                  this._interface.handshake(() => {
+                        this._interface.fetchManifest((manifest: UrlManifest) => {
+                              resolve();
+                        }, (err) => { reject(err)});
+                  }, (err) => reject(err));
+            });
+      }
 
+      loadBabylon(): Promise<boolean> {
+            this.onBeforeBabylonLoad();
+            return new Promise<boolean>((resolve, reject) => {
+                  let success = false;
+                  success = this.setEngine();
+                  success = this.setScene();
+
+                  if (success) {
+                        resolve(true);
+                  }
+                  else {
+                        reject("Failed to load babylon framework");
+                  }
+            });
+      }
+
+      loadAssets(): Promise<boolean> {
+            this.onBeforeAssetsLoad();
+            return new Promise<boolean>((resolve, reject) => {
+                  if (!this._interface.manifest) {
+                      reject("No Manifest found");
+                  }
+                  this._assetsManager.loadInstanceAssets(this._engine.loadingUIText).then(() => { resolve() }).catch((reason) => { reject(reason)});
+            });
       }
 
       /**
