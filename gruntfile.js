@@ -12,6 +12,11 @@ module.exports = function(grunt) {
             command:"browserify "+__dirname+"/source/game.ts -p [ tsify --noImplicitAny ] > "+__dirname+"/lib/bundle.js",
             stdout:true,
             stderr:true
+        },
+          lint:{
+            command:"tslint {source,test}/**/*.ts --format stylish",
+            stdout:true,
+            stderr:true
         }
     },
     bump: {

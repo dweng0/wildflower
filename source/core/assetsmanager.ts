@@ -1,6 +1,7 @@
 import * as BABYLON from 'babylonjs';
 import {UrlManifest} from '../interface/urlmanifest';
 export class AssetsManager {
+      private _testMode: boolean = false;
       private _assets: BABYLON.AssetsManager;
       private _manifest: UrlManifest;
       private _scene: BABYLON.Scene;
@@ -17,7 +18,9 @@ export class AssetsManager {
        * @param loadingText {string} the text shown while the game is loading.
        * @returns {Promise}
        */
-     loadInstanceAssets(loadingText: string): Promise<Array<string>> {
+     loadInstanceAssets(loadingText: string, test?: boolean): Promise<any> {
+
+      this._testMode = test;
       return new Promise<Array<string>>((resolve, reject) => {
             let errors = new Array<string>();
 
@@ -36,7 +39,6 @@ export class AssetsManager {
             };
 
             this._assets.load();
-
       });
      }
 
