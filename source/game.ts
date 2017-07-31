@@ -42,24 +42,27 @@ export class Game {
             this.ifInterfaceFailedToLoad = () => {console.log('stub function ifInterfaceFailedToLoad')}
       }
 
-      onLoadBabylon(manifest: any) {
-            this.loadBabylon().then(() => { this.onLoaded(); }).catch((reason) => {
+      onLoadBabylon(manifest: UrlManifest) {
+            this.loadBabylon().then(() => {
+                  // at this point we have the scene, so we can set up the assets manager
+                  this._assetsManager = new AssetsManager(manifest, this._stage.getScene());
+                  this.onBeginLoadAssets(manifest); }).catch((reasons) => {
                   console.log('Babylon loading failed');
-                  this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reason.error);
+                  this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reasons);
             });
       }
 
-      onBeginLoadAssets(manifest: any) {
-            this.loadAssets().then((manifest: any) => {this.onLoadBabylon(manifest)}).catch((reason) => {
+      onBeginLoadAssets(manifest: UrlManifest) {
+            this.loadAssets().then((manifest: any) => {this.onLoaded()}).catch((reasons) => {
                   console.log('Asset loading failed');
-                  this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reason.error);
+                  this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reasons);
             });
       };
 
       start(): void {
-            this.load().then((manifest: any) => { this.onBeginLoadAssets(manifest)}).catch((reason) => {
+            this.load().then((manifest: any) => { this.onLoadBabylon(manifest)}).catch((reasons) => {
                   console.log('Interface failed to load');
-                  this.handleLoadingLifecycleError(this.ifInterfaceFailedToLoad, reason.error);
+                  this.handleLoadingLifecycleError(this.ifInterfaceFailedToLoad, reasons);
             });
       }
 
@@ -133,6 +136,7 @@ export class Game {
                   if (!this._interface.manifest) {
                       reject("No Manifest found");
                   }
+                  console.log('load instance assets is', this._assetsManager.loadInstanceAssets);
                   this._assetsManager.loadInstanceAssets(this._engine.loadingUIText).then(() => { resolve() }).catch((reason) => { reject(reason)});
             });
       }

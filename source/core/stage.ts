@@ -29,6 +29,10 @@ export class Stage {
             }
       }
 
+      getScene(): BABYLON.Scene {
+            return this._scene;
+      }
+
       /**
        * Attempts to set the camera, returns an array of error messages. if the array is empty, then it was successful
        * @param {error}

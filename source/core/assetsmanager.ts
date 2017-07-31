@@ -59,11 +59,11 @@ export class AssetsManager {
             let url = manifest.baseUrl + "/map" + manifest.map.baseUrl;
 
             /** Load ground texture */
-            this.loadTexture("Ground texture", url + "/texture" + manifest.map.texture, () => {text = "Distance to touchdown 2400km"}, () => {console.log('load fail 1'); reject("Failed to load map texture")});
+            this.loadTexture("Ground texture", url + "/texture" + manifest.map.texture, () => {text = "Distance to touchdown 2400km"}, () => {console.log('load fail 1'); reject(["Failed to load map texture"])});
 
 
             /** Load height map */
-            this.loadImage("heightMap", url + "/heighmap" + manifest.map.heightMap, () => {text = "Distance to touchdown 2200km"}, () => {console.log('load fail 2'); reject("Failed to load height map")});
+            this.loadImage("heightMap", url + "/heighmap" + manifest.map.heightMap, () => {text = "Distance to touchdown 2200km"}, () => {console.log('load fail 2'); reject(["Failed to load height map"])});
 
             /** Load sky box */
             let skybox = BABYLON.Mesh.CreateBox("skyBox", 500.0, scene);
