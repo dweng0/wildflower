@@ -23,14 +23,10 @@ export class Stage {
             return errors;
       }
 
-      debugMode(debug: boolean): void {
-            if (debug) {
+      showTime(debug: boolean): void {
+             if (debug) {
                   this._scene.debugLayer.show();
             }
-      }
-
-      show() {
-
       }
 
       /**

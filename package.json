@@ -13,6 +13,7 @@
   "author": "Jay Martin-Smith",
   "license": "MIT",
   "dependencies": {
+    "@types/signalr": "^2.2.34",
     "eslint": "^4.1.1",
     "grunt": "^1.0.1",
     "grunt-bump": "^0.8.0",
@@ -21,6 +22,7 @@
     "grunt-exec": "^2.0.0",
     "node-dir": "^0.1.17",
     "sass": "^1.0.0-beta.1",
+    "signalr": "^2.2.2",
     "systemjs": "^0.20.16",
     "ts-emitter": "^0.3.1",
     "tsify": "^3.0.1",

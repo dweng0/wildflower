@@ -23,12 +23,4 @@ describe('Asset initialization', () => {
     it('Should handle failure to load assets', () => {
       expect(asset.loadInstanceAssets("test", true)).to.eventually.have.property("tested")
     });
-
-    it('Should callback for each individual asset loaded', () => {
-      expect(false).to.be.true;
-    });
-
-    it('Should callback for all assets loaded', () => {
-      expect(false).to.be.true;
-    });
 });

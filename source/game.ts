@@ -57,10 +57,6 @@ export class Game {
                   });
       }
 
-      render(): void {
-            this._stage.debugMode(this._debug);
-      }
-
       hasBabylon(): boolean {
             return (BABYLON) ? true : false;
       }
@@ -114,7 +110,7 @@ export class Game {
       }
 
       /**
-       * starts the asset loading process and returns a promise when complete (success or failure).
+       * starts the asset loading process and returns a promise (success or failure).
        * calls the optional function onBeforeAssetsLoad
        * @returns {promise<boolean>}
        */
@@ -134,6 +130,7 @@ export class Game {
        */
       onLoaded(): void {
             this.onReady();
+            this._stage.showTime(this._debug);
       }
 
       handleLoadingLifecycleError (eventFn: (errors?: any) => any, errors: Array<string>) {

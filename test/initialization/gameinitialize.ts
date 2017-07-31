@@ -15,7 +15,7 @@ describe('Game initialization', () => {
         expect(game.hasBabylon()).to.be.true;
       });
 
-      it('Should have a the assets loader', () => {
+      it('Should have an instance of the assets loader', () => {
           expect(game._assetsManager).to.be.instanceOf(AssetsManager);
       });
 
@@ -23,15 +23,17 @@ describe('Game initialization', () => {
           expect(game._interface).to.be.instanceOf(Interface);
       });
 
-      it("Expect onbefore load to be callsed ", () => {
+      it("Expect onbefore load to be called ", () => {
+            game.onBeforeLoad = function(){console.log('test')}
+            sinon.spy(game, "onBeforeLoad");
+            expect(game.onBeforeLoad).to.have.been.called;
+      });
+
+      it("should have called on before load", () => {
           expect(false).to.be.true;
       });
 
-      it("Expect load to load manifest", () => {
-          expect(false).to.be.true;
-      });
-
-      it("have called onbeforebabylonload", () => {
+      it("should have called onbeforebabylonload", () => {
          expect(false).to.be.true;
       });
 
