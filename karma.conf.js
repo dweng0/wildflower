@@ -1,6 +1,8 @@
 /*
  * More detailed explanation here: http://karma-runner.github.io/0.13/config/configuration-file.html
  */
+var webpackConfig = require("./webpack.config");
+
 module.exports = function(config) {
     config.set({
         /*
@@ -51,7 +53,7 @@ module.exports = function(config) {
          * corresponding karma-*** modules and include them in the list of plugins
          * as well as below.
          */
-        frameworks: ["browserify", "mocha", "chai", "sinon"],
+        frameworks: ["mocha", "chai", "sinon"],
 
         logLevel: config.LOG_INFO,
 
@@ -72,7 +74,7 @@ module.exports = function(config) {
          * npm module to be npm installed and added to the "plugins" field.
          */
         preprocessors: {
-            "test/**/*.ts": ["browserify"] // Using karma-webpack npm module
+            "test/**/*.ts": ["webpack"] // Using karma-webpack npm module
         },
 
         /*
@@ -92,18 +94,18 @@ module.exports = function(config) {
          * all tests passed or any tests failed.
          */
         singleRun: false,
-
-        /*
+        
+        /* This field is necessary because we are using webpack as a preprocessor.
+         * You will need to specify the webpack configuration (although in this
+         * case, we are simply leveraging the existing webpack.config.js file).
          *
          * If you have a different webpack.config.js file that's used for testing
          * purposes, you can specify that here.
          */
-       
-        browserify: {
-            debug: true,
-            plugin: ['tsify'],
-            transform: ['brfs'],
-            extensions:['.js', '.ts']
+        webpack: {
+            module: webpackConfig.module,
+            resolve: webpackConfig.resolve
         }
+
     });
 };

@@ -1,15 +1,9 @@
 module.exports = function(grunt) {
 
   grunt.initConfig({
-    browserify: {
-      main: {
-        src: 'source/**/*.ts',
-        dest: 'js/findem.js'
-      }
-    },
     exec:{
         compile:{
-            command:"browserify "+__dirname+"/source/game.ts -p [ tsify --noImplicitAny ] > "+__dirname+"/lib/bundle.js",
+            command:"webpack ",
             stdout:true,
             stderr:true
         },
@@ -41,13 +35,12 @@ module.exports = function(grunt) {
     
     watch: {
       scripts: {
-        files: ['source/**/*.ts', 'test/**/*.ts'],
+        files: ['source/**/*.ts'],
         tasks: ['exec', 'bump:prerelease']
     },
     }
   });
 grunt.loadNpmTasks('grunt-exec');
 grunt.loadNpmTasks('grunt-bump');
- grunt.loadNpmTasks('grunt-browserify');
 grunt.loadNpmTasks('grunt-contrib-watch');
 };

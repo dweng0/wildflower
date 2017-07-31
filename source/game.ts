@@ -159,6 +159,7 @@ export class Game {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+      alert(1);
       let game = new Game(12, 'renderCanvas');
       game.start();
 });
