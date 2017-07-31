@@ -1,11 +1,11 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var webpack = require('webpack');
 var pjson = require('./package.json');
-console.log('version' + pjson.version);
+
 module.exports = {
     entry: "./source/game.ts",
     output: {
-        filename: "bundle.js",
+        filename: "static/bundle.js",
         path: __dirname + "/lib"
     },
 
@@ -32,8 +32,9 @@ module.exports = {
     // This is important because it allows us to avoid bundling all of our
     // dependencies, which allows browsers to cache those libraries between builds.
     externals: {
-        "babylonjs": "BABYLON"
+      "babylonjs": "BABYLON"
     },
+
       plugins: [
           new HtmlWebpackPlugin({
             "title":"WildFlower "+pjson.version,

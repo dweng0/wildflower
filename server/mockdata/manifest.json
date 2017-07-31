@@ -1,0 +1,12 @@
+{
+      "handshake":"testhandshakeurl",
+      "baseUrl":"epigame",
+      "map":{
+            "baseUrl": "/testmap",
+            "texture": "/textureIdstuff",
+            "heightMap": "/heightmapstuff",
+            "skybox": "/skyboxstuff"
+      },
+      
+      "characters":[]
+}

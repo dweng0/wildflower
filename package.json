@@ -1,6 +1,6 @@
 {
   "name": "wildflower",
-  "version": "1.0.3-alpha.66",
+  "version": "1.0.3-alpha.76",
   "description": "Babylon test",
   "main": "index.js",
   "nyc": {
@@ -9,7 +9,8 @@
   },
   "scripts": {
     "build": "webpack",
-    "test": "karma start"
+    "test": "karma start",
+    "serve": "node ./server/server.js"
   },
   "author": "Jay Martin-Smith",
   "license": "MIT",
@@ -47,6 +48,7 @@
     "brfs": "^1.4.3",
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",
+    "express": "^4.15.3",
     "grunt-browserify": "^5.0.0",
     "html-webpack-plugin": "^2.29.0",
     "jquery": "^3.2.1",

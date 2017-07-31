@@ -7,7 +7,7 @@ import {Stage} from './core/stage';
 import {UrlManifest} from './interface/urlmanifest';
 
 export class Game {
-      private _url: "http://google.com";
+      private _url = "/game";
       private _engine: BABYLON.Engine;
       private _debug: true;
       private _stage: Stage;
@@ -35,26 +35,32 @@ export class Game {
       constructor(campaignId: number, canvasId?: string) {
             let domHandler = new DomHandler(canvasId);
             this._canvas = domHandler.getCanvas();
-            this._interface = new Interface(this._url);
+            this._interface = new Interface(this._url + "/" + campaignId);
+
+            this.ifAssetsFailedToLoad = () => {console.log('stub function ifAssetsFailedToLoad')}
+            this.ifBabylonFailedToLoad = () => {console.log('stub function ifBabylonFailedToLoad')}
+            this.ifInterfaceFailedToLoad = () => {console.log('stub function ifInterfaceFailedToLoad')}
       }
 
+      onLoadBabylon(manifest: any) {
+            this.loadBabylon().then(() => { this.onLoaded(); }).catch((reason) => {
+                  console.log('Babylon loading failed');
+                  this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reason.error);
+            });
+      }
+
+      onBeginLoadAssets(manifest: any) {
+            this.loadAssets().then((manifest: any) => {this.onLoadBabylon(manifest)}).catch((reason) => {
+                  console.log('Asset loading failed');
+                  this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reason.error);
+            });
+      };
+
       start(): void {
-            this.load()
-                  .then(() => this.loadAssets()
-                              .then(() => this.loadBabylon()
-                                          .then( () => { this.onLoaded(); })))
-                                          .catch( (reason) => {
-                                                      console.log('Babylon loading failed');
-                                                      this.handleLoadingLifecycleError(this.ifBabylonFailedToLoad, reason);
-                                          })
-                              .catch((reason) => {
-                                    console.log('Asset loading failed');
-                                    this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reason);
-                              })
-                  .catch((reason) => {
-                        console.log('Interface failed to load');
-                        this.handleLoadingLifecycleError(this.ifInterfaceFailedToLoad, reason);
-                  });
+            this.load().then((manifest: any) => { this.onBeginLoadAssets(manifest)}).catch((reason) => {
+                  console.log('Interface failed to load');
+                  this.handleLoadingLifecycleError(this.ifInterfaceFailedToLoad, reason.error);
+            });
       }
 
       hasBabylon(): boolean {
@@ -83,18 +89,22 @@ export class Game {
 
 
       load(): Promise<boolean> {
-            this.onBeforeLoad();
+            if (this.onBeforeLoad) {
+                  this.onBeforeLoad();
+            }
+
             return new Promise<boolean>((resolve, reject) => {
-                  this._interface.handshake(() => {
-                        this._interface.fetchManifest((manifest: UrlManifest) => {
-                              resolve();
-                        }, (err) => { reject(err)});
-                  }, (err) => reject(err));
+                  this._interface.fetchManifest((response: any) => {
+                        resolve(JSON.parse(response.entity));
+                  }, (err) => { reject(err.error)});
             });
       }
 
       loadBabylon(): Promise<Array<string>> {
-            this.onBeforeBabylonLoad();
+            if (this.onBeforeBabylonLoad) {
+                  this.onBeforeBabylonLoad();
+            }
+
             let errors = new Array<string>();
             return new Promise<Array<string>>((resolve, reject) => {
                   errors.concat(errors, this.setEngine());
@@ -115,7 +125,10 @@ export class Game {
        * @returns {promise<boolean>}
        */
       loadAssets(): Promise<boolean> {
-            this.onBeforeAssetsLoad();
+            if (this.onBeforeAssetsLoad) {
+                  this.onBeforeAssetsLoad();
+            }
+
             return new Promise<boolean>((resolve, reject) => {
                   if (!this._interface.manifest) {
                       reject("No Manifest found");
@@ -129,7 +142,9 @@ export class Game {
        * @param callback {function}
        */
       onLoaded(): void {
-            this.onReady();
+            if (this.onReady) {
+                  this.onReady();
+            }
             this._stage.showTime(this._debug);
       }
 
@@ -159,7 +174,6 @@ export class Game {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-      alert(1);
       let game = new Game(12, 'renderCanvas');
       game.start();
 });
