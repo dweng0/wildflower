@@ -1,6 +1,6 @@
 {
       "handshake":"testhandshakeurl",
-      "baseUrl":"/load",
+      "baseUrl":"/game",
       "map":{
             "baseUrl": "/testmap",
             "texture": "/textureIdstuff",

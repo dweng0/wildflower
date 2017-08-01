@@ -15,8 +15,8 @@ export class Interface {
       _handShakeUrl: string;
       _manifestUrl: string;
       manifest: UrlManifest;
-     constructor(url: string, testMode?: boolean) {
-      this._manifestUrl = url + "/manifest";
+     constructor(url: string, campaignId: string, testMode?: boolean) {
+      this._manifestUrl = url + "/manifest/" + campaignId;
       this._testMode = testMode;
       if (this._handShakeUrl === null) {
             throw new Error("No handshake url provided");

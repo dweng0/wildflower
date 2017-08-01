@@ -5,7 +5,7 @@ import { AssetsManager } from '../../source/core/assetsmanager';
 import { Interface } from '../../source/core/interface';
 
 describe('Game initialization', () => {
-      let game = new Game(12, 'renderCanvas');
+      let game = new Game("12", 'renderCanvas');
 
       it('Should have a canvas', () => {
             expect(false).to.be.true;

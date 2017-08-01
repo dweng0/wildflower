@@ -32,10 +32,10 @@ export class Game {
       public ifInterfaceFailedToLoad: (errors: Array<string>) => any;
 
 
-      constructor(campaignId: number, canvasId?: string) {
+      constructor(campaignId: string, canvasId?: string) {
             let domHandler = new DomHandler(canvasId);
             this._canvas = domHandler.getCanvas();
-            this._interface = new Interface(this._url + "/" + campaignId);
+            this._interface = new Interface(this._url, campaignId);
 
             this.ifAssetsFailedToLoad = () => {console.log('stub function ifAssetsFailedToLoad')}
             this.ifBabylonFailedToLoad = () => {console.log('stub function ifBabylonFailedToLoad')}
@@ -178,7 +178,7 @@ export class Game {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-      let game = new Game(12, 'renderCanvas');
+      let game = new Game("12", 'renderCanvas');
       game.start();
 });
 

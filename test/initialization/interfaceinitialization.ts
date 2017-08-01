@@ -5,14 +5,14 @@ import {UrlManifest, ManifestItem} from '../../source/interface/urlmanifest';
 
 describe('Api and interface initialization', () => {
       let url = "http://google.com";
-      let restInterface = new Interface(url, true);
+      let restInterface = new Interface(url, "12", true);
 
       it('Should have handshake url', () => {
             expect(restInterface._handShakeUrl).to.be.a('string', 'Must have a handshake url in order to continue');
       });
 
       it('Should throw if no url is provided', () => {
-            expect(new Interface("")).to.throw;
+            expect(new Interface("", "")).to.throw;
       });
 
      it('Should callback on handshake success', () => {
@@ -20,7 +20,7 @@ describe('Api and interface initialization', () => {
         let error = sinon.spy();
 
         /** the class treats 'foo.com' like a succesfull url */
-        let handshakeTest = new Interface("foo.com", true);
+        let handshakeTest = new Interface("foo.com", "12", true);
         handshakeTest.handshake(success);
 
         expect(success.calledOnce).to.be.true;
@@ -32,7 +32,7 @@ describe('Api and interface initialization', () => {
         let error = sinon.spy();
 
         /** the class treats 'foo.com' like a succesfull url */
-        let handshakeTest = new Interface("foo.com", true);
+        let handshakeTest = new Interface("foo.com", "12", true);
         handshakeTest.handshake(success);
 
         expect(success.calledOnce).to.be.true;
@@ -43,19 +43,19 @@ describe('Api and interface initialization', () => {
       it('Should callback on handshake error', () => {
         let success = sinon.spy();
         let error = sinon.spy();
-        let handshakeTest = new Interface("bar.com", true);
+        let handshakeTest = new Interface("bar.com", "12", true);
         handshakeTest.handshake(success, error);
         expect(error.calledOnce).to.be.true;
         expect(success.notCalled).to.be.true;
      });
 
      it('should throw if no manifest url is provided', () => {
-      let manifestUrlTest = new Interface("foo.com", true);
+      let manifestUrlTest = new Interface("foo.com", "12", true);
       (function(){manifestUrlTest.fetchManifest(() => {})}).should.throw;
      });
 
       it('Should have a manifest that matches the signature of url manifest', () => {
-         let manifestTest = new Interface("foo.com", true);
+         let manifestTest = new Interface("foo.com", "12", true);
          let manifest;
          manifestTest._manifestUrl = "test.com";
          manifestTest.fetchManifest((receivedManifest: any) => {

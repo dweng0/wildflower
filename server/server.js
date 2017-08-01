@@ -8,7 +8,7 @@ app.get('/', function (req, res) {
 })
 
 //load test manifest
-app.get('/game/:id/manifest', function (req, res) {
+app.get('/game/manifest/:id', function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(manifest));
 })
