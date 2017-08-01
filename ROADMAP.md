@@ -11,7 +11,7 @@ This document wil hopefully give an idea of where the project is at and what is 
 
 ## Handle errors in loading process ##
 
-* Missing assets
+* Missing assets - _done_ - if an assets fail to load, the function `ifAssetsFailedToLoad` is called, this can be handled by something else.
 
 ## Handle success loading process ##
 

@@ -136,8 +136,8 @@ export class Game {
                   if (!this._interface.manifest) {
                       reject("No Manifest found");
                   }
-                  console.log('load instance assets is', this._assetsManager.loadInstanceAssets);
-                  this._assetsManager.loadInstanceAssets(this._engine.loadingUIText).then(() => { resolve() }).catch((reason) => { reject(reason)});
+
+                  this._assetsManager.loadInstanceAssets(this._engine).then(() => { resolve() }).catch((reason) => { reject(reason)});
             });
       }
 
@@ -154,6 +154,11 @@ export class Game {
 
       handleLoadingLifecycleError (eventFn: (errors?: any) => any, errors: Array<string>) {
             this._engine.loadingUIText =  this.buildErrorMessage(errors);
+
+            if (errors.length === undefined) {
+                  errors = new Array<string>();
+                  errors.push(<any>errors);
+            }
 
             if (eventFn) {
                   eventFn(errors);

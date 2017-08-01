@@ -18,7 +18,7 @@ export class AssetsManager {
        * @param loadingText {string} the text shown while the game is loading.
        * @returns {Promise}
        */
-     loadInstanceAssets(loadingText: string, test?: boolean): Promise<any> {
+     loadInstanceAssets(engine: BABYLON.Engine, test?: boolean): Promise<any> {
 
       this._testMode = test;
       return new Promise<Array<string>>((resolve, reject) => {
@@ -26,23 +26,39 @@ export class AssetsManager {
 
             this._assets = new BABYLON.AssetsManager(this._scene);
 
-            loadingText = "Distance to touchdown 3000km";
+            let numberOfAssets = this.countAllAssets(this._manifest);
 
-            let mapLoadingErrors = this.getMapAssets(loadingText, this._scene, this._manifest, reject);
+            engine.loadingUIText = "Distance to touchdown " + numberOfAssets + "000km";
+
+            let mapLoadingErrors = this.getMapAssets(this._scene, this._manifest, reject);
             errors.concat(errors, mapLoadingErrors);
 
-            let playerLoadingErrors = this.getPlayerAssets(loadingText, this._scene, this._manifest);
+            let playerLoadingErrors = this.getPlayerAssets(this._scene, this._manifest);
             errors.concat(errors, playerLoadingErrors);
             this._assets.onFinish = (tasks: Array<BABYLON.IAssetTask>) => {
                   console.log('tasks finished');
                   resolve();
             };
 
+            this._assets.onTaskError = (task: BABYLON.IAssetTask) => {
+                console.log('task loading failure');
+                 engine.loadingUIText = "Landing aborted";
+            }
+
+            this._assets.onTaskSuccess = (task: BABYLON.IAssetTask) => {
+                console.log("task loaded successfully");
+                numberOfAssets = (numberOfAssets - 1);
+                engine.loadingUIText = "Distance to touchdown " + numberOfAssets + "000km";
+            }
             this._assets.load();
       });
      }
 
-     getPlayerAssets(text: string, scene: BABYLON.Scene, manifest: UrlManifest): Array<string> {
+     countAllAssets(manifest: UrlManifest): number {
+           return 5 + manifest.characters.length;
+     }
+
+     getPlayerAssets(scene: BABYLON.Scene, manifest: UrlManifest): Array<string> {
       return new Array<string>();
      }
 
@@ -53,16 +69,15 @@ export class AssetsManager {
        * @param manifest {UrlManifest} The manifest of urls required to load this game
        * @param errors {Array<string>} The list of errors, if any incurred in this code path.
        */
-      getMapAssets(text: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): Array<string> {
+      getMapAssets(scene: BABYLON.Scene, manifest: UrlManifest, reject: any): Array<string> {
             let errors = new Array<string>();
-            text = "Distance to touchdown 2700km";
             let url = manifest.baseUrl + "/map" + manifest.map.baseUrl;
 
             /** Load ground texture */
-            this.loadTexture("Ground texture", url + "/texture" + manifest.map.texture, () => {text = "Distance to touchdown 2400km"}, () => {reject(["Failed to load map texture"])});
+            this.loadTexture("Ground texture", url + "/texture" + manifest.map.texture, () => {}, () => {reject(["Failed to load map texture"])});
 
             /** Load height map */
-            this.loadImage("heightMap", url + "/heighmap" + manifest.map.heightMap, () => {text = "Distance to touchdown 2200km"}, () => {reject(["Failed to load height map"])});
+            this.loadImage("heightMap", url + "/heighmap" + manifest.map.heightMap, () => {}, () => {reject(["Failed to load height map"])});
 
             /** Load sky box */
             let skybox = BABYLON.Mesh.CreateBox("skyBox", 500.0, scene);
