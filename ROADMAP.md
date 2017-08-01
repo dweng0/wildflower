@@ -2,6 +2,8 @@ This document wil hopefully give an idea of where the project is at and what is 
 ## Defining the API ##
 * [Define how games will be loaded and the accepted layout for loading assets](https://github.com/dweng0/wildflower/wiki/API-Definitions) - _done_
 * Define the api for realtime requests
+* Define order of events for client server real-time interaction
+
 ## Setting up of rest interface ##
 
 * Setup the url manifest - _done_
