@@ -1,6 +1,6 @@
 {
       "handshake":"testhandshakeurl",
-      "baseUrl":"epigame",
+      "baseUrl":"/load",
       "map":{
             "baseUrl": "/testmap",
             "texture": "/textureIdstuff",
