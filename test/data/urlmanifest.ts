@@ -13,7 +13,8 @@ export class DummyManifestData {
                   baseUrl: "/testmap",
                   texture: "/textureIdstuff",
                   heightMap: "/heightmapstuff",
-                  skybox: "/skyboxstuff"
+                  skybox: "/skyboxstuff",
+                  physics: "/physics"
             }
             this.mapModels = [];
             this.characters = [];

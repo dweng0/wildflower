@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const path = require('path');
 const manifest = require('./mockdata/manifest.json');
-
+const physics = require('./mockdata/physics.json');
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, "../lib/index.html"))
 })
@@ -18,6 +18,16 @@ app.get('/game/map/:id/skybox/:name', function (req, res) {
     let mapName = req.params.id;
     let skyboxName = req.params.name;
     res.sendFile(path.join(__dirname, "../assets/maps/"+mapName+"/skybox/"+skyboxName));
+})
+
+
+//map handling
+app.get('/game/map/:id/physics/:name', function (req, res) {
+    let mapName = req.params.id;
+    let physicsName = req.params.name;
+
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(physics));
 })
 
 app.get('/game/map/:id/texture/:name', function (req, res) {

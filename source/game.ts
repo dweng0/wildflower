@@ -70,6 +70,10 @@ export class Game {
             return (BABYLON) ? true : false;
       }
 
+      switchCameras(): void {
+            return this._stage.switchCameras();
+      }
+
       /**
        * Loads the babylon engine, returns an array of error messages, if there are no error messages then it was succesfull
        * @returns {Array<string>}
@@ -188,9 +192,8 @@ export class Game {
             throw new Error(errors);
       }
 }
-
+let game = new Game("12", 'renderCanvas');
 window.addEventListener('DOMContentLoaded', () => {
-      let game = new Game("12", 'renderCanvas');
       game.start();
 });
 
@@ -198,7 +201,7 @@ window.addEventListener("keydown", (e) => {
       switch (e.keyCode) {
             case 27:
             {
-                  this._stage.switchCameras();
+                  game.switchCameras();
             }
             default: {
                   console.log('key pressed, ', e.keyCode);

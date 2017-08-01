@@ -1,6 +1,6 @@
 {
   "name": "wildflower",
-  "version": "1.0.3-alpha.161",
+  "version": "1.0.3-alpha.171",
   "description": "Babylon test",
   "main": "index.js",
   "nyc": {
@@ -34,7 +34,6 @@
     "web-request": "^1.0.7"
   },
   "devDependencies": {
-    "@types/babylon": "^6.16.2",
     "@types/chai": "^4.0.1",
     "@types/chai-as-promised": "0.0.31",
     "@types/jsdom": "^11.0.1",
@@ -45,6 +44,7 @@
     "@types/sinon-chai": "^2.7.28",
     "@types/underscore": "^1.8.1",
     "awesome-typescript-loader": "^3.2.1",
+    "babylonjs": "^3.1.0-alpha1",
     "brfs": "^1.4.3",
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",

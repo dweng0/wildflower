@@ -14,7 +14,6 @@ export class Stage {
       constructor(engine: BABYLON.Engine) {
             console.log('A magical stage has been created')
             this._engine = engine;
-            this.setDebugCamera();
       }
 
       /**
@@ -29,6 +28,7 @@ export class Stage {
             let errors = new Array<string>();
             this._setScene(errors);
             this._setCamera(errors, canvas);
+            this.setDebugCamera();
             this._setLighting();
             this._setPlayers();
             return errors;
@@ -105,6 +105,7 @@ export class Stage {
                   errors.push("Failed to set scene, the engine is missing.");
             } else {
                   this._scene = new BABYLON.Scene(this._engine);
+                  this._scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), new BABYLON.OimoJSPlugin());
             }
             return errors;
       }
