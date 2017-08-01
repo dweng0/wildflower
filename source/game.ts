@@ -149,14 +149,17 @@ export class Game {
             if (this.onReady) {
                   this.onReady();
             }
-            
-            this._stage.showTime(this._debug);
-            let scene = this._stage.getScene();
-            let groundMesh = scene.getMeshByName("ground");
 
-            console.log('got ground mesh')
+            // mock loading of user
+            let sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, this._stage.getScene());
+            // Move the sphere upward 1/2 its height
+            sphere.position.y = 1;
+            sphere.position.z = -10;
+            sphere.position.x = -10;
+
+            this._stage.setCameraOnPlayer("sphere1");
             this._engine.runRenderLoop(() => {
-                  this._stage.getScene().render();
+                  this._stage.showTime(this._debug);
             });
       }
 
@@ -180,13 +183,9 @@ export class Game {
        * @param errors {Array<string>}
        * @returns {string}
        */
-      buildErrorMessage (errors: Array<string>): string {
+      buildErrorMessage (errors: any): string {
             let message = "Landing Aborted";
-
-            errors.forEach((error) => {
-                  message += error;
-            });
-            return message;
+            throw new Error(errors);
       }
 }
 
@@ -195,3 +194,14 @@ window.addEventListener('DOMContentLoaded', () => {
       game.start();
 });
 
+window.addEventListener("keydown", (e) => {
+      switch (e.keyCode) {
+            case 27:
+            {
+                  this._stage.switchCameras();
+            }
+            default: {
+                  console.log('key pressed, ', e.keyCode);
+            }
+      }
+});

@@ -6,12 +6,23 @@ export class Stage {
       private _engine: BABYLON.Engine;
       private _lighting: BABYLON.HemisphericLight;
       private _scene: BABYLON.Scene;
-      private _camera: BABYLON.FreeCamera;
+      private _camera: BABYLON.FollowCamera;
+      private _freeCamera: BABYLON.FreeCamera;
+      private _activeCamera: any;
       private _environment: BABYLON.StandardMaterial;
 
       constructor(engine: BABYLON.Engine) {
             console.log('A magical stage has been created')
             this._engine = engine;
+            this.setDebugCamera();
+      }
+
+      /**
+       * Sets the camera on a specific mesh object
+       * @param meshObjectName {string}
+       */
+      setCameraOnPlayer(meshObjectName: string) {
+            this._camera.lockedTarget = this._scene.getMeshByName(meshObjectName);
       }
 
       setTheStage(canvas: HTMLCanvasElement): Array<string> {
@@ -23,7 +34,17 @@ export class Stage {
             return errors;
       }
 
+      switchCameras() {
+            if (this._scene.activeCamera instanceof BABYLON.FollowCamera) {
+                  this._scene.activeCamera = this._freeCamera;
+                  } else {
+                  this._scene.activeCamera = this._camera;
+            }
+      }
+
       showTime(debug: boolean): void {
+            this._scene.activeCamera = this._camera;
+            this._scene.render();
              if (debug) {
                   this._scene.debugLayer.show();
             }
@@ -31,6 +52,18 @@ export class Stage {
 
       getScene(): BABYLON.Scene {
             return this._scene;
+      }
+
+      setDebugCamera() {
+            this._freeCamera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -10), this._scene);
+
+            // for debugging the scene
+            this._freeCamera.keysUp = [87];
+            this._freeCamera.keysDown = [83];
+            this._freeCamera.keysLeft = [65];
+            this._freeCamera.keysRight = [68];
+
+           // this._camera.speed = 3.0;
       }
 
       /**
@@ -48,26 +81,17 @@ export class Stage {
                   errors.push("Cannot set camera, no scene has been set");
             }
 
-            this._camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -10), this._scene);
-            this._engine
+            this._camera = new BABYLON.FollowCamera("Follow", new BABYLON.Vector3(0, 15, 45), this._scene);
+            this._camera.radius = 30; // how far from the object to follow
+            this._camera.heightOffset = 8; // how high above the object to place the camera
+            this._camera.rotationOffset = 180; // the viewing angle
+            this._camera.cameraAcceleration = 0.05 // how fast to move
+            this._camera.maxCameraSpeed = 20 // speed limit
 
             // camera positioning
             this._camera.setTarget(new BABYLON.Vector3(-10, -10, 0));
             this._camera.attachControl(canvas);
-
-            // for debugging the scene
-            this._camera.keysUp = [87];
-            this._camera.keysDown = [83];
-            this._camera.keysLeft = [65];
-            this._camera.keysRight = [68];
-
-            this._camera.speed = 3.0;
-
-            let sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, this._scene);
-            // Move the sphere upward 1/2 its height
-            sphere.position.y = 1;
-            sphere.position.z = -10;
-            sphere.position.x = -10;
+            window['camera'] = this._camera;
 
             return errors;
       }
