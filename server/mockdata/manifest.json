@@ -2,10 +2,10 @@
       "handshake":"testhandshakeurl",
       "baseUrl":"/game",
       "map":{
-            "baseUrl": "/testmap",
-            "texture": "/textureIdstuff",
-            "heightMap": "/heightmapstuff",
-            "skybox": "/skyboxstuff"
+            "baseUrl": "/stargazer",
+            "texture": "/ground.jpg",
+            "heightMap": "/heightmap.png",
+            "skybox": "/skybox"
       },
       
       "characters":[]

@@ -37,6 +37,7 @@ export class AssetsManager {
             errors.concat(errors, playerLoadingErrors);
             this._assets.onFinish = (tasks: Array<BABYLON.IAssetTask>) => {
                   console.log('tasks finished');
+                  engine.loadingUIText = "Activating landing gears";
                   resolve();
             };
 
@@ -46,7 +47,6 @@ export class AssetsManager {
             }
 
             this._assets.onTaskSuccess = (task: BABYLON.IAssetTask) => {
-                console.log("task loaded successfully");
                 numberOfAssets = (numberOfAssets - 1);
                 engine.loadingUIText = "Distance to touchdown " + numberOfAssets + "000km";
             }
@@ -55,7 +55,7 @@ export class AssetsManager {
      }
 
      countAllAssets(manifest: UrlManifest): number {
-           return 5 + manifest.characters.length;
+           return 3 + manifest.characters.length;
      }
 
      getPlayerAssets(scene: BABYLON.Scene, manifest: UrlManifest): Array<string> {
@@ -77,7 +77,7 @@ export class AssetsManager {
             this.loadTexture("Ground texture", url + "/texture" + manifest.map.texture, () => {}, () => {reject(["Failed to load map texture"])});
 
             /** Load height map */
-            this.loadImage("heightMap", url + "/heighmap" + manifest.map.heightMap, () => {}, () => {reject(["Failed to load height map"])});
+            this.loadImage("heightMap", url + "/heightmap" + manifest.map.heightMap, () => {}, () => {reject(["Failed to load height map"])});
 
             /** Load sky box */
             let skybox = BABYLON.Mesh.CreateBox("skyBox", 500.0, scene);
