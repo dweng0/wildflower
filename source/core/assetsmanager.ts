@@ -66,12 +66,15 @@ export class AssetsManager {
        */
       getMapAssets(scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
             let url = manifest.baseUrl + "/map" + manifest.map.baseUrl;
+            let ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", url + "/heightmap" + manifest.map.heightMap, 300, 250, 100, 0, 12, scene, true);
 
             /** Load ground texture */
-            this.loadTexture("Ground texture", url + "/texture" + manifest.map.texture, () => {}, () => {reject(["Failed to load map texture"])});
-
-            /** Load height map */
-            this.loadImage("heightMap", url + "/heightmap" + manifest.map.heightMap, () => {}, () => {reject(["Failed to load height map"])});
+           this.loadTexture("ground", url + "/texture" + manifest.map.texture, (asset) => {
+                  let groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+                        groundMaterial.diffuseTexture = asset.texture;
+                        groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+                        ground.material = groundMaterial;
+           }, () => {reject(["Failed to load map texture"])});
 
             /** Load sky box */
             let skybox = BABYLON.Mesh.CreateBox("skyBox", 500.0, scene);
@@ -102,11 +105,10 @@ export class AssetsManager {
             imageLoader.onError = fail.bind(this);
             return imageLoader;
       }
-
       /**
       * Given a set of arguments, attempts to load a texture into the assets manage
       */
-      loadTexture(taskName: string, url: string, success: () => any, fail: () => any, noMipMap?: boolean, sampling?: boolean) {
+      loadTexture(taskName: string, url: string, success: (textureAsset: BABYLON.ITextureAssetTask) => any, fail: () => any, noMipMap?: boolean, sampling?: boolean) {
             let textureLoad = this._assets.addTextureTask(taskName, url, noMipMap, sampling);
             textureLoad.onSuccess = success.bind(this);
             textureLoad.onError = fail.bind(this);
@@ -124,7 +126,7 @@ export class AssetsManager {
      */
     loadMesh(taskName: string, meshNames: any, rootUrl: string, sceneFileName: string, success: () => any, fail: () => any) {
         console.log('loading mesh', taskName);
-        let meshLoader = this._assets.addMeshTask(taskName, meshNames, rootUrl, sceneFileName);
+        let meshLoader = this._assets.addMeshTask(taskName, meshNames, rootUrl, "");
         meshLoader.onSuccess = success.bind(this);
         meshLoader.onError = fail.bind(this);
         return meshLoader;
