@@ -149,7 +149,15 @@ export class Game {
             if (this.onReady) {
                   this.onReady();
             }
+            debugger;
             this._stage.showTime(this._debug);
+            let scene = this._stage.getScene();
+            let groundMesh = scene.getMeshByName("ground");
+
+            console.log('got ground mesh')
+            this._engine.runRenderLoop(() => {
+                  this._stage.getScene().render();
+            });
       }
 
       handleLoadingLifecycleError (eventFn: (errors?: any) => any, errors: Array<string>) {

@@ -22,19 +22,15 @@ export class AssetsManager {
 
       this._testMode = test;
       return new Promise<Array<string>>((resolve, reject) => {
-            let errors = new Array<string>();
-
             this._assets = new BABYLON.AssetsManager(this._scene);
 
             let numberOfAssets = this.countAllAssets(this._manifest);
 
             engine.loadingUIText = "Distance to touchdown " + numberOfAssets + "000km";
 
-            let mapLoadingErrors = this.getMapAssets(this._scene, this._manifest, reject);
-            errors.concat(errors, mapLoadingErrors);
+            this.getMapAssets(this._scene, this._manifest, reject);
+            this.getPlayerAssets(this._scene, this._manifest);
 
-            let playerLoadingErrors = this.getPlayerAssets(this._scene, this._manifest);
-            errors.concat(errors, playerLoadingErrors);
             this._assets.onFinish = (tasks: Array<BABYLON.IAssetTask>) => {
                   console.log('tasks finished');
                   engine.loadingUIText = "Activating landing gears";
@@ -58,8 +54,7 @@ export class AssetsManager {
            return 3 + manifest.characters.length;
      }
 
-     getPlayerAssets(scene: BABYLON.Scene, manifest: UrlManifest): Array<string> {
-      return new Array<string>();
+     getPlayerAssets(scene: BABYLON.Scene, manifest: UrlManifest): void {
      }
 
       /**
@@ -69,8 +64,7 @@ export class AssetsManager {
        * @param manifest {UrlManifest} The manifest of urls required to load this game
        * @param errors {Array<string>} The list of errors, if any incurred in this code path.
        */
-      getMapAssets(scene: BABYLON.Scene, manifest: UrlManifest, reject: any): Array<string> {
-            let errors = new Array<string>();
+      getMapAssets(scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
             let url = manifest.baseUrl + "/map" + manifest.map.baseUrl;
 
             /** Load ground texture */
@@ -93,8 +87,6 @@ export class AssetsManager {
             skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(url + "/skybox" + manifest.map.skybox, scene);
             skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
             skybox.renderingGroupId = 0;
-
-            return errors;
       }
 
       /**
