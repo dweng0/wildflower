@@ -12,6 +12,7 @@ export class Stage {
       private _activeCamera: any;
       private _environment: BABYLON.StandardMaterial;
       private _worldPhysics: WorldPhysics;
+      private _thisCharacter: BABYLON.Mesh; // for now this will be a mesh
 
       constructor(engine: BABYLON.Engine, manifest: UrlManifest) {
             console.log('A magical stage has been created')
@@ -68,6 +69,10 @@ export class Stage {
             this._freeCamera.keysRight = [68];
             this._freeCamera.attachControl(canvas)
            // this._camera.speed = 3.0;
+      }
+
+      getCharacter(): BABYLON.Mesh {
+            return this._thisCharacter;
       }
 
       /**
@@ -127,7 +132,8 @@ export class Stage {
             sphere.position.y = 20;
             sphere.position.z = 100;
             sphere.position.x = -10;
-            sphere.physicsImpostor = new BABYLON.PhysicsImpostor(sphere, BABYLON.PhysicsImpostor.SphereImpostor, {mass: 1, restitution: 0, friction: 0.5}, this._scene);
+            sphere.physicsImpostor = new BABYLON.PhysicsImpostor(sphere, BABYLON.PhysicsImpostor.SphereImpostor, {mass: 1, restitution: 0, friction: 0.9}, this._scene);
+            this._thisCharacter = sphere;
       }
 
 }

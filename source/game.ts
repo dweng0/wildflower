@@ -3,6 +3,7 @@ import { DomHandler } from './preloader/dom';
 import { AssetsManager } from './core/assetsmanager';
 import { Interface } from './core/interface';
 import {Stage} from './core/stage';
+import {Input} from './core/userinput';
 
 import {UrlManifest} from './interface/urlmanifest';
 
@@ -15,6 +16,8 @@ export class Game {
       _canvas: HTMLCanvasElement;
       _assetsManager: AssetsManager;
       _interface: Interface;
+
+      input: Input;
 
       /**
       * Life cycle functions that can be overridden
@@ -36,7 +39,7 @@ export class Game {
             let domHandler = new DomHandler(canvasId);
             this._canvas = domHandler.getCanvas();
             this._interface = new Interface(this._url, campaignId);
-
+            this.input = new Input();
             this.ifAssetsFailedToLoad = () => {console.log('stub function ifAssetsFailedToLoad')}
             this.ifBabylonFailedToLoad = () => {console.log('stub function ifBabylonFailedToLoad')}
             this.ifInterfaceFailedToLoad = () => {console.log('stub function ifInterfaceFailedToLoad')}
@@ -157,6 +160,7 @@ export class Game {
             }
 
             this._stage.setCameraOnPlayer("sphere1");
+            this.input.onCharacterReady(this._stage.getCharacter())
             this._engine.runRenderLoop(() => {
                   this._stage.showTime(this._debug);
             });
@@ -193,13 +197,5 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener("keydown", (e) => {
-      switch (e.keyCode) {
-            case 27:
-            {
-                  game.switchCameras();
-            }
-            default: {
-                  console.log('key pressed, ', e.keyCode);
-            }
-      }
+      game.input.onWindowInput(e);
 });
