@@ -1,4 +1,5 @@
 import * as BABYLON from 'babylonjs';
+import {Character} from './character';
 import {UrlManifest, WorldPhysics} from '../interface/urlmanifest';
 /**
  * Handles the loading of files for the game, does not handle web sockets or real time streams
@@ -12,7 +13,7 @@ export class Stage {
       private _activeCamera: any;
       private _environment: BABYLON.StandardMaterial;
       private _worldPhysics: WorldPhysics;
-      private _thisCharacter: BABYLON.Mesh; // for now this will be a mesh
+      private _thisCharacter: Character; // for now this will be a mesh
 
       constructor(engine: BABYLON.Engine, manifest: UrlManifest) {
             console.log('A magical stage has been created')
@@ -71,7 +72,7 @@ export class Stage {
            // this._camera.speed = 3.0;
       }
 
-      getCharacter(): BABYLON.Mesh {
+      getCharacter(): Character {
             return this._thisCharacter;
       }
 
@@ -133,7 +134,8 @@ export class Stage {
             sphere.position.z = 100;
             sphere.position.x = -10;
             sphere.physicsImpostor = new BABYLON.PhysicsImpostor(sphere, BABYLON.PhysicsImpostor.SphereImpostor, {mass: 1, restitution: 0, friction: 0.9}, this._scene);
-            this._thisCharacter = sphere;
+            this._thisCharacter = new Character(sphere);
+
       }
 
 }

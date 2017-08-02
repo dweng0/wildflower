@@ -1,4 +1,5 @@
 import * as BABYLON from 'babylonjs';
+import { Character } from './character';
 
 export interface KeyboardMapping {
       forward: number;
@@ -15,7 +16,7 @@ export interface KeyboardMapping {
 }
 
 export class Input {
-      private _character: BABYLON.Mesh;
+      private _character: Character;
       private _keyboardMapping: KeyboardMapping;
 
       /**
@@ -43,7 +44,7 @@ export class Input {
             this._keyboardMapping = mapping;
       }
 
-      onCharacterReady(character: BABYLON.Mesh) {
+      onCharacterReady(character: Character) {
             this._character = character;
       }
 
@@ -56,7 +57,7 @@ export class Input {
                   return console.log('Player not ready yet...');
             }
 
-            console.log('Player input logged, a request to move:')
+            console.log('Player input logged, a request to move, for now just stub:');
 
             if (event.keyCode === this._keyboardMapping.forward) {
                   this.forward();
@@ -90,6 +91,7 @@ export class Input {
 
       forward() {
              console.log("forward");
+             this._character.movementGranted(3);
       }
 
       back() {
