@@ -56,6 +56,8 @@ export class Input {
                   return console.log('Player not ready yet...');
             }
 
+            console.log('Player input logged, a request to move:')
+
             if (event.keyCode === this._keyboardMapping.forward) {
                   this.forward();
             };
