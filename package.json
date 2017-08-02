@@ -1,6 +1,6 @@
 {
   "name": "wildflower",
-  "version": "1.0.3-alpha.171",
+  "version": "1.0.1-alpha.209",
   "description": "Babylon test",
   "main": "index.js",
   "nyc": {
@@ -16,6 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/signalr": "^2.2.34",
+    "cannon": "^0.6.2",
     "eslint": "^4.1.1",
     "grunt": "^1.0.1",
     "grunt-bump": "^0.8.0",
@@ -48,6 +49,7 @@
     "brfs": "^1.4.3",
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",
+    "copy-webpack-plugin": "^4.0.1",
     "express": "^4.15.3",
     "grunt-browserify": "^5.0.0",
     "html-webpack-plugin": "^2.29.0",

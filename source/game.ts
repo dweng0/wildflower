@@ -43,7 +43,7 @@ export class Game {
       }
 
       onLoadBabylon(manifest: UrlManifest) {
-            this.loadBabylon().then(() => {
+            this.loadBabylon(manifest).then(() => {
                   // at this point we have the scene, so we can set up the assets manager
                   this._assetsManager = new AssetsManager(manifest, this._stage.getScene());
                   this.onBeginLoadAssets(manifest); }).catch((reasons) => {
@@ -107,7 +107,7 @@ export class Game {
             });
       }
 
-      loadBabylon(): Promise<Array<string>> {
+      loadBabylon(manifest: UrlManifest): Promise<Array<string>> {
             if (this.onBeforeBabylonLoad) {
                   this.onBeforeBabylonLoad();
             }
@@ -115,12 +115,13 @@ export class Game {
             let errors = new Array<string>();
             return new Promise<Array<string>>((resolve, reject) => {
                   errors.concat(errors, this.setEngine());
-                  this._stage = new Stage(this._engine);
+                  this._stage = new Stage(this._engine, manifest);
                   errors.concat(errors, this._stage.setTheStage(this._canvas));
                   if (errors.length === 0) {
                         resolve(errors);
                   }
                   else {
+                        this.ifBabylonFailedToLoad(errors);
                         reject(errors);
                   }
             });
@@ -140,8 +141,9 @@ export class Game {
                   if (!this._interface.manifest) {
                       reject("No Manifest found");
                   }
-
-                  this._assetsManager.loadInstanceAssets(this._engine).then(() => { resolve() }).catch((reason) => { reject(reason)});
+                  this._assetsManager.loadInstanceAssets(this._engine).then(() => { resolve() }).catch((reason) => {
+                        this.ifAssetsFailedToLoad(reason);
+                        reject(reason)});
             });
       }
 
@@ -153,13 +155,6 @@ export class Game {
             if (this.onReady) {
                   this.onReady();
             }
-
-            // mock loading of user
-            let sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, this._stage.getScene());
-            // Move the sphere upward 1/2 its height
-            sphere.position.y = 1;
-            sphere.position.z = -10;
-            sphere.position.x = -10;
 
             this._stage.setCameraOnPlayer("sphere1");
             this._engine.runRenderLoop(() => {

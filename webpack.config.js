@@ -1,4 +1,7 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
+var path = require('path');
+
 var webpack = require('webpack');
 var pjson = require('./package.json');
 
@@ -35,10 +38,16 @@ module.exports = {
       "babylonjs": "BABYLON"
     },
 
+
       plugins: [
-          new HtmlWebpackPlugin({
+        new HtmlWebpackPlugin({
             "title":"WildFlower "+pjson.version,
             "template":"source/index.ejs",
             "cache": false
-      })]
+        }),
+        new CopyWebpackPlugin([
+             {from:"node_modules/babylonjs/dist/preview release/babylon.max.js", to:"vendors/babylon.js"},
+              {from:"node_modules/babylonjs/dist/preview release/oimo.js", to:"vendors/oimo.js"},
+        ])
+        ]
 };

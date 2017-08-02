@@ -71,36 +71,35 @@ export class AssetsManager {
             let url = manifest.baseUrl + "/map" + manifest.map.baseUrl;
             let ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", url + "/heightmap" + manifest.map.heightMap, 300, 250, 100, 0, 12, scene, true);
 
-            WebRequest(url + manifest.map.physics).then((data: any) => {
-            let physics = <IPhysics>data;
-
-            debugger;
             /** Load ground texture */
             this.loadTexture("ground", url + "/texture" + manifest.map.texture, (asset) => {
-                        let groundMaterial = new BABYLON.StandardMaterial("ground", scene);
-                              groundMaterial.diffuseTexture = asset.texture;
-                              groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-                              ground.material = groundMaterial;
-
-                              // physics
-                              ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, physics, scene);
+                  let groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+                  groundMaterial.diffuseTexture = asset.texture;
+                  groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+                  ground.material = groundMaterial;
+                  ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, {mass: 0, restitution: 0.5, friction: 0.2}, scene);
+                  // physics
+                  WebRequest(url + manifest.map.physics).then((response: any) => {
+                        debugger;
+                        let physics = <IPhysics>JSON.parse(response.entity);
+                       // ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, physics, scene);
+                  }).catch((reason) => { reject(reason)});
             }, () => {reject(["Failed to load map texture"])});
 
-                  /** Load sky box */
-                  let skybox = BABYLON.Mesh.CreateBox("skyBox", 500.0, scene);
-                  let skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+            /** Load sky box */
+            let skybox = BABYLON.Mesh.CreateBox("skyBox", 500.0, scene);
+            let skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
 
-                  skyboxMaterial.backFaceCulling = false;
-                  skyboxMaterial.disableLighting = true;
+            skyboxMaterial.backFaceCulling = false;
+            skyboxMaterial.disableLighting = true;
 
-                  skybox.material = skyboxMaterial;
+            skybox.material = skyboxMaterial;
 
-                  skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-                  skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-                  skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(url + "/skybox" + manifest.map.skybox, scene);
-                  skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-                  skybox.renderingGroupId = 0;
-             }).catch(reject);
+            skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+            skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+            skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(url + "/skybox" + manifest.map.skybox, scene);
+            skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+            skybox.renderingGroupId = 0;
       }
 
       /**

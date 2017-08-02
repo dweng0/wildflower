@@ -1,4 +1,5 @@
 import * as BABYLON from 'babylonjs';
+import {UrlManifest, WorldPhysics} from '../interface/urlmanifest';
 /**
  * Handles the loading of files for the game, does not handle web sockets or real time streams
  */
@@ -10,11 +11,14 @@ export class Stage {
       private _freeCamera: BABYLON.FreeCamera;
       private _activeCamera: any;
       private _environment: BABYLON.StandardMaterial;
+      private _worldPhysics: WorldPhysics;
 
-      constructor(engine: BABYLON.Engine) {
+      constructor(engine: BABYLON.Engine, manifest: UrlManifest) {
             console.log('A magical stage has been created')
             this._engine = engine;
+            this._worldPhysics = manifest.world;
       }
+
 
       /**
        * Sets the camera on a specific mesh object
@@ -28,7 +32,7 @@ export class Stage {
             let errors = new Array<string>();
             this._setScene(errors);
             this._setCamera(errors, canvas);
-            this.setDebugCamera();
+            this.setDebugCamera(canvas);
             this._setLighting();
             this._setPlayers();
             return errors;
@@ -54,7 +58,7 @@ export class Stage {
             return this._scene;
       }
 
-      setDebugCamera() {
+      setDebugCamera(canvas): void {
             this._freeCamera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -10), this._scene);
 
             // for debugging the scene
@@ -62,7 +66,7 @@ export class Stage {
             this._freeCamera.keysDown = [83];
             this._freeCamera.keysLeft = [65];
             this._freeCamera.keysRight = [68];
-
+            this._freeCamera.attachControl(canvas)
            // this._camera.speed = 3.0;
       }
 
@@ -105,7 +109,7 @@ export class Stage {
                   errors.push("Failed to set scene, the engine is missing.");
             } else {
                   this._scene = new BABYLON.Scene(this._engine);
-                  this._scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), new BABYLON.OimoJSPlugin());
+                  this._scene.enablePhysics(new BABYLON.Vector3(this._worldPhysics.gravityVector.x, this._worldPhysics.gravityVector.y, this._worldPhysics.gravityVector.z), new BABYLON.CannonJSPlugin());
             }
             return errors;
       }
@@ -121,8 +125,9 @@ export class Stage {
             let sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, this._scene);
             // Move the sphere upward 1/2 its height
             sphere.position.y = 1;
-            sphere.position.z = -10;
+            sphere.position.z = 100;
             sphere.position.x = -10;
+            sphere.physicsImpostor = new BABYLON.PhysicsImpostor(sphere, BABYLON.PhysicsImpostor.SphereImpostor, {mass: 1, restitution: 0, friction: 0.5}, this._scene);
       }
 
 }

@@ -22,7 +22,7 @@ app.get('/game/map/:id/skybox/:name', function (req, res) {
 
 
 //map handling
-app.get('/game/map/:id/physics/:name', function (req, res) {
+app.get('/game/map/:id/physics', function (req, res) {
     let mapName = req.params.id;
     let physicsName = req.params.name;
 
@@ -45,6 +45,7 @@ app.get('/game/map/:id/heightmap/:name', function (req, res) {
 //avatar handling
 
 app.use('/static', express.static(path.join(__dirname, "../lib/static")))
+app.use('/vendors', express.static(path.join(__dirname, "../lib/vendors")))
 
 app.listen(3000, function () {
   console.log('Test server running on 3000');
