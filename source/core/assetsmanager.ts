@@ -60,6 +60,42 @@ export class AssetsManager {
      getPlayerAssets(scene: BABYLON.Scene, manifest: UrlManifest): void {
      }
 
+     setTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
+             let ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", url + "/heightmap" + manifest.map.heightMap, 300, 250, 100, 0, 12, scene, true);
+
+            /** Load ground texture */
+            this.loadTexture("ground", url + "/texture" + manifest.map.texture, (asset) => {
+                  let groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+                  groundMaterial.diffuseTexture = asset.texture;
+                  groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+                  ground.material = groundMaterial;
+                  ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, {mass: 0, restitution: 0.8, friction: 0.2}, scene);
+                  // physics
+                  WebRequest(url + manifest.map.physics).then((response: any) => {
+                        let physics = <IPhysics>JSON.parse(response.entity);
+                       // ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, physics, scene);
+                  }).catch((reason) => { reject(reason)});
+            }, () => {reject(["Failed to load map texture"])});
+     }
+
+     setFlatTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
+             let ground = BABYLON.Mesh.CreateGround("ground", 300, 250, 100,  scene, true);
+
+            /** Load ground texture */
+            this.loadTexture("ground", url + "/texture" + manifest.map.texture, (asset) => {
+                  let groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+                  groundMaterial.diffuseTexture = asset.texture;
+                  groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+                  ground.material = groundMaterial;
+                  ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, {mass: 0, restitution: 0.8, friction: 0.2}, scene);
+                  // physics
+                  WebRequest(url + manifest.map.physics).then((response: any) => {
+                        let physics = <IPhysics>JSON.parse(response.entity);
+                       // ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, physics, scene);
+                  }).catch((reason) => { reject(reason)});
+            }, () => {reject(["Failed to load map texture"])});
+     }
+
       /**
        * Get the map assets required to load the map
        * @param text {string} The text used to show during game load
@@ -69,22 +105,9 @@ export class AssetsManager {
        */
       getMapAssets(scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
             let url = manifest.baseUrl + "/map" + manifest.map.baseUrl;
-            let ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", url + "/heightmap" + manifest.map.heightMap, 300, 250, 100, 0, 12, scene, true);
 
-            /** Load ground texture */
-            this.loadTexture("ground", url + "/texture" + manifest.map.texture, (asset) => {
-                  let groundMaterial = new BABYLON.StandardMaterial("ground", scene);
-                  groundMaterial.diffuseTexture = asset.texture;
-                  groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-                  ground.material = groundMaterial;
-                  ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, {mass: 0, restitution: 0.5, friction: 0.2}, scene);
-                  // physics
-                  WebRequest(url + manifest.map.physics).then((response: any) => {
-                        debugger;
-                        let physics = <IPhysics>JSON.parse(response.entity);
-                       // ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, physics, scene);
-                  }).catch((reason) => { reject(reason)});
-            }, () => {reject(["Failed to load map texture"])});
+            // this.setTerrain(url, scene, manifest, reject);
+            this.setFlatTerrain(url, scene, manifest, reject);
 
             /** Load sky box */
             let skybox = BABYLON.Mesh.CreateBox("skyBox", 500.0, scene);

@@ -93,7 +93,7 @@ export class Stage {
             this._camera.maxCameraSpeed = 20 // speed limit
 
             // camera positioning
-            this._camera.setTarget(new BABYLON.Vector3(-10, -10, 0));
+            this._camera.setTarget(new BABYLON.Vector3(-20, -10, -20));
             this._camera.attachControl(canvas);
             window['camera'] = this._camera;
 
@@ -109,7 +109,7 @@ export class Stage {
                   errors.push("Failed to set scene, the engine is missing.");
             } else {
                   this._scene = new BABYLON.Scene(this._engine);
-                  this._scene.enablePhysics(new BABYLON.Vector3(this._worldPhysics.gravityVector.x, this._worldPhysics.gravityVector.y, this._worldPhysics.gravityVector.z), new BABYLON.CannonJSPlugin());
+                  this._scene.enablePhysics(new BABYLON.Vector3(this._worldPhysics.gravityVector.x, this._worldPhysics.gravityVector.y, this._worldPhysics.gravityVector.z), new BABYLON.OimoJSPlugin());
             }
             return errors;
       }
@@ -124,7 +124,7 @@ export class Stage {
             // just for testing purposes
             let sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, this._scene);
             // Move the sphere upward 1/2 its height
-            sphere.position.y = 1;
+            sphere.position.y = 20;
             sphere.position.z = 100;
             sphere.position.x = -10;
             sphere.physicsImpostor = new BABYLON.PhysicsImpostor(sphere, BABYLON.PhysicsImpostor.SphereImpostor, {mass: 1, restitution: 0, friction: 0.5}, this._scene);
