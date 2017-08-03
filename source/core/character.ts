@@ -7,7 +7,14 @@ export class Character {
       this.mesh = mesh;
     }
 
-    movementGranted(zAxis: number) {
+    movementGrantedForward(zAxis: number) {
+            let worldCoords = this.computeWorldMatrix();
+            let vector = new BABYLON.Vector3(0, 0, zAxis);
+            let v2 = this.transformFromGlobalVectorToLocal(worldCoords, vector);
+            this.mesh.applyImpulse(v2, this.mesh.position);
+    }
+
+     movementGrantedBackward(zAxis: number) {
             let worldCoords = this.computeWorldMatrix();
             let vector = new BABYLON.Vector3(0, 0, zAxis);
             let v2 = this.transformFromGlobalVectorToLocal(worldCoords, vector);

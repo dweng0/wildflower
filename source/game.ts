@@ -162,7 +162,7 @@ export class Game {
             this._stage.setCameraOnPlayer("sphere1");
             this.input.onCharacterReady(this._stage.getCharacter())
             this._engine.runRenderLoop(() => {
-                  this._stage.showTime(this._debug);
+                  this._stage.showTime(true);
             });
       }
 

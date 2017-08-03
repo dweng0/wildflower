@@ -91,10 +91,11 @@ export class Input {
 
       forward() {
              console.log("forward");
-             this._character.movementGranted(3);
+             this._character.movementGrantedForward(0.2);
       }
 
       back() {
-             console.log("back");
+            console.log("back");
+            this._character.movementGrantedBackward(-0.2);
       }
 }

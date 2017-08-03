@@ -128,13 +128,13 @@ export class Stage {
 
       private _setPlayers(): void {
             // just for testing purposes
-            let sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, this._scene);
+            let boxer = BABYLON.Mesh.CreateBox("sphere1", 4, this._scene);
             // Move the sphere upward 1/2 its height
-            sphere.position.y = 20;
-            sphere.position.z = 100;
-            sphere.position.x = -10;
-            sphere.physicsImpostor = new BABYLON.PhysicsImpostor(sphere, BABYLON.PhysicsImpostor.SphereImpostor, {mass: 1, restitution: 0, friction: 0.9}, this._scene);
-            this._thisCharacter = new Character(sphere);
+            boxer.position.y = 20;
+            boxer.position.z = 100;
+            boxer.position.x = -10;
+            boxer.physicsImpostor = new BABYLON.PhysicsImpostor(boxer, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 1, restitution: 0.2, friction: 0.9}, this._scene);
+            this._thisCharacter = new Character(boxer);
 
       }
 
