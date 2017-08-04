@@ -69,7 +69,7 @@ export class Stage {
       }
 
       setDebugCamera(canvas): void {
-            this._freeCamera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -10), this._scene);
+            this._freeCamera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 20, -20), this._scene);
 
             // for debugging the scene
             this._freeCamera.keysUp = [38];
@@ -80,11 +80,11 @@ export class Stage {
             this._freeCamera.speed = 3.0;
 
             // camera positioning
-            this._freeCamera.setTarget(new BABYLON.Vector3(-20, -10, -20));
+            this._freeCamera.setTarget(BABYLON.Vector3.Zero());
             this._freeCamera.attachControl(canvas);
 
             // camera rotation added for development purposes
-            this._freeCamera.rotation = new BABYLON.Vector3(0.9, 0.5, 0);
+           // this._freeCamera.rotation = new BABYLON.Vector3(0.9, 0.5, 0);
 
             window['camera'] = this._freeCamera;
       }
@@ -144,15 +144,8 @@ export class Stage {
       }
 
       private _setPlayers(): void {
-            // just for testing purposes
-            let boxer = BABYLON.Mesh.CreateBox("sphere1", 4, this._scene);
-            // Move the sphere upward 1/2 its height
-            boxer.position.y = 20;
-            boxer.position.z = 10;
-            boxer.position.x = -10;
-            boxer.physicsImpostor = new BABYLON.PhysicsImpostor(boxer, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 1, restitution: 0.2, friction: 0.9}, this._scene);
-            this._thisCharacter = new Character(boxer);
-
+            // stub
+            let characterManifest;
+            this._thisCharacter = new Character(characterManifest, this._scene);
       }
-
 }

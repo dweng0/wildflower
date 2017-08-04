@@ -109,7 +109,7 @@ export class AssetsManager {
                   groundMaterial.diffuseTexture = asset.texture;
                   groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
                   g.material = groundMaterial;
-                  g.physicsImpostor = new BABYLON.PhysicsImpostor(g, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5, friction: 0.5 }, scene);
+                  g.physicsImpostor = new BABYLON.PhysicsImpostor(g, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5, friction: 0.7 }, scene);
                   // physics
                  /* WebRequest(url + manifest.map.physics).then((response: any) => {
                         let physics = <IPhysics>JSON.parse(response.entity);

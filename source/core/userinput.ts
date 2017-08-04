@@ -78,11 +78,13 @@ export class Input {
       }
 
       left() {
-            console.log("left");
+            console.log('left');
+            this._character.moveLeftRight(-8);
       }
 
       right() {
             console.log("right");
+            this._character.moveLeftRight(8);
       }
 
       jump() {
@@ -93,10 +95,11 @@ export class Input {
        */
       forward() {
              console.log("forward");
-             this._character.movementGrantedForward(20);
+             this._character.moveForwardBackward(8);
       }
 
       back() {
-            console.log("back");
+              console.log("Backward");
+             this._character.moveForwardBackward(-8);
       }
 }

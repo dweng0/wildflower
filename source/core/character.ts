@@ -12,41 +12,50 @@ export interface IImpulseData {
 }
 
 export class Character {
-    private mesh: BABYLON.Mesh;
+  private mesh: BABYLON.Mesh;
 
-    constructor(mesh: BABYLON.Mesh) {
-      this.mesh = mesh;
-    }
+  constructor(manifest: any, scene: BABYLON.Scene) {
+    // just for testing purposes
+    this.createMesh(scene);
+  }
 
-    fetchMesh(): BABYLON.Mesh {
-      return this.mesh;
-    }
+  createMesh(scene: BABYLON.Scene) {
+    this.mesh = BABYLON.Mesh.CreateSphere("sphere1", 4, 2, scene);
+    // Move the sphere upward 1/2 its height
+    this.mesh.position.y = 20;
+    this.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(this.mesh, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, restitution: 0.2, friction: 0.9 }, scene);
+  }
 
-    calculateForce(axis: Axis, movement: number): IImpulseData {
-      let x = (axis === Axis.x) ? movement : 0;
-      let y = (axis === Axis.y) ? movement : 0;
-      let z = (axis === Axis.z) ? movement : 0;
+  fetchMesh(): BABYLON.Mesh {
+    return this.mesh;
+  }
 
-      let newMovementVector = new BABYLON.Vector3(x, y, z);
-      let force = this.transformFromGlobalVectorToLocal(this.computeWorldMatrix(), newMovementVector);
+  calculateForce(axis: Axis, movement: number): BABYLON.Vector3 {
+    let x = (axis === Axis.x) ? movement : 0;
+    let y = (axis === Axis.y) ? movement : 0;
+    let z = (axis === Axis.z) ? movement : 0;
 
-      return {
-          force: force,
-          position: this.mesh.position
-      }
+    let newMovementVector = new BABYLON.Vector3(x, y, z);
+    // let newMovementVector = new BABYLON.Vector3(0, 0, 0.5)
+    console.log('moving:', x, y, z);
+    let force = this.transformFromGlobalVectorToLocal(this.computeWorldMatrix(), newMovementVector);
+  return  newMovementVector
 
-    }
+  }
 
-    movementGrantedForward(zAxis: number) {
-            let impulseData = this.calculateForce(Axis.y, zAxis);
-            this.mesh.applyImpulse(impulseData.force, impulseData.position);
-    }
+  moveForwardBackward(force: number) {
+    this.mesh.physicsImpostor.setLinearVelocity(this.calculateForce(Axis.z, force));
+  }
 
-    computeWorldMatrix(): BABYLON.Matrix {
-          return this.mesh.getWorldMatrix();
-    }
+  moveLeftRight(force: number) {
+    this.mesh.physicsImpostor.setLinearVelocity(this.calculateForce(Axis.x, force));
+  }
 
-    transformFromGlobalVectorToLocal(global: BABYLON.Matrix, newVector: BABYLON.Vector3): BABYLON.Vector3 {
-          return BABYLON.Vector3.TransformCoordinates(newVector, global);
-    }
- }
+  computeWorldMatrix(): BABYLON.Matrix {
+    return this.mesh.getWorldMatrix();
+  }
+
+  transformFromGlobalVectorToLocal(global: BABYLON.Matrix, newVector: BABYLON.Vector3): BABYLON.Vector3 {
+    return BABYLON.Vector3.TransformCoordinates(newVector, global);
+  }
+}
