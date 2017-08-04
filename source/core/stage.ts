@@ -32,11 +32,9 @@ export class Stage {
             if (this._scene.activeCamera instanceof BABYLON.FollowCamera) {
                   this._scene.activeCamera.lockedTarget = characterMesh;
             } else {
-                  let newVectoring = new BABYLON.Vector3(characterMesh.position.x, characterMesh.position.y - 5, characterMesh.position.z - 5);
-                  this._scene.activeCamera.position = newVectoring
-                  
+                  let newVectoring = new BABYLON.Vector3(characterMesh.position.x, characterMesh.position.y, characterMesh.position.z - 10);
+                  this._scene.activeCamera.position = newVectoring;
             }
-
       }
 
       setTheStage(canvas: HTMLCanvasElement): Array<string> {
@@ -74,7 +72,7 @@ export class Stage {
             this._freeCamera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -10), this._scene);
 
             // for debugging the scene
-            this._freeCamera.keysUp = [16];
+            this._freeCamera.keysUp = [38];
             this._freeCamera.keysDown = [40];
             this._freeCamera.keysLeft = [37];
             this._freeCamera.keysRight = [39];
@@ -150,7 +148,7 @@ export class Stage {
             let boxer = BABYLON.Mesh.CreateBox("sphere1", 4, this._scene);
             // Move the sphere upward 1/2 its height
             boxer.position.y = 20;
-            boxer.position.z = 100;
+            boxer.position.z = 10;
             boxer.position.x = -10;
             boxer.physicsImpostor = new BABYLON.PhysicsImpostor(boxer, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 1, restitution: 0.2, friction: 0.9}, this._scene);
             this._thisCharacter = new Character(boxer);

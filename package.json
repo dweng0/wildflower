@@ -1,6 +1,6 @@
 {
   "name": "wildflower",
-  "version": "1.0.1-alpha.257",
+  "version": "1.0.1-alpha.289",
   "description": "Babylon test",
   "main": "index.js",
   "nyc": {
@@ -8,6 +8,7 @@
     "instrument": false
   },
   "scripts": {
+    "all": "npm run serve && grunt watch",
     "build": "webpack",
     "test": "karma start",
     "serve": "node ./server/server.js"

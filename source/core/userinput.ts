@@ -88,14 +88,15 @@ export class Input {
       jump() {
              console.log("jump");
       }
-
+      /**
+       * These are stubs this shoudl call an interface to ask the server rather then directly move the character
+       */
       forward() {
              console.log("forward");
-             this._character.movementGrantedForward(0.2);
+             this._character.movementGrantedForward(20);
       }
 
       back() {
             console.log("back");
-            this._character.movementGrantedBackward(-0.2);
       }
 }

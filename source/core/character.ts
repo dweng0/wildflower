@@ -1,5 +1,16 @@
 import * as BABYLON from 'babylonjs';
 
+export enum Axis {
+  x,
+  y,
+  z
+}
+
+export interface IImpulseData {
+  force: BABYLON.Vector3;
+  position: BABYLON.Vector3;
+}
+
 export class Character {
     private mesh: BABYLON.Mesh;
 
@@ -11,18 +22,24 @@ export class Character {
       return this.mesh;
     }
 
-    movementGrantedForward(zAxis: number) {
-            let worldCoords = this.computeWorldMatrix();
-            let vector = new BABYLON.Vector3(0, 0, zAxis);
-            let v2 = this.transformFromGlobalVectorToLocal(worldCoords, vector);
-            this.mesh.applyImpulse(v2, this.mesh.position);
+    calculateForce(axis: Axis, movement: number): IImpulseData {
+      let x = (axis === Axis.x) ? movement : 0;
+      let y = (axis === Axis.y) ? movement : 0;
+      let z = (axis === Axis.z) ? movement : 0;
+
+      let newMovementVector = new BABYLON.Vector3(x, y, z);
+      let force = this.transformFromGlobalVectorToLocal(this.computeWorldMatrix(), newMovementVector);
+
+      return {
+          force: force,
+          position: this.mesh.position
+      }
+
     }
 
-     movementGrantedBackward(zAxis: number) {
-            let worldCoords = this.computeWorldMatrix();
-            let vector = new BABYLON.Vector3(0, 0, zAxis);
-            let v2 = this.transformFromGlobalVectorToLocal(worldCoords, vector);
-            this.mesh.applyImpulse(v2, this.mesh.position);
+    movementGrantedForward(zAxis: number) {
+            let impulseData = this.calculateForce(Axis.y, zAxis);
+            this.mesh.applyImpulse(impulseData.force, impulseData.position);
     }
 
     computeWorldMatrix(): BABYLON.Matrix {
