@@ -49,16 +49,17 @@ export class Character {
     let x = 0;
     let z = 0;
     let y;
+    let tolerance = 0.05;
 
-    if (hitVector.x > myPos.x) {
+    if (hitVector.x > myPos.x + tolerance) {
        x = 8
-    } else if (hitVector.x < myPos.x) {
+    } else if (hitVector.x < myPos.x - tolerance) {
       x = -8
     }
 
-    if (hitVector.z > myPos.z) {
+    if (hitVector.z > myPos.z + tolerance) {
        z = 8
-    } else if (hitVector.z < myPos.z) {
+    } else if (hitVector.z < myPos.z - tolerance) {
        z = -8
     }
       this.mesh.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(x , 0, z));

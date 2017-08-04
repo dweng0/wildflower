@@ -40,10 +40,10 @@ export class Stage {
       setTheStage(canvas: HTMLCanvasElement): Array<string> {
             let errors = new Array<string>();
             this._setScene(errors);
-            // this._setCamera(errors, canvas);
+            this._setPlayers();
+           // this._setCamera(canvas);
             this.setDebugCamera(canvas);
             this._setLighting();
-            this._setPlayers();
             return errors;
       }
 
@@ -69,7 +69,7 @@ export class Stage {
       }
 
       setDebugCamera(canvas): void {
-            this._freeCamera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 20, -20), this._scene);
+            this._freeCamera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(-26.31001203308374,  136.99853555795707, -150.6529134855096), this._scene);
 
             // for debugging the scene
             this._freeCamera.keysUp = [38];
@@ -80,7 +80,7 @@ export class Stage {
             this._freeCamera.speed = 3.0;
 
             // camera positioning
-            this._freeCamera.setTarget(BABYLON.Vector3.Zero());
+           // this._freeCamera.setTarget(this._thisCharacter.fetchMesh().position);
             this._freeCamera.attachControl(canvas);
 
             // camera rotation added for development purposes
@@ -98,15 +98,7 @@ export class Stage {
        * @param {error}
        * @returns {Array<string>}
        */
-      private _setCamera(errors: Array<string>, canvas): Array<string> {
-
-            if (!this._engine) {
-                  errors.push("Cannot set camera, no canvas element has been set");
-            }
-
-            if (!this._scene) {
-                  errors.push("Cannot set camera, no scene has been set");
-            }
+      private _setCamera(canvas): void {
 
             this._camera = new BABYLON.FollowCamera("Follow", new BABYLON.Vector3(0, 15, 45), this._scene);
             this._camera.radius = 30; // how far from the object to follow
@@ -119,8 +111,6 @@ export class Stage {
             this._camera.setTarget(new BABYLON.Vector3(-20, -10, -20));
             this._camera.attachControl(canvas);
             window['camera'] = this._camera;
-
-            return errors;
       }
 
        /**
