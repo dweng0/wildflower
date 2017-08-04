@@ -200,12 +200,9 @@ window.addEventListener('DOMContentLoaded', () => {
       game.start();
 });
 
-window.addEventListener("mousemove", (e) => {
+document.body.addEventListener("mousedown", (e) => {
+      console.log("CLICK");
       game.input.onMouseInput(e);
-      console.log(e.which);
-     if (e.which === 1) {
-      game.input.onMouseInput(e);
-     }
 } ),
 window.addEventListener("keydown", (e) => {
       game.input.onKeyboardInput(e);

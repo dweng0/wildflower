@@ -14,13 +14,14 @@ export class Stage {
       private _environment: BABYLON.StandardMaterial;
       private _worldPhysics: WorldPhysics;
       private _thisCharacter: Character; // for now this will be a mesh
+      private _characters: Array<Character>;
 
       constructor(engine: BABYLON.Engine, manifest: UrlManifest) {
             console.log('A magical stage has been created')
             this._engine = engine;
             this._worldPhysics = manifest.world;
+            this._characters = new Array<Character>();
       }
-
 
       /**
        * Sets the camera on a specific mesh object
@@ -41,8 +42,8 @@ export class Stage {
             let errors = new Array<string>();
             this._setScene(errors);
             this._setPlayers();
-           // this._setCamera(canvas);
-            this.setDebugCamera(canvas);
+            this._setCamera(canvas);
+           // this.setDebugCamera(canvas);
             this._setLighting();
             return errors;
       }
@@ -57,7 +58,10 @@ export class Stage {
       }
 
       showTime(debug: boolean): void {
-            this._scene.activeCamera = this._freeCamera;
+            this._scene.activeCamera = this._camera;
+            this._scene.registerBeforeRender(() => {
+                  this.updateCharacterMovements();
+            });
             this._scene.render();
              if (debug) {
                   this._scene.debugLayer.show();
@@ -69,7 +73,7 @@ export class Stage {
       }
 
       setDebugCamera(canvas): void {
-            this._freeCamera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(-26.31001203308374,  136.99853555795707, -150.6529134855096), this._scene);
+            this._freeCamera = new BABYLON.FreeCamera("camera1",  new BABYLON.Vector3(0, 15, -45), this._scene);
 
             // for debugging the scene
             this._freeCamera.keysUp = [38];
@@ -78,20 +82,21 @@ export class Stage {
             this._freeCamera.keysRight = [39];
             this._freeCamera.attachControl(canvas)
             this._freeCamera.speed = 3.0;
-
             // camera positioning
            // this._freeCamera.setTarget(this._thisCharacter.fetchMesh().position);
-            this._freeCamera.attachControl(canvas);
-
-            // camera rotation added for development purposes
-           // this._freeCamera.rotation = new BABYLON.Vector3(0.9, 0.5, 0);
-
-            window['camera'] = this._freeCamera;
+            this._freeCamera.attachControl(canvas, true);
       }
 
       getCharacter(): Character {
             return this._thisCharacter;
       }
+
+      updateCharacterMovements() {
+            this._characters.forEach((character: Character) => {
+                  !(character.movementPackage.finished) ? character.updateMovement() : null;
+            });
+      };
+
 
       /**
        * Attempts to set the camera, returns an array of error messages. if the array is empty, then it was successful
@@ -101,15 +106,13 @@ export class Stage {
       private _setCamera(canvas): void {
 
             this._camera = new BABYLON.FollowCamera("Follow", new BABYLON.Vector3(0, 15, 45), this._scene);
-            this._camera.radius = 30; // how far from the object to follow
-            this._camera.heightOffset = 8; // how high above the object to place the camera
-            this._camera.rotationOffset = 180; // the viewing angle
-            this._camera.cameraAcceleration = 0.05 // how fast to move
+            this._camera.radius = 50; // how far from the object to follow
+            this._camera.heightOffset = 50; // how high above the object to place the camera
+            this._camera.rotationOffset = 720; // the viewing angle
+            this._camera.cameraAcceleration = 0.7 // how fast to move
             this._camera.maxCameraSpeed = 20 // speed limit
 
-            // camera positioning
-            this._camera.setTarget(new BABYLON.Vector3(-20, -10, -20));
-            this._camera.attachControl(canvas);
+            this._camera.attachControl(canvas, true);
             window['camera'] = this._camera;
       }
 
@@ -137,5 +140,10 @@ export class Stage {
             // stub
             let characterManifest;
             this._thisCharacter = new Character(characterManifest, this._scene);
+            this._characters.push(this._thisCharacter);
+      }
+
+      addCharacter(character: Character) {
+            this._characters.push(character);
       }
 }

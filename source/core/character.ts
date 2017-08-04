@@ -11,12 +11,22 @@ export interface IImpulseData {
   position: BABYLON.Vector3;
 }
 
+export interface IMovementPackage {
+  finished: boolean;
+  destination: BABYLON.Vector3;
+}
+
 export class Character {
   private mesh: BABYLON.Mesh;
+  movementPackage: IMovementPackage;
 
   constructor(manifest: any, scene: BABYLON.Scene) {
     // just for testing purposes
     this.createMesh(scene);
+    this.movementPackage = {
+      finished: true,
+      destination: new BABYLON.Vector3(0, 0, 0)
+    }
   }
 
   createMesh(scene: BABYLON.Scene) {
@@ -39,30 +49,44 @@ export class Character {
     // let newMovementVector = new BABYLON.Vector3(0, 0, 0.5)
     console.log('moving:', x, y, z);
     let force = this.transformFromGlobalVectorToLocal(this.computeWorldMatrix(), newMovementVector);
-  return  newMovementVector
-
+  return  newMovementVector;
   }
 
-  moveByMouse (hitVector: BABYLON.Vector3) {
+  updateMovement() {
     // https://gamedevelopment.tutsplus.com/tutorials/quick-tip-smoothly-move-an-entity-to-the-position-of-the-mouse--gamedev-7356
     let myPos = this.mesh.getAbsolutePosition();
+    let hitVector = this.movementPackage.destination;
     let x = 0;
     let z = 0;
     let y;
     let tolerance = 0.05;
+    let xFinished = false;
 
     if (hitVector.x > myPos.x + tolerance) {
        x = 8
     } else if (hitVector.x < myPos.x - tolerance) {
       x = -8
+    } else {
+      xFinished = true;
     }
 
     if (hitVector.z > myPos.z + tolerance) {
        z = 8
     } else if (hitVector.z < myPos.z - tolerance) {
        z = -8
+    } else {
+      if (xFinished === true) {
+        this.movementPackage.finished = true;
+      }
     }
-      this.mesh.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(x , 0, z));
+    this.mesh.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(x , 0, z));
+  }
+
+  moveByMouse (hitVector: BABYLON.Vector3) {
+    this.movementPackage = {
+      finished: false,
+      destination: hitVector
+    }
   }
 
   moveForwardBackward(force: number) {
