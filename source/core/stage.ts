@@ -27,13 +27,22 @@ export class Stage {
        * @param meshObjectName {string}
        */
       setCameraOnPlayer(meshObjectName: string) {
-            this._camera.lockedTarget = this._scene.getMeshByName(meshObjectName);
+            console.log('Locking camera on character');
+            let characterMesh = this._thisCharacter.fetchMesh();
+            if (this._scene.activeCamera instanceof BABYLON.FollowCamera) {
+                  this._scene.activeCamera.lockedTarget = characterMesh;
+            } else {
+                  let newVectoring = new BABYLON.Vector3(characterMesh.position.x, characterMesh.position.y - 5, characterMesh.position.z - 5);
+                  this._scene.activeCamera.position = newVectoring
+                  
+            }
+
       }
 
       setTheStage(canvas: HTMLCanvasElement): Array<string> {
             let errors = new Array<string>();
             this._setScene(errors);
-            this._setCamera(errors, canvas);
+            // this._setCamera(errors, canvas);
             this.setDebugCamera(canvas);
             this._setLighting();
             this._setPlayers();
@@ -41,15 +50,16 @@ export class Stage {
       }
 
       switchCameras() {
-            if (this._scene.activeCamera instanceof BABYLON.FollowCamera) {
+            return
+            /**if (this._scene.activeCamera instanceof BABYLON.FollowCamera) {
                   this._scene.activeCamera = this._freeCamera;
                   } else {
                   this._scene.activeCamera = this._camera;
-            }
+            }*/
       }
 
       showTime(debug: boolean): void {
-            this._scene.activeCamera = this._camera;
+            this._scene.activeCamera = this._freeCamera;
             this._scene.render();
              if (debug) {
                   this._scene.debugLayer.show();
@@ -64,12 +74,21 @@ export class Stage {
             this._freeCamera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -10), this._scene);
 
             // for debugging the scene
-            this._freeCamera.keysUp = [87];
-            this._freeCamera.keysDown = [83];
-            this._freeCamera.keysLeft = [65];
-            this._freeCamera.keysRight = [68];
+            this._freeCamera.keysUp = [16];
+            this._freeCamera.keysDown = [40];
+            this._freeCamera.keysLeft = [37];
+            this._freeCamera.keysRight = [39];
             this._freeCamera.attachControl(canvas)
-           // this._camera.speed = 3.0;
+            this._freeCamera.speed = 3.0;
+
+            // camera positioning
+            this._freeCamera.setTarget(new BABYLON.Vector3(-20, -10, -20));
+            this._freeCamera.attachControl(canvas);
+
+            // camera rotation added for development purposes
+            this._freeCamera.rotation = new BABYLON.Vector3(0.9, 0.5, 0);
+
+            window['camera'] = this._freeCamera;
       }
 
       getCharacter(): Character {

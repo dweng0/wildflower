@@ -7,6 +7,10 @@ export class Character {
       this.mesh = mesh;
     }
 
+    fetchMesh(): BABYLON.Mesh {
+      return this.mesh;
+    }
+
     movementGrantedForward(zAxis: number) {
             let worldCoords = this.computeWorldMatrix();
             let vector = new BABYLON.Vector3(0, 0, zAxis);
