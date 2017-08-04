@@ -18,6 +18,7 @@ export interface KeyboardMapping {
 export class Input {
       private _character: Character;
       private _keyboardMapping: KeyboardMapping;
+      private _scene: BABYLON.Scene;
 
       /**
        * TODO we really need to place a 'character' class that can just be told to move, the character class will then get the necessary data
@@ -52,7 +53,11 @@ export class Input {
             return (this._character === undefined);
       }
 
-      onWindowInput(event: KeyboardEvent) {
+      setScene(scene: BABYLON.Scene) {
+            this._scene = scene;
+      }
+
+      onKeyboardInput(event: KeyboardEvent) {
             if (this.isNotReady()) {
                   return console.log('Player not ready yet...');
             }
@@ -74,6 +79,15 @@ export class Input {
             }
             if (event.keyCode === this._keyboardMapping.jump) {
                   this.jump();
+            }
+      }
+
+      onMouseInput(event: MouseEvent) {
+            if (this._scene && !this.isNotReady()) {
+                  let pickResult: BABYLON.PickingInfo = this._scene.pick(this._scene.pointerX, this._scene.pointerY);
+                  if (pickResult.hit) {
+                      this._character.moveByMouse(pickResult.pickedPoint);
+                  }
             }
       }
 

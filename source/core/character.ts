@@ -43,6 +43,27 @@ export class Character {
 
   }
 
+  moveByMouse (hitVector: BABYLON.Vector3) {
+    // https://gamedevelopment.tutsplus.com/tutorials/quick-tip-smoothly-move-an-entity-to-the-position-of-the-mouse--gamedev-7356
+    let myPos = this.mesh.getAbsolutePosition();
+    let x = 0;
+    let z = 0;
+    let y;
+
+    if (hitVector.x > myPos.x) {
+       x = 8
+    } else if (hitVector.x < myPos.x) {
+      x = -8
+    }
+
+    if (hitVector.z > myPos.z) {
+       z = 8
+    } else if (hitVector.z < myPos.z) {
+       z = -8
+    }
+      this.mesh.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(x , 0, z));
+  }
+
   moveForwardBackward(force: number) {
     this.mesh.physicsImpostor.setLinearVelocity(this.calculateForce(Axis.z, force));
   }

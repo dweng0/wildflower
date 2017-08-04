@@ -49,6 +49,9 @@ export class Game {
             this.loadBabylon(manifest).then(() => {
                   // at this point we have the scene, so we can set up the assets manager
                   this._assetsManager = new AssetsManager(manifest, this._stage.getScene());
+
+                  // and apply the scene to other classes that need it
+                  this.input.setScene(this._stage.getScene());
                   this.onBeginLoadAssets(manifest); }).catch((reasons) => {
                   console.log('Babylon loading failed');
                   this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reasons);
@@ -117,6 +120,7 @@ export class Game {
 
             let errors = new Array<string>();
             return new Promise<Array<string>>((resolve, reject) => {
+                  debugger;
                   errors.concat(errors, this.setEngine());
                   this._stage = new Stage(this._engine, manifest);
                   errors.concat(errors, this._stage.setTheStage(this._canvas));
@@ -196,6 +200,13 @@ window.addEventListener('DOMContentLoaded', () => {
       game.start();
 });
 
+window.addEventListener("mousemove", (e) => {
+      game.input.onMouseInput(e);
+      console.log(e.which);
+     if (e.which === 1) {
+      game.input.onMouseInput(e);
+     }
+} ),
 window.addEventListener("keydown", (e) => {
-      game.input.onWindowInput(e);
+      game.input.onKeyboardInput(e);
 });
