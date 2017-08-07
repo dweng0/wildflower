@@ -120,7 +120,6 @@ export class Game {
 
             let errors = new Array<string>();
             return new Promise<Array<string>>((resolve, reject) => {
-                  debugger;
                   errors.concat(errors, this.setEngine());
                   this._stage = new Stage(this._engine, manifest);
                   errors.concat(errors, this._stage.setTheStage(this._canvas));
@@ -162,8 +161,8 @@ export class Game {
             if (this.onReady) {
                   this.onReady();
             }
-
-            this._stage.setCameraOnPlayer("sphere1");
+            this._stage.setThisPlayer();
+            this._stage.setCameraOnPlayer("r_mesh");
             this.input.onCharacterReady(this._stage.getCharacter())
             this._engine.runRenderLoop(() => {
                   this._stage.showTime(true);

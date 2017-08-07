@@ -33,7 +33,12 @@ export class AssetsManager {
                   engine.loadingUIText = "Distance to touchdown " + numberOfAssets + "000km";
 
                   this.getMapAssets(this._scene, this._manifest, reject);
-                  this.getPlayerAssets(this._scene, this._manifest);
+                  this.getPlayerAssets(this._scene, this._manifest).then(() => {
+                         this._assets.load();
+                         debugger;
+                  }).catch(() => {
+                        throw new Error('Failed to load Players');
+                  });
 
                   this._assets.onFinish = (tasks: Array<BABYLON.IAssetTask>) => {
                         console.log('tasks finished');
@@ -49,8 +54,7 @@ export class AssetsManager {
                   this._assets.onTaskSuccess = (task: BABYLON.IAssetTask) => {
                         numberOfAssets = (numberOfAssets - 1);
                         engine.loadingUIText = "Distance to touchdown " + numberOfAssets + "000km";
-                  }
-                  this._assets.load();
+                  };
             });
       }
 
@@ -58,24 +62,44 @@ export class AssetsManager {
             return 3 + manifest.characters.length;
       }
 
-      getPlayerAssets(scene: BABYLON.Scene, manifest: UrlManifest): void {
+      getPlayerAssets(scene: BABYLON.Scene, manifest: UrlManifest): Promise<boolean> {
             let url = manifest.baseUrl + "/characters";
+            let loadedCharacters = 0;
 
-            // get the manifest for each character
-            manifest.characters.forEach((character: CharacterManifest) => {
-                  WebRequest(url + character.url + "/manifest").then((response: WebRequest.Response) => {
-                        let manifest  = <ICharacterData>JSON.parse(response.entity)
-                        this.loadCharacter(url, character, manifest);
-                        debugger;
-                  }).catch( () => { throw new Error("Failed to load character manifest") });
+            return new Promise<boolean>((resolve, reject) => {
+                   // get the manifest for each character
+                  manifest.characters.forEach((character: CharacterManifest) => {
+                        WebRequest(url + character.url + "/manifest").then((response: WebRequest.Response) => {
+                              let characterManifest  = <ICharacterData>JSON.parse(response.entity);
+                              this.loadCharacter(url, character, characterManifest);
+                              loadedCharacters++;
+
+                              // when all characters have been loaded into the assets manager, resolve the promise
+                              if (loadedCharacters === manifest.characters.length) {
+                                    resolve(true);
+                              }
+                        }).catch( () => { throw new Error("Failed to load character manifest") });
+                  });
             });
       }
 
       loadCharacter(url: string, character: CharacterManifest, manifest: ICharacterData) {
-            let bodyTextureUrl = url + character.url + "/textures/body" + manifest.body.texture;
-            let wheelTextureUrl = url + character.url + "/textures/body" + manifest.wheels.texture;
-            this.loadTexture(manifest.body.texture,  bodyTextureUrl, () => {}, () => {});
+            let bodyTextureUrl = url + character.url + "/textures" + manifest.textureUrl;
+            let meshUrl = url + character.url + manifest.meshUrl;
 
+            // load body texture
+            this.loadTexture(character.name + "_texture",  bodyTextureUrl, () => {
+                  console.log(character.name + " texture loaded");
+            }, () => {});
+
+            // todo load mesh
+            this.loadMesh(character.name + "_mesh", manifest.meshes[0], meshUrl, (task: BABYLON.MeshAssetTask) => {
+                  console.log(task);
+                  task.loadedMeshes[0].material = this._scene.getMaterialByName(character.name + "_texture");
+            }, () => {
+                  debugger;
+                  console.log('did it fail?');
+            });
       }
 
       setTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
@@ -120,7 +144,6 @@ export class AssetsManager {
             g.position.y = -20;
             g.scaling.y = 0.01;
 
-
             /** Load ground texture */
             this.loadTexture("ground", url + "/texture" + manifest.map.texture, (asset) => {
                   let groundMaterial = new BABYLON.StandardMaterial("ground", scene);
@@ -128,11 +151,6 @@ export class AssetsManager {
                   groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
                   g.material = groundMaterial;
                   g.physicsImpostor = new BABYLON.PhysicsImpostor(g, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5, friction: 0.7 }, scene);
-                  // physics
-                 /* WebRequest(url + manifest.map.physics).then((response: any) => {
-                        let physics = <IPhysics>JSON.parse(response.entity);
-                        // ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, physics, scene);
-                  }).catch((reason) => { reject(reason) });*/
             }, () => { reject(["Failed to load map texture"]) });
       }
 
@@ -218,18 +236,9 @@ export class AssetsManager {
             return textureLoad;
       }
 
-      /**
-  * Load mech components for the game
-  * @param taskName
-  * @param meshNames
-  * @param rootUrl
-  * @param sceneFileName
-  * @param success
-  * @param fail
-  */
-      loadMesh(taskName: string, meshNames: any, rootUrl: string, sceneFileName: string, success: () => any, fail: () => any) {
+      loadMesh(taskName: string, meshNames: any, rootUrl: string, success: (meshAsset: BABYLON.MeshAssetTask) => any, fail: () => any) {
             console.log('loading mesh', taskName);
-            let meshLoader = this._assets.addMeshTask(taskName, meshNames, rootUrl, "");
+            let meshLoader = this._assets.addMeshTask(taskName, taskName, rootUrl, meshNames);
             meshLoader.onSuccess = success.bind(this);
             meshLoader.onError = fail.bind(this);
             return meshLoader;

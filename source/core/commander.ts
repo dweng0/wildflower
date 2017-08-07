@@ -10,17 +10,21 @@ import * as BABYLON from 'babylonjs';
 import { ICommander } from '../interface/assets/commander';
 
 export class Commander {
+    private _name: string;
     private _stats: ICommander;
-    private _mesh: BABYLON.Mesh;
-    constructor() { }
+    private _mesh: BABYLON.AbstractMesh;
+    constructor(name: string) {
+        this._name = name;
+     }
 
     createMesh(scene: BABYLON.Scene) {
-        this._mesh = BABYLON.Mesh.CreateSphere("sphere1", 4, 2, scene);
+        this._mesh = scene.getMeshByName(this._name + "_mesh");
+
         // Move the sphere upward 1/2 its height
         this._mesh.position.y = 20;
         this._mesh.physicsImpostor = new BABYLON.PhysicsImpostor(this._mesh, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, restitution: 0.2, friction: 0.9 }, scene);
     }
-    fetchMesh() {
+    fetchMesh(): BABYLON.AbstractMesh {
         return this._mesh;
     }
 }

@@ -57,15 +57,22 @@ app.get('/game/manifest/:id', function (req, res) {
 
 
    app.get('/game/characters/:id/textures/:name', function (req, res) {
-        let id = req.params.name;
+        let id = req.params.id;
         let name = req.params.name;
         res.sendFile(path.join(__dirname, "../assets/commanders/" + id + "/textures/" + name));
    })
 
     app.get('/game/characters/:id/sounds/:name', function (req, res) {
-        let id = req.params.name;
+        let id = req.params.id;
         let name = req.params.name;
         res.sendFile(path.join(__dirname, "../assets/commanders/" + id + "/sounds/" + name));
+   });
+
+   
+    app.get('/game/characters/:id/meshes/:name', function (req, res) {
+        let id = req.params.id;
+        let name = req.params.name;
+        res.sendFile(path.join(__dirname, "../assets/commanders/" + id + "/meshes/" + name));
    })
 
    

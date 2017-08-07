@@ -41,7 +41,6 @@ export class Stage {
       setTheStage(canvas: HTMLCanvasElement): Array<string> {
             let errors = new Array<string>();
             this._setScene(errors);
-            this._setPlayers();
             this._setCamera(canvas);
            // this.setDebugCamera(canvas);
             this._setLighting();
@@ -136,7 +135,7 @@ export class Stage {
             this._lighting.specular = new BABYLON.Color3(0, 0, 0);
       }
 
-      private _setPlayers(): void {
+      setThisPlayer(): void {
             // stub
             let characterManifest;
             this._thisCharacter = new Character(characterManifest, this._scene);

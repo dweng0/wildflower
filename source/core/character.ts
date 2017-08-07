@@ -23,7 +23,7 @@ export class Character {
 
   constructor(manifest: any, scene: BABYLON.Scene) {
     // just for testing purposes
-    this.commander = new Commander();
+    this.commander = new Commander("r");
     this.commander.createMesh(scene);
 
     this.movementPackage = {
@@ -32,7 +32,7 @@ export class Character {
     }
   }
 
-  fetchMesh(): BABYLON.Mesh {
+  fetchMesh(): BABYLON.AbstractMesh {
     return this.commander.fetchMesh();
   }
 

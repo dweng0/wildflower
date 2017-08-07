@@ -1,13 +1,10 @@
-import {IPhysics} from '../physics';
-
-export interface ICharacterVisualComponents {
-      height: number;
-      texture: string;
-      width: number;
-      physics: IPhysics
-}
+import { IPhysics } from '../physics';
 
 export interface ICharacterData {
-      wheels: ICharacterVisualComponents;
-      body: ICharacterVisualComponents;
+      height: number;
+      textureUrl: string;
+      width: number;
+      physics: IPhysics;
+      meshUrl: string;
+      meshes: Array<string>;
 }
