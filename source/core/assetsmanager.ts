@@ -86,7 +86,7 @@ export class AssetsManager {
       loadCharacter(url: string, character: CharacterManifest, manifest: ICharacterData) {
             let bodyTextureUrl = url + character.url + "/textures" + manifest.textureUrl;
             let meshUrl = url + character.url + manifest.meshUrl;
-
+            debugger;
             // load body texture
             this.loadTexture(character.name + "_texture",  bodyTextureUrl, () => {
                   console.log(character.name + " texture loaded");
