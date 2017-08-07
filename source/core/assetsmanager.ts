@@ -65,14 +65,17 @@ export class AssetsManager {
             manifest.characters.forEach((character: CharacterManifest) => {
                   WebRequest(url + character.url + "/manifest").then((response: WebRequest.Response) => {
                         let manifest  = <ICharacterData>JSON.parse(response.entity)
-                        this.loadCharacter(manifest);
+                        this.loadCharacter(url, character, manifest);
                         debugger;
                   }).catch( () => { throw new Error("Failed to load character manifest") });
             });
       }
 
-      loadCharacter(manifest: ICharacterData) {
-            return;
+      loadCharacter(url: string, character: CharacterManifest, manifest: ICharacterData) {
+            let bodyTextureUrl = url + character.url + "/textures/body" + manifest.body.texture;
+            let wheelTextureUrl = url + character.url + "/textures/body" + manifest.wheels.texture;
+            this.loadTexture(manifest.body.texture,  bodyTextureUrl, () => {}, () => {});
+
       }
 
       setTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
