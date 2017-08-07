@@ -1,6 +1,7 @@
 import * as BABYLON from 'babylonjs';
 import * as WebRequest from 'rest';
-import { UrlManifest } from '../interface/urlmanifest';
+import { UrlManifest, ManifestItem, CharacterManifest} from '../interface/urlmanifest';
+import {ICharacterData} from '../interface/assets/characterdata';
 import { IPhysics } from '../interface/physics';
 
 export class AssetsManager {
@@ -58,6 +59,20 @@ export class AssetsManager {
       }
 
       getPlayerAssets(scene: BABYLON.Scene, manifest: UrlManifest): void {
+            let url = manifest.baseUrl + "/characters";
+
+            // get the manifest for each character
+            manifest.characters.forEach((character: CharacterManifest) => {
+                  WebRequest(url + character.url + "/manifest").then((response: WebRequest.Response) => {
+                        let manifest  = <ICharacterData>JSON.parse(response.entity)
+                        this.loadCharacter(manifest);
+                        debugger;
+                  }).catch( () => { throw new Error("Failed to load character manifest") });
+            });
+      }
+
+      loadCharacter(manifest: ICharacterData) {
+            return;
       }
 
       setTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
@@ -71,7 +86,7 @@ export class AssetsManager {
                   ground.material = groundMaterial;
                   ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0, restitution: 0.8, friction: 0.2 }, scene);
                   // physics
-                  WebRequest(url + manifest.map.physics).then((response: any) => {
+                  WebRequest(url + manifest.map.physics).then((response: WebRequest.Response) => {
                         let physics = <IPhysics>JSON.parse(response.entity);
                         // ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, physics, scene);
                   }).catch((reason) => { reject(reason) });

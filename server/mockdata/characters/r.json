@@ -1,0 +1,22 @@
+{
+      "body": {
+            "physics": {
+                  "mass":1,
+                  "friction": 0.8,
+                  "restitution": 0.2
+            },
+            "texture": "/bodystuff",
+            "width": 20,
+            "height": 20
+      },
+      "wheels": {
+            "physics": {
+                  "mass":1,
+                  "friction": 0.8,
+                  "restitution": 0.2
+            },
+            "texture": "/wheelstuff",
+            "width": 20,
+            "height": 20
+      }
+}

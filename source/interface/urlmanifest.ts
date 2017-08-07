@@ -3,6 +3,20 @@ export interface ManifestItem {
       url: string;
 }
 
+export interface SoundManifest {
+      idle: string;
+      moving: string;
+      flinching: string;
+      attacking: string;
+      casting: string;
+}
+
+export interface CharacterManifest {
+      name: string,
+      url: string,
+      sound: SoundManifest
+}
+
 export interface MapManifest {
       baseUrl: string;
       texture: string;
@@ -25,5 +39,5 @@ export interface UrlManifest {
       map: MapManifest;
       world: WorldPhysics;
       mapModels: Array<ManifestItem>;
-      characters: Array<ManifestItem>;
+      characters: Array<CharacterManifest>;
 }

@@ -15,5 +15,17 @@
             "z": 0
             }
       },
-      "characters": []
+      "characters": [
+            {
+                  "name":"r",
+                  "url": "/r",
+                  "sounds":{
+                        "idle":"/idlesound",
+                        "moving": "/movingsound",
+                        "flinching":"/flinchingsound",
+                        "attacking":"/attackingsound",
+                        "casting":"/castingsound"
+                  }
+            }
+      ]
 }
