@@ -8,6 +8,6 @@ export interface ICharacterVisualComponents {
 }
 
 export interface ICharacterData {
-      wheels:ICharacterVisualComponents;
-      body:ICharacterVisualComponents;
+      wheels: ICharacterVisualComponents;
+      body: ICharacterVisualComponents;
 }
