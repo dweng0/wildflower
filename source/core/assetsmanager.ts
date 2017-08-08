@@ -35,7 +35,6 @@ export class AssetsManager {
                   this.getMapAssets(this._scene, this._manifest, reject);
                   this.getPlayerAssets(this._scene, this._manifest).then(() => {
                          this._assets.load();
-                         debugger;
                   }).catch(() => {
                         throw new Error('Failed to load Players');
                   });
@@ -86,20 +85,16 @@ export class AssetsManager {
       loadCharacter(url: string, character: CharacterManifest, manifest: ICharacterData) {
             let bodyTextureUrl = url + character.url + "/textures" + manifest.textureUrl;
             let meshUrl = url + character.url + manifest.meshUrl;
+            let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, "skull.babylon");
 
             // load body texture
-            this.loadTexture(character.name + "_texture",  bodyTextureUrl, () => {
-                  console.log(character.name + " texture loaded");
+            this.loadTexture(character.name + "_texture",  bodyTextureUrl, (textureTask: any) => {
+                  meshTask.onSuccess = function (task: any) {
+                        let mesh = task.loadedMeshes[0];
+                        mesh.position = BABYLON.Vector3.Zero();
+                        mesh.name = character.name + "_mesh";
+                  }
             }, () => {});
-
-            // todo load mesh
-            this.loadMesh(character.name + "_mesh", manifest.meshes[0], meshUrl, (task: BABYLON.MeshAssetTask) => {
-                  console.log(task);
-                  task.loadedMeshes[0].material = this._scene.getMaterialByName(character.name + "_texture");
-            }, () => {
-                  debugger;
-                  console.log('did it fail?');
-            });
       }
 
       setTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
@@ -238,7 +233,7 @@ export class AssetsManager {
 
       loadMesh(taskName: string, meshNames: any, rootUrl: string, success: (meshAsset: BABYLON.MeshAssetTask) => any, fail: () => any) {
             console.log('loading mesh', taskName);
-            let meshLoader = this._assets.addMeshTask(taskName, taskName, rootUrl, meshNames);
+            let meshLoader = this._assets.addMeshTask(taskName, "", rootUrl, meshNames);
             meshLoader.onSuccess = success.bind(this);
             meshLoader.onError = fail.bind(this);
             return meshLoader;

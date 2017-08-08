@@ -76,10 +76,6 @@ export class Game {
             return (BABYLON) ? true : false;
       }
 
-      switchCameras(): void {
-            return this._stage.switchCameras();
-      }
-
       /**
        * Loads the babylon engine, returns an array of error messages, if there are no error messages then it was succesfull
        * @returns {Array<string>}
@@ -139,6 +135,7 @@ export class Game {
        * @returns {promise<boolean>}
        */
       loadAssets(): Promise<boolean> {
+            debugger;
             if (this.onBeforeAssetsLoad) {
                   this.onBeforeAssetsLoad();
             }
@@ -148,6 +145,7 @@ export class Game {
                       reject("No Manifest found");
                   }
                   this._assetsManager.loadInstanceAssets(this._engine).then(() => { resolve() }).catch((reason) => {
+                        console.log("Assets manager failed.")
                         this.ifAssetsFailedToLoad(reason);
                         reject(reason)});
             });
@@ -165,7 +163,7 @@ export class Game {
             this._stage.setCameraOnPlayer("r_mesh");
             this.input.onCharacterReady(this._stage.getCharacter())
             this._engine.runRenderLoop(() => {
-                  this._stage.showTime(true);
+                  this._stage.showTime(this._canvas, true);
             });
       }
 

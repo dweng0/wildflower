@@ -19,7 +19,7 @@ export class Commander {
 
     createMesh(scene: BABYLON.Scene) {
         this._mesh = scene.getMeshByName(this._name + "_mesh");
-
+        debugger;
         // Move the sphere upward 1/2 its height
         this._mesh.position.y = 20;
         this._mesh.physicsImpostor = new BABYLON.PhysicsImpostor(this._mesh, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, restitution: 0.2, friction: 0.9 }, scene);

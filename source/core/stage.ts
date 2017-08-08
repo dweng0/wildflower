@@ -9,6 +9,7 @@ export class Stage {
       private _lighting: BABYLON.HemisphericLight;
       private _scene: BABYLON.Scene;
       private _camera: BABYLON.FollowCamera;
+      private _arcCamera: BABYLON.ArcRotateCamera;
       private _freeCamera: BABYLON.FreeCamera;
       private _activeCamera: any;
       private _environment: BABYLON.StandardMaterial;
@@ -38,26 +39,37 @@ export class Stage {
             }
       }
 
+      useCamera(type: string, canvas: HTMLCanvasElement) {
+            let camera;
+            switch (type) {
+                  case "free" :
+                  {
+                       camera = this.setDebugCamera(canvas);
+                        break;
+                  }
+                  case "arc" :
+                  {
+                        camera = this._setArcCamera(canvas);
+                        break;
+                  }
+                  case "follow" :
+                  {
+                        camera =  this._setCamera(canvas);
+                        break;
+                  }
+            }
+            this._scene.activeCamera = camera;
+      }
+
       setTheStage(canvas: HTMLCanvasElement): Array<string> {
             let errors = new Array<string>();
             this._setScene(errors);
-            this._setCamera(canvas);
-           // this.setDebugCamera(canvas);
+            this.useCamera("arc", canvas);
             this._setLighting();
             return errors;
       }
 
-      switchCameras() {
-            return
-            /**if (this._scene.activeCamera instanceof BABYLON.FollowCamera) {
-                  this._scene.activeCamera = this._freeCamera;
-                  } else {
-                  this._scene.activeCamera = this._camera;
-            }*/
-      }
-
-      showTime(debug: boolean): void {
-            this._scene.activeCamera = this._camera;
+      showTime(canvas: HTMLCanvasElement, debug?: boolean): void {
             this._scene.registerBeforeRender(() => {
                   this.updateCharacterMovements();
             });
@@ -71,7 +83,7 @@ export class Stage {
             return this._scene;
       }
 
-      setDebugCamera(canvas): void {
+      setDebugCamera(canvas): any {
             this._freeCamera = new BABYLON.FreeCamera("camera1",  new BABYLON.Vector3(0, 15, -45), this._scene);
 
             // for debugging the scene
@@ -84,6 +96,7 @@ export class Stage {
             // camera positioning
            // this._freeCamera.setTarget(this._thisCharacter.fetchMesh().position);
             this._freeCamera.attachControl(canvas, true);
+            return this._freeCamera;
       }
 
       getCharacter(): Character {
@@ -102,7 +115,7 @@ export class Stage {
        * @param {error}
        * @returns {Array<string>}
        */
-      private _setCamera(canvas): void {
+      private _setCamera(canvas): BABYLON.FollowCamera {
 
             this._camera = new BABYLON.FollowCamera("Follow", new BABYLON.Vector3(0, 15, 45), this._scene);
             this._camera.radius = 50; // how far from the object to follow
@@ -113,6 +126,14 @@ export class Stage {
 
             this._camera.attachControl(canvas, true);
             window['camera'] = this._camera;
+            return this._camera;
+      }
+
+      private _setArcCamera(canvas): BABYLON.ArcRotateCamera {
+            this._arcCamera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), this._scene);
+            this._arcCamera.setPosition(new BABYLON.Vector3(0, 0, 50));
+            this._arcCamera.attachControl(canvas, true);
+            return this._arcCamera;
       }
 
        /**
