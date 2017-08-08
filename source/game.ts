@@ -7,8 +7,12 @@ import {Input} from './core/userinput';
 
 import {UrlManifest} from './interface/urlmanifest';
 
+/**
+ * @classdesc Ahh the trusty game class, the puppetteer pulling all the strings, the functions have been placed in the order that they are called, but essentially, this loads other classes and waits for their response before continuing onto the next function
+ */
 export class Game {
-      private _url = "/game";
+
+      private _url: string = "/game";
       private _engine: BABYLON.Engine;
       private _debug: true;
       private _stage: Stage;
@@ -34,7 +38,11 @@ export class Game {
       public ifBabylonFailedToLoad: (errors: Array<string>) => any;
       public ifInterfaceFailedToLoad: (errors: Array<string>) => any;
 
-
+      /**
+       * Set up member variables
+       * @param campaignId {number} the campaing instance id used for loading map assets and players
+       * @param canvasId {string} the canvas element id string
+       */
       constructor(campaignId: string, canvasId?: string) {
             let domHandler = new DomHandler(canvasId);
             this._canvas = domHandler.getCanvas();
@@ -45,6 +53,37 @@ export class Game {
             this.ifInterfaceFailedToLoad = () => {console.log('stub function ifInterfaceFailedToLoad')}
       }
 
+      /**
+       * Starts us off... calls the load function and handles the success (by calling onLoadBabylon) or error (by calling handleLoadingLifecycleError)
+       */
+      start(): void {
+            this.load().then((manifest: any) => { this.onLoadBabylon(manifest)}).catch((reasons) => {
+                  console.log('Interface failed to load');
+                  this.handleLoadingLifecycleError(this.ifInterfaceFailedToLoad, reasons);
+            });
+      }
+
+      /**
+       * Promise does some pre babylon loading errands, like fetching the game instance manifest, uses the onBeforeLoad function if it is set. Returns a promise
+       * @return {Promise}
+       */
+      load(): Promise<boolean> {
+            if (this.onBeforeLoad) {
+                  this.onBeforeLoad();
+            }
+
+            return new Promise<boolean>((resolve, reject) => {
+                  this._interface.fetchManifest((response: any) => {
+                        resolve(JSON.parse(response.entity));
+                  }, (err) => { reject(err.error)});
+            });
+      }
+
+      /**
+       * If the load promise was successful this function is called, does some more promisy stuff, but this time we have the url manifest from the previous promise.
+       * This function sets the scene for other classes that need it (now that its loaded) and attempts to set up the assets manager (a wrapper around the babylon assetsmanager class). If it succeeds it calls onBeginLoadAssets, if it fails it calls 'handleLoadingLifecycleError'
+       * @param manifest {UrlManifest}
+       */
       onLoadBabylon(manifest: UrlManifest) {
             this.loadBabylon(manifest).then(() => {
                   // at this point we have the scene, so we can set up the assets manager
@@ -58,6 +97,35 @@ export class Game {
             });
       }
 
+      /**
+       * Sets up babylon in the stage class
+       * @see Stage
+       * @param manifest {UrlManifest} contains urls for loading componentsin other classes
+       */
+      loadBabylon(manifest: UrlManifest): Promise<Array<string>> {
+            if (this.onBeforeBabylonLoad) {
+                  this.onBeforeBabylonLoad();
+            }
+
+            let errors = new Array<string>();
+            return new Promise<Array<string>>((resolve, reject) => {
+                  errors.concat(errors, this.setEngine());
+                  this._stage = new Stage(this._engine, manifest);
+                  errors.concat(errors, this._stage.setTheStage(this._canvas));
+                  if (errors.length === 0) {
+                        resolve(errors);
+                  }
+                  else {
+                        this.ifBabylonFailedToLoad(errors);
+                        reject(errors);
+                  }
+            });
+      }
+
+      /**
+       * Have an instance of the assets manager set up, have BABYLON set up, now its time to get assets for this game... Calls load assets, handles success (calls onLoaded) and failure (calls handleLoadingLifecycleError)
+       * @param manifest {UrlManifest}
+       */
       onBeginLoadAssets(manifest: UrlManifest) {
             this.loadAssets().then((manifest: any) => {this.onLoaded()}).catch((reasons) => {
                   console.log('Asset loading failed');
@@ -65,10 +133,42 @@ export class Game {
             });
       };
 
-      start(): void {
-            this.load().then((manifest: any) => { this.onLoadBabylon(manifest)}).catch((reasons) => {
-                  console.log('Interface failed to load');
-                  this.handleLoadingLifecycleError(this.ifInterfaceFailedToLoad, reasons);
+      /**
+       * starts the asset loading process and returns a promise (success or failure).
+       * calls the optional function onBeforeAssetsLoad
+       * @returns {promise<boolean>}
+       */
+      loadAssets(): Promise<boolean> {
+            debugger;
+            if (this.onBeforeAssetsLoad) {
+                  this.onBeforeAssetsLoad();
+            }
+
+            return new Promise<boolean>((resolve, reject) => {
+                  if (!this._interface.manifest) {
+                      reject("No Manifest found");
+                  }
+                  this._assetsManager.loadInstanceAssets(this._engine).then(() => { resolve() }).catch((reason) => {
+                        console.log("Assets manager failed.")
+                        this.ifAssetsFailedToLoad(reason);
+                        reject(reason)});
+            });
+      }
+
+      /**
+       * At this point, all assets (textures, meshes, stats for physics ect) have been loaded and we can start the engine
+       * @todo tell server we are ready and wait for it to tell us to start the engine.
+       * @param callback {function}
+       */
+      onLoaded(): void {
+            if (this.onReady) {
+                  this.onReady();
+            }
+            this._stage.setThisPlayer();
+            this._stage.setCameraOnPlayer("r_mesh");
+            this.input.onCharacterReady(this._stage.getCharacter())
+            this._engine.runRenderLoop(() => {
+                  this._stage.showTime();
             });
       }
 
@@ -96,77 +196,6 @@ export class Game {
             return errors;
       }
 
-
-      load(): Promise<boolean> {
-            if (this.onBeforeLoad) {
-                  this.onBeforeLoad();
-            }
-
-            return new Promise<boolean>((resolve, reject) => {
-                  this._interface.fetchManifest((response: any) => {
-                        resolve(JSON.parse(response.entity));
-                  }, (err) => { reject(err.error)});
-            });
-      }
-
-      loadBabylon(manifest: UrlManifest): Promise<Array<string>> {
-            if (this.onBeforeBabylonLoad) {
-                  this.onBeforeBabylonLoad();
-            }
-
-            let errors = new Array<string>();
-            return new Promise<Array<string>>((resolve, reject) => {
-                  errors.concat(errors, this.setEngine());
-                  this._stage = new Stage(this._engine, manifest);
-                  errors.concat(errors, this._stage.setTheStage(this._canvas));
-                  if (errors.length === 0) {
-                        resolve(errors);
-                  }
-                  else {
-                        this.ifBabylonFailedToLoad(errors);
-                        reject(errors);
-                  }
-            });
-      }
-
-      /**
-       * starts the asset loading process and returns a promise (success or failure).
-       * calls the optional function onBeforeAssetsLoad
-       * @returns {promise<boolean>}
-       */
-      loadAssets(): Promise<boolean> {
-            debugger;
-            if (this.onBeforeAssetsLoad) {
-                  this.onBeforeAssetsLoad();
-            }
-
-            return new Promise<boolean>((resolve, reject) => {
-                  if (!this._interface.manifest) {
-                      reject("No Manifest found");
-                  }
-                  this._assetsManager.loadInstanceAssets(this._engine).then(() => { resolve() }).catch((reason) => {
-                        console.log("Assets manager failed.")
-                        this.ifAssetsFailedToLoad(reason);
-                        reject(reason)});
-            });
-      }
-
-      /**
-       * At this point, we are ready and waiting of the green light from the server
-       * @param callback {function}
-       */
-      onLoaded(): void {
-            if (this.onReady) {
-                  this.onReady();
-            }
-            this._stage.setThisPlayer();
-            this._stage.setCameraOnPlayer("r_mesh");
-            this.input.onCharacterReady(this._stage.getCharacter())
-            this._engine.runRenderLoop(() => {
-                  this._stage.showTime();
-            });
-      }
-
       handleLoadingLifecycleError (eventFn: (errors?: any) => any, errors: Array<string>) {
             this._engine.loadingUIText =  this.buildErrorMessage(errors);
 
@@ -192,6 +221,7 @@ export class Game {
             throw new Error(errors);
       }
 }
+
 let game = new Game("12", 'renderCanvas');
 window.addEventListener('DOMContentLoaded', () => {
       game.start();

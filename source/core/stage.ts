@@ -7,9 +7,7 @@ import { UrlManifest, WorldPhysics } from '../interface/urlmanifest';
  * The entry point for starting everything up is 'showTime'
  */
 export class Stage {
-
       private _engine: BABYLON.Engine;
-
       private _lighting: BABYLON.HemisphericLight;
       private _scene: BABYLON.Scene;
       private _camera: BABYLON.FollowCamera;
