@@ -86,6 +86,7 @@ export class Stage {
        * @param debug {boolean} determines if the debug layer should be shown
        */
       showTime(debug?: boolean): void {
+       //     this._arcCamera.position = this.getCharacter().fetchMesh().absolutePosition;
             this._scene.registerBeforeRender(() => {
                   this._updateCharacterMovements();
             });
@@ -168,7 +169,7 @@ export class Stage {
        */
       private _setArcCamera(canvas): BABYLON.ArcRotateCamera {
             this._arcCamera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), this._scene);
-            this._arcCamera.setPosition(new BABYLON.Vector3(0, 0, 50));
+            this._arcCamera.setPosition(new BABYLON.Vector3(0, 20, 50));
             this._arcCamera.attachControl(canvas, true);
             return this._arcCamera;
       }

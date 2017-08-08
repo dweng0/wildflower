@@ -98,25 +98,6 @@ export class AssetsManager {
             });
       }
 
-<<<<<<< HEAD
-      loadCharacter(url: string, character: CharacterManifest, manifest: ICharacterData) {
-            let bodyTextureUrl = url + character.url + "/textures" + manifest.textureUrl;
-            let meshUrl = url + character.url + manifest.meshUrl;
-            debugger;
-            // load body texture
-            this.loadTexture(character.name + "_texture",  bodyTextureUrl, () => {
-                  console.log(character.name + " texture loaded");
-            }, () => {});
-
-            // todo load mesh
-            this.loadMesh(character.name + "_mesh", manifest.meshes[0], meshUrl, (task: BABYLON.MeshAssetTask) => {
-                  console.log(task);
-                  task.loadedMeshes[0].material = this._scene.getMaterialByName(character.name + "_texture");
-            }, () => {
-                  debugger;
-                  console.log('did it fail?');
-            });
-=======
       loadCharacter(url: string, commander: ICommander, manifest: ICharacterData) {
             debugger;
             let bodyTextureUrl = url + commander.assetsUrl + "/textures" + manifest.textureUrl;
@@ -124,11 +105,19 @@ export class AssetsManager {
             let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, manifest.meshes[0]);
             meshTask.onSuccess = function (task: any) {
                   let mesh = task.loadedMeshes[0];
+                  debugger;
                   mesh.position = BABYLON.Vector3.Zero();
                   mesh.name = commander.name + "_mesh";
+                  mesh.width = 20;
+                  mesh.height = 20;
+                  mesh.position.y = 20;
+                  mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, {
+                        mass: commander.physics.mass,
+                        restitution: commander.physics.restitution,
+                        friction: commander.physics.friction
+                  }, this._scene);
                   commander.mesh = mesh;
             }
->>>>>>> e7b530235ecde4099ec3a17ace6a4d39bd25c82f
       }
 
       setTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {

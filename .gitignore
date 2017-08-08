@@ -3,6 +3,7 @@ lib/
 .nyc_output/
 .coverage/
 .documentation/
+.io/
 compiledtests/
 
 # Logs
