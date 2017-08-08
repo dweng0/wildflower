@@ -20,7 +20,7 @@ export class Commander {
     setPhysics(scene: BABYLON.Scene) {
         debugger;
         this._mesh.position.y = 20;
-        this._mesh.physicsImpostor = new BABYLON.PhysicsImpostor(this._mesh, BABYLON.PhysicsImpostor.SphereImpostor, {
+        this._mesh.physicsImpostor = new BABYLON.PhysicsImpostor(this._mesh, BABYLON.PhysicsImpostor.BoxImpostor, {
             mass: this._stats.physics.mass,
             restitution: this._stats.physics.restitution,
             friction: this._stats.physics.friction

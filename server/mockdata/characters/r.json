@@ -6,7 +6,7 @@
       },
       "textureUrl": "/texture.jpg",
       "meshUrl": "/meshes/",
-      "meshes": ["skull.babylon"],
+      "meshes": ["buggy.babylon"],
       "width": 20,
       "height": 20
 }

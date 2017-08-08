@@ -1,6 +1,6 @@
 {
   "name": "wildflower",
-  "version": "1.0.1-alpha.525",
+  "version": "1.0.1-alpha.537",
   "description": "Babylon test",
   "main": "index.js",
   "nyc": {

@@ -99,19 +99,16 @@ export class AssetsManager {
       }
 
       loadCharacter(url: string, commander: ICommander, manifest: ICharacterData) {
+            debugger;
             let bodyTextureUrl = url + commander.assetsUrl + "/textures" + manifest.textureUrl;
             let meshUrl = url + commander.assetsUrl + manifest.meshUrl;
-            let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, "skull.babylon");
-
-            // load body texture
-            this.loadTexture(commander.name + "_texture",  bodyTextureUrl, (textureTask: any) => {
-                  meshTask.onSuccess = function (task: any) {
-                        let mesh = task.loadedMeshes[0];
-                        mesh.position = BABYLON.Vector3.Zero();
-                        mesh.name = commander.name + "_mesh";
-                        commander.mesh = mesh;
-                  }
-            }, () => {});
+            let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, manifest.meshes[0]);
+            meshTask.onSuccess = function (task: any) {
+                  let mesh = task.loadedMeshes[0];
+                  mesh.position = BABYLON.Vector3.Zero();
+                  mesh.name = commander.name + "_mesh";
+                  commander.mesh = mesh;
+            }
       }
 
       setTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
