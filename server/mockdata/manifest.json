@@ -14,24 +14,5 @@
             "y": -20,
             "z": 0
             }
-      },
-      "characters": [
-            {
-                  "name":"r",
-                  "url": "/r",
-                  "sounds":{
-                        "idle":"/idlesound",
-                        "moving": "/movingsound",
-                        "flinching":"/flinchingsound",
-                        "attacking":"/attackingsound",
-                        "casting":"/castingsound"
-                  }
-            }
-      ],
-      "players": [
-            {
-                  "userName": "test",
-                  "avatar": "r"
-            }
-      ]
+      }
 }

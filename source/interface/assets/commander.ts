@@ -16,4 +16,5 @@ export interface ICommander {
     baseAgility: number;
     level: number;
     experiencePoints: number;
+    mesh: any;
 }

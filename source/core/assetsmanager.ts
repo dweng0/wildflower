@@ -3,9 +3,10 @@ import * as WebRequest from 'rest';
 import { UrlManifest, CharacterManifest} from '../interface/urlmanifest';
 import {ICharacterData} from '../interface/assets/characterdata';
 import { IPhysics } from '../interface/physics';
+import {ICommander} from '../interface/assets/commander';
+import { Campaign } from '../interface/assets/campaign';
 
 export class AssetsManager {
-      private _testMode: boolean = false;
       private _assets: BABYLON.AssetsManager;
       private _manifest: UrlManifest;
       private _scene: BABYLON.Scene;
@@ -22,9 +23,8 @@ export class AssetsManager {
        * @param loadingText {string} the text shown while the game is loading.
        * @returns {Promise}
        */
-      loadInstanceAssets(engine: BABYLON.Engine, test?: boolean): Promise<any> {
+      loadInstanceAssets(engine: BABYLON.Engine, campaign: Campaign): Promise<any> {
 
-            this._testMode = test;
             return new Promise<Array<string>>((resolve, reject) => {
                   this._assets = new BABYLON.AssetsManager(this._scene);
 
@@ -33,7 +33,7 @@ export class AssetsManager {
                   engine.loadingUIText = "Distance to touchdown " + numberOfAssets + "000km";
 
                   this.getMapAssets(this._scene, this._manifest, reject);
-                  this.getPlayerAssets(this._scene, this._manifest).then(() => {
+                  this.getPlayerAssets(this._scene, this._manifest, campaign).then(() => {
                          this._assets.load();
                   }).catch(() => {
                         throw new Error('Failed to load Players');
@@ -61,20 +61,34 @@ export class AssetsManager {
             return 3 + manifest.characters.length;
       }
 
-      getPlayerAssets(scene: BABYLON.Scene, manifest: UrlManifest): Promise<boolean> {
+      getPlayerAssets(scene: BABYLON.Scene, manifest: UrlManifest, campaign: Campaign): Promise<boolean> {
             let url = manifest.baseUrl + "/characters";
             let loadedCharacters = 0;
 
             return new Promise<boolean>((resolve, reject) => {
-                   // get the manifest for each character
-                  manifest.characters.forEach((character: CharacterManifest) => {
-                        WebRequest(url + character.url + "/manifest").then((response: WebRequest.Response) => {
+                  // load red team avatars
+                  campaign.redTeam.players.forEach((redPlayer) => {
+                        WebRequest(url + redPlayer.commander.assetsUrl + "/manifest").then((response: WebRequest.Response) => {
                               let characterManifest  = <ICharacterData>JSON.parse(response.entity);
-                              this.loadCharacter(url, character, characterManifest);
+                              this.loadCharacter(url, redPlayer.commander, characterManifest);
                               loadedCharacters++;
 
                               // when all characters have been loaded into the assets manager, resolve the promise
-                              if (loadedCharacters === manifest.characters.length) {
+                              if (loadedCharacters === campaign.redTeam.players.length + campaign.blueTeam.players.length) {
+                                    resolve(true);
+                              }
+                        }).catch( () => { throw new Error("Failed to load character manifest") });
+                  });
+
+                  // load blue team avatars
+                  campaign.blueTeam.players.forEach((bluePlayer) => {
+                        WebRequest(url + bluePlayer.commander.assetsUrl + "/manifest").then((response: WebRequest.Response) => {
+                              let characterManifest  = <ICharacterData>JSON.parse(response.entity);
+                              this.loadCharacter(url, bluePlayer.commander, characterManifest);
+                              loadedCharacters++;
+
+                               // when all characters have been loaded into the assets manager, resolve the promise
+                              if (loadedCharacters === campaign.redTeam.players.length + campaign.blueTeam.players.length) {
                                     resolve(true);
                               }
                         }).catch( () => { throw new Error("Failed to load character manifest") });
@@ -82,17 +96,18 @@ export class AssetsManager {
             });
       }
 
-      loadCharacter(url: string, character: CharacterManifest, manifest: ICharacterData) {
-            let bodyTextureUrl = url + character.url + "/textures" + manifest.textureUrl;
-            let meshUrl = url + character.url + manifest.meshUrl;
+      loadCharacter(url: string, commander: ICommander, manifest: ICharacterData) {
+            let bodyTextureUrl = url + commander.assetsUrl + "/textures" + manifest.textureUrl;
+            let meshUrl = url + commander.assetsUrl + manifest.meshUrl;
             let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, "skull.babylon");
 
             // load body texture
-            this.loadTexture(character.name + "_texture",  bodyTextureUrl, (textureTask: any) => {
+            this.loadTexture(commander.name + "_texture",  bodyTextureUrl, (textureTask: any) => {
                   meshTask.onSuccess = function (task: any) {
                         let mesh = task.loadedMeshes[0];
                         mesh.position = BABYLON.Vector3.Zero();
-                        mesh.name = character.name + "_mesh";
+                        mesh.name = commander.name + "_mesh";
+                        commander.mesh = mesh;
                   }
             }, () => {});
       }

@@ -5,6 +5,7 @@ import { StatisticsHandler } from './core/statisticshandler';
 import { Interface } from './core/interface';
 import { Stage } from './core/stage';
 import { Input } from './core/userinput';
+import { Campaign } from './interface/assets/campaign';
 
 import { UrlManifest } from './interface/urlmanifest';
 
@@ -62,7 +63,7 @@ export class Game {
        * Starts us off... calls the load function and handles the success (by calling onLoadBabylon) or error (by calling handleLoadingLifecycleError)
        */
       start(): void {
-            this.load().then((manifest: any) => { this.onLoadBabylon(manifest) }).catch((reasons) => {
+            this.load().then((manifest: any) => { this.onBeginLoadGameData(manifest) }).catch((reasons) => {
                   console.log('Interface failed to load');
                   this.handleLoadingLifecycleError(this.ifInterfaceFailedToLoad, reasons);
             });
@@ -84,19 +85,38 @@ export class Game {
             });
       }
 
+      onBeginLoadGameData(manifest: UrlManifest) {
+            this.onLoadGameData(manifest)
+                  .then((campaign: Campaign) => {
+                        this.onLoadBabylon(manifest, campaign);
+                  })
+                  .catch((reason) => {
+                        console.log("Game data loading failed");
+                        this.handleLoadingLifecycleError(null, reason);
+                  });
+      }
+
+      onLoadGameData(manifest: UrlManifest): Promise<any> {
+            if (this.onBeforeLoadGameData) {
+                  this.onBeforeLoadGameData();
+            }
+            return this._statisticsHandler.loadCampaign(manifest, this._campaignId);
+      }
+
+
       /**
        * If the load promise was successful this function is called, does some more promisy stuff, but this time we have the url manifest from the previous promise.
        * This function sets the scene for other classes that need it (now that its loaded) and attempts to set up the assets manager (a wrapper around the babylon assetsmanager class). If it succeeds it calls onBeginLoadAssets, if it fails it calls 'handleLoadingLifecycleError'
        * @param manifest {UrlManifest}
        */
-      onLoadBabylon(manifest: UrlManifest) {
-            this.loadBabylon(manifest).then(() => {
+      onLoadBabylon(manifest: UrlManifest, campaign: Campaign ) {
+            this.loadBabylon(manifest, campaign).then(() => {
                   // at this point we have the scene, so we can set up the assets manager
                   this._assetsManager = new AssetsManager(manifest, this._stage.getScene());
 
                   // and apply the scene to other classes that need it
                   this.input.setScene(this._stage.getScene());
-                  this.onBeginLoadAssets(manifest);
+                  this.onBeginLoadAssets(manifest, campaign);
             }).catch((reasons) => {
                   console.log('Babylon loading failed');
                   this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reasons);
@@ -108,7 +128,7 @@ export class Game {
        * @see Stage
        * @param manifest {UrlManifest} contains urls for loading componentsin other classes
        */
-      loadBabylon(manifest: UrlManifest): Promise<Array<string>> {
+      loadBabylon(manifest: UrlManifest, campaign: Campaign): Promise<Array<string>> {
             if (this.onBeforeBabylonLoad) {
                   this.onBeforeBabylonLoad();
             }
@@ -132,8 +152,8 @@ export class Game {
        * Have an instance of the assets manager set up, have BABYLON set up, now its time to get assets for this game... Calls load assets, handles success (calls onBeginLoadGameData) and failure (calls handleLoadingLifecycleError)
        * @param manifest {UrlManifest}
        */
-      onBeginLoadAssets(manifest: UrlManifest) {
-            this.loadAssets().then(() => { this.onBeginLoadGameData(manifest) }).catch((reasons) => {
+      onBeginLoadAssets(manifest: UrlManifest, campaign: Campaign) {
+            this.loadAssets(campaign).then(() => { this.onLoaded() }).catch((reasons) => {
                   console.log('Asset loading failed');
                   this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reasons);
             });
@@ -144,7 +164,7 @@ export class Game {
        * calls the optional function onBeforeAssetsLoad
        * @returns {promise<boolean>}
        */
-      loadAssets(): Promise<boolean> {
+      loadAssets(campaign: Campaign): Promise<boolean> {
             debugger;
             if (this.onBeforeAssetsLoad) {
                   this.onBeforeAssetsLoad();
@@ -154,7 +174,7 @@ export class Game {
                   if (!this._interface.manifest) {
                         reject("No Manifest found");
                   }
-                  this._assetsManager.loadInstanceAssets(this._engine).then(() => { resolve() }).catch((reason) => {
+                  this._assetsManager.loadInstanceAssets(this._engine, campaign).then(() => { resolve() }).catch((reason) => {
                         console.log("Assets manager failed.")
                         this.ifAssetsFailedToLoad(reason);
                         reject(reason)
@@ -177,25 +197,6 @@ export class Game {
             this._engine.runRenderLoop(() => {
                   this._stage.showTime();
             });
-      }
-
-      onBeginLoadGameData(manifest: UrlManifest) {
-            this.onLoadGameData(manifest)
-                  .then(() => {
-                        this._statisticsHandler.updateCommandersWithPlayerIds(this._stage.characters);
-                        this.onLoaded();
-                  })
-                  .catch((reason) => {
-                        console.log("Game data loading failed");
-                        this.handleLoadingLifecycleError(null, reason);
-                  });
-      }
-
-      onLoadGameData(manifest: UrlManifest): Promise<boolean> {
-            if (this.onBeforeLoadGameData) {
-                  this.onBeforeLoadGameData();
-            }
-            return this._statisticsHandler.loadCampaign(manifest, this._campaignId);
       }
 
       hasBabylon(): boolean {

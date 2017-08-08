@@ -16,7 +16,45 @@
             "id": "red",
             "name": "The beetle borgs",
             "level": 0,
-            "players": []
+            "players": [
+                  {
+                        "id": "somerandomid",
+                        "stats": {
+                              "state": "ready",
+                              "deaths": 0,
+                              "kills": 0,
+                              "experience": 0,
+                              "gold": 0,
+                              "damageDealt": 0,
+                              "damageReceived": 0,
+                              "healingDealt": 0,
+                              "healingRecieved": 0
+                        },
+                        "username": "epicsoundingusername",
+                        "commander": {
+                              "name": "R",
+                              "description": "R is a strange fellow...",
+                              "imgUrl": "some image url",
+                              "assetsUrl": "/r",
+                              "baseHealth": 0,
+                              "baseShield": 0,
+                              "basePower": 0,
+                              "baseSpeed": 0,
+                              "baseAgility": 0,
+                              "level": 0,
+                              "experiencePoints": 0,
+                              "mesh": ""
+                        },
+                        "faction": {
+                              "id":"somethingId",
+                              "name": "SomethingName",
+                              "logo": "SomethingLogo"
+                        },
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                  }
+            ]
       },
       "blueTeam": {
             "id": "blue",
@@ -31,3 +69,4 @@
             "players": []
       }
 }
+

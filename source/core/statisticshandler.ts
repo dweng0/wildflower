@@ -14,7 +14,7 @@ export class StatisticsHandler {
                   WebRequest(manifest.baseUrl + "/campaign/" + campaignId).then((response: WebRequest.Response) => {
                         debugger;
                         this._campaign = <Campaign>JSON.parse(response.entity);
-                        resolve();
+                        resolve(this._campaign);
                   }).catch(
                         (reason) => {reject(reason)}
                   );
