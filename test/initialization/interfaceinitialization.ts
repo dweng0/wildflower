@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { Interface } from '../../source/core/interface';
-import {UrlManifest, ManifestItem} from '../../source/interface/urlmanifest';
+import {UrlManifest} from '../../source/interface/urlmanifest';
 
 describe('Api and interface initialization', () => {
       let url = "http://google.com";

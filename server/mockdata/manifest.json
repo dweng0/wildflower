@@ -27,5 +27,11 @@
                         "casting":"/castingsound"
                   }
             }
+      ],
+      "players": [
+            {
+                  "userName": "test",
+                  "avatar": "r"
+            }
       ]
 }

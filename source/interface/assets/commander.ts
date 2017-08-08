@@ -17,6 +17,4 @@ export interface ICommander {
     baseAgility: number;
     level: number;
     experiencePoints: number;
-    textures: ITextureSet;
-    physics: IPhysics;
 }

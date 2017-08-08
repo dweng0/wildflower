@@ -1,6 +1,6 @@
 import * as BABYLON from 'babylonjs';
 import * as WebRequest from 'rest';
-import { UrlManifest, ManifestItem, CharacterManifest} from '../interface/urlmanifest';
+import { UrlManifest, CharacterManifest} from '../interface/urlmanifest';
 import {ICharacterData} from '../interface/assets/characterdata';
 import { IPhysics } from '../interface/physics';
 

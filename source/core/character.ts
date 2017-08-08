@@ -1,17 +1,9 @@
 import * as BABYLON from 'babylonjs';
 import { Commander } from './commander';
 
-export enum Axis {
-  x,
-  y,
-  z
-}
-
-export interface IImpulseData {
-  force: BABYLON.Vector3;
-  position: BABYLON.Vector3;
-}
-
+/**
+ * Used to determine if a character still needs to move on a per frame render basis
+ */
 export interface IMovementPackage {
   finished: boolean;
   destination: BABYLON.Vector3;
@@ -34,18 +26,6 @@ export class Character {
 
   fetchMesh(): BABYLON.AbstractMesh {
     return this.commander.fetchMesh();
-  }
-
-  calculateForce(axis: Axis, movement: number): BABYLON.Vector3 {
-    let x = (axis === Axis.x) ? movement : 0;
-    let y = (axis === Axis.y) ? movement : 0;
-    let z = (axis === Axis.z) ? movement : 0;
-
-    let newMovementVector = new BABYLON.Vector3(x, y, z);
-    // let newMovementVector = new BABYLON.Vector3(0, 0, 0.5)
-    console.log('moving:', x, y, z);
-    let force = this.transformFromGlobalVectorToLocal(this.computeWorldMatrix(), newMovementVector);
-    return newMovementVector;
   }
 
   updateMovement() {

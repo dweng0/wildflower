@@ -1,6 +1,7 @@
 import * as BABYLON from 'babylonjs';
 import { DomHandler } from './preloader/dom';
 import { AssetsManager } from './core/assetsmanager';
+import { StatisticsHandler } from './core/statisticshandler';
 import { Interface } from './core/interface';
 import {Stage} from './core/stage';
 import {Input} from './core/userinput';
@@ -8,12 +9,13 @@ import {Input} from './core/userinput';
 import {UrlManifest} from './interface/urlmanifest';
 
 /**
- * @classdesc Ahh the trusty game class, the puppetteer pulling all the strings, the functions have been placed in the order that they are called, but essentially, this loads other classes and waits for their response before continuing onto the next function
+ * @classdesc Ahh the trusty game class, the puppeteer pulling all the strings, the functions have been placed in the order that they are called, but essentially, this loads other classes and waits for their response before continuing onto the next function
  */
 export class Game {
-
+      private _campaignId
       private _url: string = "/game";
       private _engine: BABYLON.Engine;
+      private _statisticsHandler: StatisticsHandler;
       private _debug: true;
       private _stage: Stage;
 
@@ -29,6 +31,7 @@ export class Game {
       public onBeforeLoad: () => any;
       public onBeforeBabylonLoad: () => any;
       public onBeforeAssetsLoad: () => any;
+      public onBeforeLoadGameData: () => any;
       public onReady: () => any;
 
       /**
@@ -47,7 +50,9 @@ export class Game {
             let domHandler = new DomHandler(canvasId);
             this._canvas = domHandler.getCanvas();
             this._interface = new Interface(this._url, campaignId);
+            this._campaignId = campaignId;
             this.input = new Input();
+            this._statisticsHandler = new StatisticsHandler();
             this.ifAssetsFailedToLoad = () => {console.log('stub function ifAssetsFailedToLoad')}
             this.ifBabylonFailedToLoad = () => {console.log('stub function ifBabylonFailedToLoad')}
             this.ifInterfaceFailedToLoad = () => {console.log('stub function ifInterfaceFailedToLoad')}
@@ -123,11 +128,11 @@ export class Game {
       }
 
       /**
-       * Have an instance of the assets manager set up, have BABYLON set up, now its time to get assets for this game... Calls load assets, handles success (calls onLoaded) and failure (calls handleLoadingLifecycleError)
+       * Have an instance of the assets manager set up, have BABYLON set up, now its time to get assets for this game... Calls load assets, handles success (calls onBeginLoadGameData) and failure (calls handleLoadingLifecycleError)
        * @param manifest {UrlManifest}
        */
       onBeginLoadAssets(manifest: UrlManifest) {
-            this.loadAssets().then((manifest: any) => {this.onLoaded()}).catch((reasons) => {
+            this.loadAssets().then(() => {this.onBeginLoadGameData(manifest)}).catch((reasons) => {
                   console.log('Asset loading failed');
                   this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reasons);
             });
@@ -170,6 +175,24 @@ export class Game {
             this._engine.runRenderLoop(() => {
                   this._stage.showTime();
             });
+      }
+
+      onBeginLoadGameData(manifest: UrlManifest) {
+            this.onLoadGameData(manifest)
+                  .then(() => {
+                        this.onLoaded();
+                  })
+                  .catch((reason) => {
+                  console.log("Game data loading failed");
+                  this.handleLoadingLifecycleError(null, reason);
+            });
+      }
+
+      onLoadGameData(manifest: UrlManifest): Promise<boolean> {
+            if (this.onBeforeLoadGameData) {
+                  this.onBeforeLoadGameData();
+            }
+            return this._statisticsHandler.loadCampaign(manifest, this._campaignId);
       }
 
       hasBabylon(): boolean {

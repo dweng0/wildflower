@@ -1,6 +1,6 @@
 import * as WebRequest from 'rest';
 import * as mime from 'rest/interceptor/mime';
-import {UrlManifest, ManifestItem} from '../interface/urlmanifest';
+import {UrlManifest} from '../interface/urlmanifest';
 
 /** dummy data */
 import {DummyManifestData} from '../../test/data/urlmanifest';
