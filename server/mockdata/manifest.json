@@ -1,5 +1,6 @@
 {
       "handshake":"testhandshakeurl",
+      "playerUsername": "dwengo",
       "baseUrl":"/game",
       "map":{
             "baseUrl": "/stargazer",
@@ -14,18 +15,5 @@
             "y": -20,
             "z": 0
             }
-      },
-      "characters": [
-            {
-                  "name":"r",
-                  "url": "/r",
-                  "sounds":{
-                        "idle":"/idlesound",
-                        "moving": "/movingsound",
-                        "flinching":"/flinchingsound",
-                        "attacking":"/attackingsound",
-                        "casting":"/castingsound"
-                  }
-            }
-      ]
+      }
 }

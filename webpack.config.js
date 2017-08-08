@@ -1,5 +1,6 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
+var TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 var path = require('path');
 
 var webpack = require('webpack');
@@ -48,6 +49,13 @@ module.exports = {
         new CopyWebpackPlugin([
              {from:"node_modules/babylonjs/dist/preview release/babylon.max.js", to:"vendors/babylon.js"},
               {from:"node_modules/babylonjs/dist/preview release/oimo.js", to:"vendors/oimo.js"},
-        ])
+        ]),
+        new TypedocWebpackPlugin({
+            name: "WildFlower",
+            mode: 'file',
+            includeDeclarations: false,
+            ignoreCompilerErrors: true,
+            out: '../.documentation'
+        }, ['./source'])
         ]
 };

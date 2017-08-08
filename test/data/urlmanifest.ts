@@ -1,11 +1,11 @@
-import {UrlManifest, ManifestItem, MapManifest} from '../../source/interface/urlmanifest';
+import {UrlManifest, MapManifest} from '../../source/interface/urlmanifest';
 
 export class DummyManifestData {
       baseUrl: string;
       handshake: string;
       map: MapManifest;
-      mapModels: Array<ManifestItem>;
-      characters: Array<ManifestItem>;
+      mapModels: any;
+      characters: any;
       constructor() {
             this.baseUrl = "http://localhost:9876";
             this.handshake = "http://localhost:9876";

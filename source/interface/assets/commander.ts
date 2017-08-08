@@ -5,7 +5,6 @@ import {IPhysics} from '../physics';
 /// It has a one to many relatinship with commander abilities, these abilities are then applied on top of stats the user currently has.
 /// </summary>
 export interface ICommander {
-    id: number;
     name: string;
     description: string;
     imgUrl: string;
@@ -17,6 +16,6 @@ export interface ICommander {
     baseAgility: number;
     level: number;
     experiencePoints: number;
-    textures: ITextureSet;
+    mesh: any;
     physics: IPhysics;
 }

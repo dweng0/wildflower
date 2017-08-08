@@ -3,28 +3,33 @@
  * and all that jazz, the 'character' class will create an instance of this class and any 'physical' interactions will need to be piped through the character class
  */
 import * as BABYLON from 'babylonjs';
-
 /**
  * Import the necessary IInterface
  */
 import { ICommander } from '../interface/assets/commander';
 
 export class Commander {
-    private _name: string;
     private _stats: ICommander;
     private _mesh: BABYLON.AbstractMesh;
-    constructor(name: string) {
-        this._name = name;
-     }
+    constructor(commander: ICommander, scene: BABYLON.Scene) {
+        this._stats = commander;
+        this._mesh = commander.mesh;
+        this.setPhysics(scene);
+    }
 
-    createMesh(scene: BABYLON.Scene) {
-        this._mesh = scene.getMeshByName(this._name + "_mesh");
-
-        // Move the sphere upward 1/2 its height
+    setPhysics(scene: BABYLON.Scene) {
+        debugger;
         this._mesh.position.y = 20;
-        this._mesh.physicsImpostor = new BABYLON.PhysicsImpostor(this._mesh, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, restitution: 0.2, friction: 0.9 }, scene);
+        this._mesh.physicsImpostor = new BABYLON.PhysicsImpostor(this._mesh, BABYLON.PhysicsImpostor.BoxImpostor, {
+            mass: this._stats.physics.mass,
+            restitution: this._stats.physics.restitution,
+            friction: this._stats.physics.friction
+        }, scene);
     }
     fetchMesh(): BABYLON.AbstractMesh {
         return this._mesh;
+    }
+    getName(): string {
+        return this._stats.name;
     }
 }

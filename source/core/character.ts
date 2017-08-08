@@ -1,51 +1,63 @@
 import * as BABYLON from 'babylonjs';
 import { Commander } from './commander';
+import { Campaign } from '../interface/assets/campaign';
+import { Player } from '../interface/assets/player';
 
-export enum Axis {
-  x,
-  y,
-  z
-}
-
-export interface IImpulseData {
-  force: BABYLON.Vector3;
-  position: BABYLON.Vector3;
-}
-
+/**
+ * Used to determine if a character still needs to move on a per frame render basis
+ */
 export interface IMovementPackage {
   finished: boolean;
   destination: BABYLON.Vector3;
 }
 
 export class Character {
+  private playerId: string;
   private commander: Commander;
+  private _player: Player;
   movementPackage: IMovementPackage;
 
-  constructor(manifest: any, scene: BABYLON.Scene) {
-    // just for testing purposes
-    this.commander = new Commander("r");
-    this.commander.createMesh(scene);
+  constructor(username: string, campaign: Campaign,  scene: BABYLON.Scene) {
+    debugger;
+    // find user in campaign
+    this._player = this.findUserInCampaign(username, campaign);
 
+    // create commander
+    this.commander = new Commander(this._player.commander, scene);
     this.movementPackage = {
       finished: true,
       destination: new BABYLON.Vector3(0, 0, 0)
     }
   }
 
+  findUserInCampaign(username: string, campaign: Campaign): Player {
+    debugger;
+    let foundPlayer: Player;
+      campaign.blueTeam.players.forEach((player) => {
+        if (player.username === username) {
+          foundPlayer = player;
+        }
+      });
+
+      campaign.redTeam.players.forEach((player) => {
+        if (player.username === username) {
+          foundPlayer = player;
+        }
+      });
+
+      return foundPlayer;
+  }
+
   fetchMesh(): BABYLON.AbstractMesh {
     return this.commander.fetchMesh();
   }
 
-  calculateForce(axis: Axis, movement: number): BABYLON.Vector3 {
-    let x = (axis === Axis.x) ? movement : 0;
-    let y = (axis === Axis.y) ? movement : 0;
-    let z = (axis === Axis.z) ? movement : 0;
+  setPlayerId(id: string) {
+    this.playerId = id;
+  }
 
-    let newMovementVector = new BABYLON.Vector3(x, y, z);
-    // let newMovementVector = new BABYLON.Vector3(0, 0, 0.5)
-    console.log('moving:', x, y, z);
-    let force = this.transformFromGlobalVectorToLocal(this.computeWorldMatrix(), newMovementVector);
-    return newMovementVector;
+  getCommanderName() {
+    return this.commander.getName();
   }
 
   updateMovement() {

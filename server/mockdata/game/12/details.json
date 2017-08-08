@@ -1,0 +1,77 @@
+{
+      "id": "12",
+      "note": "This is some test campaign data",
+      "map": {
+            "name": "stargazer",
+            "activePlayers": 8,
+            "description": "oh to gaze into the stars...",
+            "redStartingPointX": 0,
+            "redStartingPointY": 0,
+            "redStartingPointZ": 0,
+            "blueStartingPointX": 150,
+            "blueStartingPointY": 150,
+            "blueStartingPointZ": 150
+      },
+      "redTeam": {
+            "id": "red",
+            "name": "The beetle borgs",
+            "level": 0,
+            "players": [
+                  {
+                        "id": "somerandomid",
+                        "stats": {
+                              "state": "ready",
+                              "deaths": 0,
+                              "kills": 0,
+                              "experience": 0,
+                              "gold": 0,
+                              "damageDealt": 0,
+                              "damageReceived": 0,
+                              "healingDealt": 0,
+                              "healingRecieved": 0
+                        },
+                        "username": "dwengo",
+                        "commander": {
+                              "name": "R",
+                              "description": "R is a strange fellow...",
+                              "imgUrl": "some image url",
+                              "assetsUrl": "/r",
+                              "baseHealth": 0,
+                              "baseShield": 0,
+                              "basePower": 0,
+                              "baseSpeed": 0,
+                              "baseAgility": 0,
+                              "level": 0,
+                              "experiencePoints": 0,
+                              "mesh": "",
+                              "physics":{
+                                    "mass":1,
+                                    "restitution":0.2,
+                                    "friction":0.9
+                              }
+                        },
+                        "faction": {
+                              "id":"somethingId",
+                              "name": "SomethingName",
+                              "logo": "SomethingLogo"
+                        },
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                  }
+            ]
+      },
+      "blueTeam": {
+            "id": "blue",
+            "name": "Reef dudes",
+            "level": 0,
+            "players": []
+      },
+      "spectatingTeam": {
+            "id": "spectator",
+            "name": "The spectators",
+            "level": 0,
+            "players": []
+      }
+}
+
