@@ -163,7 +163,7 @@ export class Game {
             this._stage.setCameraOnPlayer("r_mesh");
             this.input.onCharacterReady(this._stage.getCharacter())
             this._engine.runRenderLoop(() => {
-                  this._stage.showTime(this._canvas, true);
+                  this._stage.showTime();
             });
       }
 

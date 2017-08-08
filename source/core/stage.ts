@@ -1,11 +1,15 @@
 import * as BABYLON from 'babylonjs';
-import {Character} from './character';
-import {UrlManifest, WorldPhysics} from '../interface/urlmanifest';
+import { Character } from './character';
+import { UrlManifest, WorldPhysics } from '../interface/urlmanifest';
 /**
- * Handles the loading of files for the game, does not handle web sockets or real time streams
+ * @classdesc Handles the setting up of scenes, cameras and management of active characters in the scene.
+ * The entry point for 'setting up' is 'setTheStage'
+ * The entry point for starting everything up is 'showTime'
  */
 export class Stage {
+
       private _engine: BABYLON.Engine;
+
       private _lighting: BABYLON.HemisphericLight;
       private _scene: BABYLON.Scene;
       private _camera: BABYLON.FollowCamera;
@@ -39,28 +43,37 @@ export class Stage {
             }
       }
 
+      /**
+       * Allows easy camera setting.
+       * @param type {string} camera type to be used
+       * @param canvas {HTMLCanvasElement} the canvas that the camera may like to attach to
+       */
       useCamera(type: string, canvas: HTMLCanvasElement) {
             let camera;
             switch (type) {
-                  case "free" :
-                  {
-                       camera = this.setDebugCamera(canvas);
-                        break;
-                  }
-                  case "arc" :
-                  {
-                        camera = this._setArcCamera(canvas);
-                        break;
-                  }
-                  case "follow" :
-                  {
-                        camera =  this._setCamera(canvas);
-                        break;
-                  }
+                  case "free":
+                        {
+                              camera = this.setDebugCamera(canvas);
+                              break;
+                        }
+                  case "arc":
+                        {
+                              camera = this._setArcCamera(canvas);
+                              break;
+                        }
+                  case "follow":
+                        {
+                              camera = this._setCamera(canvas);
+                              break;
+                        }
             }
             this._scene.activeCamera = camera;
       }
 
+      /**
+       * Creates the scene, sets up the cameras and the lighting
+       * @param canvas {HTMLCanvasElement} required for the camera to attach controls to
+       */
       setTheStage(canvas: HTMLCanvasElement): Array<string> {
             let errors = new Array<string>();
             this._setScene(errors);
@@ -69,22 +82,34 @@ export class Stage {
             return errors;
       }
 
-      showTime(canvas: HTMLCanvasElement, debug?: boolean): void {
+      /**
+       * Called after everything is loaded and the server has provided back a ready call
+       * @param debug {boolean} determines if the debug layer should be shown
+       */
+      showTime(debug?: boolean): void {
             this._scene.registerBeforeRender(() => {
-                  this.updateCharacterMovements();
+                  this._updateCharacterMovements();
             });
             this._scene.render();
-             if (debug) {
+            if (debug) {
                   this._scene.debugLayer.show();
             }
       }
 
+      /**
+       * simple getter, returns the private scene
+       * @returns {BABYLON.Scene}
+       */
       getScene(): BABYLON.Scene {
             return this._scene;
       }
 
-      setDebugCamera(canvas): any {
-            this._freeCamera = new BABYLON.FreeCamera("camera1",  new BABYLON.Vector3(0, 15, -45), this._scene);
+      /**
+       * Sets up a free camera, attaches movement controls, note the controls prevent default even with noPreventDefault bool set to true
+       * @param canvas {HTMLCanvasElement} element the camera needs to attach controls to
+       */
+      setDebugCamera(canvas: HTMLCanvasElement): any {
+            this._freeCamera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 15, -45), this._scene);
 
             // for debugging the scene
             this._freeCamera.keysUp = [38];
@@ -94,28 +119,36 @@ export class Stage {
             this._freeCamera.attachControl(canvas)
             this._freeCamera.speed = 3.0;
             // camera positioning
-           // this._freeCamera.setTarget(this._thisCharacter.fetchMesh().position);
+            // this._freeCamera.setTarget(this._thisCharacter.fetchMesh().position);
             this._freeCamera.attachControl(canvas, true);
             return this._freeCamera;
       }
 
+      /**
+       * Gets 'this client' character
+       * @todo should return any character based on the id passeed in... or something.
+       * @return {Character}
+       */
       getCharacter(): Character {
             return this._thisCharacter;
       }
 
-      updateCharacterMovements() {
+      /**
+       * Called in registerBeforeRender, updates character movements
+       * @private
+       */
+      private _updateCharacterMovements() {
             this._characters.forEach((character: Character) => {
                   !(character.movementPackage.finished) ? character.updateMovement() : null;
             });
       };
 
-
       /**
-       * Attempts to set the camera, returns an array of error messages. if the array is empty, then it was successful
-       * @param {error}
-       * @returns {Array<string>}
+       * Sets up a follow camera and attaches controls
+       * @param canvas {HTMLCanvasElement}
+       * @return {BABYLON.FollowCamera}
        */
-      private _setCamera(canvas): BABYLON.FollowCamera {
+      private _setCamera(canvas: HTMLCanvasElement): BABYLON.FollowCamera {
 
             this._camera = new BABYLON.FollowCamera("Follow", new BABYLON.Vector3(0, 15, 45), this._scene);
             this._camera.radius = 50; // how far from the object to follow
@@ -129,6 +162,11 @@ export class Stage {
             return this._camera;
       }
 
+      /**
+       * Sets up an arc camera sets it on the member variable, but also returns it
+       * @param canvas {HTMLCanvasElement}
+       * @returns {BABYLON.ArcRotateCamera}
+       */
       private _setArcCamera(canvas): BABYLON.ArcRotateCamera {
             this._arcCamera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), this._scene);
             this._arcCamera.setPosition(new BABYLON.Vector3(0, 0, 50));
@@ -136,8 +174,9 @@ export class Stage {
             return this._arcCamera;
       }
 
-       /**
+      /**
        * Attempts to set the scene, returns an array of error messages. if the array is empty, then it was successful
+       * @private
        * @returns {Array<string>}
        */
       private _setScene(errors: Array<string>): Array<string> {
@@ -150,12 +189,19 @@ export class Stage {
             return errors;
       }
 
+      /**
+       * Sets scen lightingq
+       * @private
+       */
       private _setLighting(): void {
             this._lighting = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), this._scene);
             this._lighting.diffuse = new BABYLON.Color3(1, 1, 1);
             this._lighting.specular = new BABYLON.Color3(0, 0, 0);
       }
 
+      /**
+       * Sets the '_thisCharacter' variable and pushes it into the list of characters in the scene
+       */
       setThisPlayer(): void {
             // stub
             let characterManifest;
@@ -163,6 +209,10 @@ export class Stage {
             this._characters.push(this._thisCharacter);
       }
 
+      /**
+       * Adds the character argument to the list of characters array
+       * @param character {Character}
+       */
       addCharacter(character: Character) {
             this._characters.push(character);
       }
