@@ -63,6 +63,7 @@ export class Game {
        * Starts us off... calls the load function and handles the success (by calling onLoadBabylon) or error (by calling handleLoadingLifecycleError)
        */
       start(): void {
+            console.log('starting...');
             this.load().then((manifest: any) => { this.onBeginLoadGameData(manifest) }).catch((reasons) => {
                   console.log('Interface failed to load');
                   this.handleLoadingLifecycleError(this.ifInterfaceFailedToLoad, reasons);
@@ -77,7 +78,7 @@ export class Game {
             if (this.onBeforeLoad) {
                   this.onBeforeLoad();
             }
-
+            console.log('loading started');
             return new Promise<boolean>((resolve, reject) => {
                   this._interface.fetchManifest((response: any) => {
                         resolve(JSON.parse(response.entity));
@@ -86,6 +87,7 @@ export class Game {
       }
 
       onBeginLoadGameData(manifest: UrlManifest) {
+            console.log('loading game data');
             this.onLoadGameData(manifest)
                   .then((campaign: Campaign) => {
                         this.onLoadBabylon(manifest, campaign);
@@ -110,6 +112,7 @@ export class Game {
        * @param manifest {UrlManifest}
        */
       onLoadBabylon(manifest: UrlManifest, campaign: Campaign ) {
+            console.log('loading babylon files');
             this.loadBabylon(manifest, campaign).then(() => {
                   // at this point we have the scene, so we can set up the assets manager
                   this._assetsManager = new AssetsManager(manifest, this._stage.getScene());
@@ -153,7 +156,8 @@ export class Game {
        * @param manifest {UrlManifest}
        */
       onBeginLoadAssets(manifest: UrlManifest, campaign: Campaign) {
-            this.loadAssets(campaign).then(() => { this.onLoaded() }).catch((reasons) => {
+            console.log('loading assets');
+            this.loadAssets(campaign).then(() => { this.onLoaded(manifest, campaign) }).catch((reasons) => {
                   console.log('Asset loading failed');
                   this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reasons);
             });
@@ -165,7 +169,6 @@ export class Game {
        * @returns {promise<boolean>}
        */
       loadAssets(campaign: Campaign): Promise<boolean> {
-            debugger;
             if (this.onBeforeAssetsLoad) {
                   this.onBeforeAssetsLoad();
             }
@@ -187,11 +190,12 @@ export class Game {
        * @todo tell server we are ready and wait for it to tell us to start the engine.
        * @param callback {function}
        */
-      onLoaded(): void {
+      onLoaded(manifest: UrlManifest, campaign: Campaign): void {
+            console.log('finished loading');
             if (this.onReady) {
                   this.onReady();
             }
-            this._stage.setThisPlayer();
+            this._stage.setThisPlayer(manifest.playerUsername, campaign);
             this._stage.setCameraOnPlayer("r_mesh");
             this.input.onCharacterReady(this._stage.getCharacter())
             this._engine.runRenderLoop(() => {

@@ -52,6 +52,12 @@ export interface Player {
  * The initial url manifest as recieved from the backend
  */
 export interface UrlManifest {
+
+      /**
+       * The unique name of the user making this url request
+       */
+      playerUsername: string;
+
       /**
        * The base url
        */

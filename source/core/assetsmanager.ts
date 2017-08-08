@@ -10,7 +10,7 @@ export class AssetsManager {
       private _assets: BABYLON.AssetsManager;
       private _manifest: UrlManifest;
       private _scene: BABYLON.Scene;
-
+      private _loadedAvatarStatistics: Array<ICharacterData>;
       loadingText: string;
 
       constructor(manifest: UrlManifest, scene: BABYLON.Scene) {
@@ -33,8 +33,9 @@ export class AssetsManager {
                   engine.loadingUIText = "Distance to touchdown " + numberOfAssets + "000km";
 
                   this.getMapAssets(this._scene, this._manifest, reject);
-                  this.getPlayerAssets(this._scene, this._manifest, campaign).then(() => {
-                         this._assets.load();
+                  this.getAvatarStatistics(this._scene, this._manifest, campaign).then((characterData: Array<ICharacterData>) => {
+                        this._loadedAvatarStatistics = characterData;
+                        this._assets.load();
                   }).catch(() => {
                         throw new Error('Failed to load Players');
                   });
@@ -58,39 +59,40 @@ export class AssetsManager {
       }
 
       countAllAssets(manifest: UrlManifest): number {
-            return 3 + manifest.characters.length;
+            return 3;
       }
 
-      getPlayerAssets(scene: BABYLON.Scene, manifest: UrlManifest, campaign: Campaign): Promise<boolean> {
+      getAvatarStatistics(scene: BABYLON.Scene, manifest: UrlManifest, campaign: Campaign): Promise<Array<ICharacterData>> {
             let url = manifest.baseUrl + "/characters";
-            let loadedCharacters = 0;
+            let loadedCharacters = Array<ICharacterData>();
 
-            return new Promise<boolean>((resolve, reject) => {
+            let loadCharacter = (player: any, response: WebRequest.Response) => {
+                  let characterManifest  = <ICharacterData>JSON.parse(response.entity);
+                  this.loadCharacter(url, player.commander, characterManifest);
+                  loadedCharacters.push(characterManifest);
+
+                  // when all characters have been loaded into the assets manager, resolve the promise
+                  if (loadedCharacters.length === campaign.redTeam.players.length + campaign.blueTeam.players.length) {
+                        return true;
+                  }
+            }
+
+            return new Promise<Array<ICharacterData>>((resolve, reject) => {
                   // load red team avatars
                   campaign.redTeam.players.forEach((redPlayer) => {
                         WebRequest(url + redPlayer.commander.assetsUrl + "/manifest").then((response: WebRequest.Response) => {
-                              let characterManifest  = <ICharacterData>JSON.parse(response.entity);
-                              this.loadCharacter(url, redPlayer.commander, characterManifest);
-                              loadedCharacters++;
-
-                              // when all characters have been loaded into the assets manager, resolve the promise
-                              if (loadedCharacters === campaign.redTeam.players.length + campaign.blueTeam.players.length) {
-                                    resolve(true);
-                              }
+                             if (loadCharacter(redPlayer, response)) {
+                                   resolve(loadedCharacters);
+                             }
                         }).catch( () => { throw new Error("Failed to load character manifest") });
                   });
 
                   // load blue team avatars
                   campaign.blueTeam.players.forEach((bluePlayer) => {
                         WebRequest(url + bluePlayer.commander.assetsUrl + "/manifest").then((response: WebRequest.Response) => {
-                              let characterManifest  = <ICharacterData>JSON.parse(response.entity);
-                              this.loadCharacter(url, bluePlayer.commander, characterManifest);
-                              loadedCharacters++;
-
-                               // when all characters have been loaded into the assets manager, resolve the promise
-                              if (loadedCharacters === campaign.redTeam.players.length + campaign.blueTeam.players.length) {
-                                    resolve(true);
-                              }
+                              if (loadCharacter(bluePlayer, response)) {
+                                   resolve(loadedCharacters);
+                             }
                         }).catch( () => { throw new Error("Failed to load character manifest") });
                   });
             });

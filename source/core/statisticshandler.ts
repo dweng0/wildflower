@@ -12,7 +12,6 @@ export class StatisticsHandler {
       loadCampaign(manifest: UrlManifest, campaignId: number): Promise<any> {
             return new Promise<any>((resolve, reject) => {
                   WebRequest(manifest.baseUrl + "/campaign/" + campaignId).then((response: WebRequest.Response) => {
-                        debugger;
                         this._campaign = <Campaign>JSON.parse(response.entity);
                         resolve(this._campaign);
                   }).catch(

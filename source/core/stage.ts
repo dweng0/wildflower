@@ -1,6 +1,7 @@
 import * as BABYLON from 'babylonjs';
 import { Character } from './character';
 import { UrlManifest, WorldPhysics } from '../interface/urlmanifest';
+import { Campaign } from '../interface/assets/campaign';
 /**
  * @classdesc Handles the setting up of scenes, cameras and management of active characters in the scene.
  * The entry point for 'setting up' is 'setTheStage'
@@ -200,10 +201,8 @@ export class Stage {
       /**
        * Sets the '_thisCharacter' variable and pushes it into the list of characters in the scene
        */
-      setThisPlayer(): void {
-            // stub
-            let characterManifest;
-            this._thisCharacter = new Character(characterManifest, this._scene);
+      setThisPlayer(userName: string, campaign: Campaign): void {
+            this._thisCharacter = new Character(userName, campaign, this._scene);
             this.characters.push(this._thisCharacter);
       }
 

@@ -1,5 +1,6 @@
 {
       "handshake":"testhandshakeurl",
+      "playerUsername": "dwengo",
       "baseUrl":"/game",
       "map":{
             "baseUrl": "/stargazer",

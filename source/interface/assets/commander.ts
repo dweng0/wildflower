@@ -17,4 +17,5 @@ export interface ICommander {
     level: number;
     experiencePoints: number;
     mesh: any;
+    physics: IPhysics;
 }

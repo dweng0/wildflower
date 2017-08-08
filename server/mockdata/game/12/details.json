@@ -30,7 +30,7 @@
                               "healingDealt": 0,
                               "healingRecieved": 0
                         },
-                        "username": "epicsoundingusername",
+                        "username": "dwengo",
                         "commander": {
                               "name": "R",
                               "description": "R is a strange fellow...",
@@ -43,7 +43,12 @@
                               "baseAgility": 0,
                               "level": 0,
                               "experiencePoints": 0,
-                              "mesh": ""
+                              "mesh": "",
+                              "physics":{
+                                    "mass":1,
+                                    "restitution":0.2,
+                                    "friction":0.9
+                              }
                         },
                         "faction": {
                               "id":"somethingId",
