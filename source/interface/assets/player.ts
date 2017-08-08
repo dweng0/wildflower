@@ -8,7 +8,7 @@ import {Faction} from './faction';
 /// It has a one to many relatinship with commander abilities, these abilities are then applied on top of stats the user currently has.
 /// </summary>
 export interface Player {
-      id: number;
+      id: string;
       stats: PlayerStats;
       username: string;
       commander: ICommander

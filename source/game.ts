@@ -3,10 +3,10 @@ import { DomHandler } from './preloader/dom';
 import { AssetsManager } from './core/assetsmanager';
 import { StatisticsHandler } from './core/statisticshandler';
 import { Interface } from './core/interface';
-import {Stage} from './core/stage';
-import {Input} from './core/userinput';
+import { Stage } from './core/stage';
+import { Input } from './core/userinput';
 
-import {UrlManifest} from './interface/urlmanifest';
+import { UrlManifest } from './interface/urlmanifest';
 
 /**
  * @classdesc Ahh the trusty game class, the puppeteer pulling all the strings, the functions have been placed in the order that they are called, but essentially, this loads other classes and waits for their response before continuing onto the next function
@@ -53,16 +53,16 @@ export class Game {
             this._campaignId = campaignId;
             this.input = new Input();
             this._statisticsHandler = new StatisticsHandler();
-            this.ifAssetsFailedToLoad = () => {console.log('stub function ifAssetsFailedToLoad')}
-            this.ifBabylonFailedToLoad = () => {console.log('stub function ifBabylonFailedToLoad')}
-            this.ifInterfaceFailedToLoad = () => {console.log('stub function ifInterfaceFailedToLoad')}
+            this.ifAssetsFailedToLoad = () => { console.log('stub function ifAssetsFailedToLoad') }
+            this.ifBabylonFailedToLoad = () => { console.log('stub function ifBabylonFailedToLoad') }
+            this.ifInterfaceFailedToLoad = () => { console.log('stub function ifInterfaceFailedToLoad') }
       }
 
       /**
        * Starts us off... calls the load function and handles the success (by calling onLoadBabylon) or error (by calling handleLoadingLifecycleError)
        */
       start(): void {
-            this.load().then((manifest: any) => { this.onLoadBabylon(manifest)}).catch((reasons) => {
+            this.load().then((manifest: any) => { this.onLoadBabylon(manifest) }).catch((reasons) => {
                   console.log('Interface failed to load');
                   this.handleLoadingLifecycleError(this.ifInterfaceFailedToLoad, reasons);
             });
@@ -80,7 +80,7 @@ export class Game {
             return new Promise<boolean>((resolve, reject) => {
                   this._interface.fetchManifest((response: any) => {
                         resolve(JSON.parse(response.entity));
-                  }, (err) => { reject(err.error)});
+                  }, (err) => { reject(err.error) });
             });
       }
 
@@ -96,7 +96,8 @@ export class Game {
 
                   // and apply the scene to other classes that need it
                   this.input.setScene(this._stage.getScene());
-                  this.onBeginLoadAssets(manifest); }).catch((reasons) => {
+                  this.onBeginLoadAssets(manifest);
+            }).catch((reasons) => {
                   console.log('Babylon loading failed');
                   this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reasons);
             });
@@ -132,7 +133,7 @@ export class Game {
        * @param manifest {UrlManifest}
        */
       onBeginLoadAssets(manifest: UrlManifest) {
-            this.loadAssets().then(() => {this.onBeginLoadGameData(manifest)}).catch((reasons) => {
+            this.loadAssets().then(() => { this.onBeginLoadGameData(manifest) }).catch((reasons) => {
                   console.log('Asset loading failed');
                   this.handleLoadingLifecycleError(this.ifAssetsFailedToLoad, reasons);
             });
@@ -151,12 +152,13 @@ export class Game {
 
             return new Promise<boolean>((resolve, reject) => {
                   if (!this._interface.manifest) {
-                      reject("No Manifest found");
+                        reject("No Manifest found");
                   }
                   this._assetsManager.loadInstanceAssets(this._engine).then(() => { resolve() }).catch((reason) => {
                         console.log("Assets manager failed.")
                         this.ifAssetsFailedToLoad(reason);
-                        reject(reason)});
+                        reject(reason)
+                  });
             });
       }
 
@@ -169,7 +171,6 @@ export class Game {
             if (this.onReady) {
                   this.onReady();
             }
-            this._stage.setThisPlayer();
             this._stage.setCameraOnPlayer("r_mesh");
             this.input.onCharacterReady(this._stage.getCharacter())
             this._engine.runRenderLoop(() => {
@@ -180,12 +181,13 @@ export class Game {
       onBeginLoadGameData(manifest: UrlManifest) {
             this.onLoadGameData(manifest)
                   .then(() => {
+                        this._statisticsHandler.updateCommandersWithPlayerIds(this._stage.characters);
                         this.onLoaded();
                   })
                   .catch((reason) => {
-                  console.log("Game data loading failed");
-                  this.handleLoadingLifecycleError(null, reason);
-            });
+                        console.log("Game data loading failed");
+                        this.handleLoadingLifecycleError(null, reason);
+                  });
       }
 
       onLoadGameData(manifest: UrlManifest): Promise<boolean> {
@@ -219,8 +221,8 @@ export class Game {
             return errors;
       }
 
-      handleLoadingLifecycleError (eventFn: (errors?: any) => any, errors: Array<string>) {
-            this._engine.loadingUIText =  this.buildErrorMessage(errors);
+      handleLoadingLifecycleError(eventFn: (errors?: any) => any, errors: Array<string>) {
+            this._engine.loadingUIText = this.buildErrorMessage(errors);
 
             if (errors.length === undefined) {
                   errors = new Array<string>();
@@ -239,7 +241,7 @@ export class Game {
        * @param errors {Array<string>}
        * @returns {string}
        */
-      buildErrorMessage (errors: any): string {
+      buildErrorMessage(errors: any): string {
             let message = "Landing Aborted";
             throw new Error(errors);
       }
@@ -253,7 +255,7 @@ window.addEventListener('DOMContentLoaded', () => {
 document.body.addEventListener("mousedown", (e) => {
       console.log("CLICK");
       game.input.onMouseInput(e);
-} ),
-window.addEventListener("keydown", (e) => {
-      game.input.onKeyboardInput(e);
-});
+}),
+      window.addEventListener("keydown", (e) => {
+            game.input.onKeyboardInput(e);
+      });

@@ -15,7 +15,7 @@ export class Commander {
     private _mesh: BABYLON.AbstractMesh;
     constructor(name: string) {
         this._name = name;
-     }
+    }
 
     createMesh(scene: BABYLON.Scene) {
         this._mesh = scene.getMeshByName(this._name + "_mesh");
@@ -26,5 +26,8 @@ export class Commander {
     }
     fetchMesh(): BABYLON.AbstractMesh {
         return this._mesh;
+    }
+    getName(): string {
+        return this._name;
     }
 }

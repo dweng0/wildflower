@@ -91,7 +91,7 @@ app.get('/game/characters/:id/manifest', function (req, res) {
  * Handling of game data
  */
 
-app.get('/game/campain/:id', function (req, res) {
+app.get('/game/campaign/:id', function (req, res) {
     let id = req.params.id;
     res.sendFile(path.join(__dirname, "./mockdata/game/" + id + "/details.json"));
 })

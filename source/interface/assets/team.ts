@@ -1,14 +1,7 @@
 import {Player} from './player';
 
-export enum TeamSide {
-    red,
-    blue,
-    spectator
-}
-
 export interface Team {
-    id: number;
-    side: TeamSide;
+    id: string;
     name: string;
     /**
      * The teams level

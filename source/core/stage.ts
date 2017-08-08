@@ -17,13 +17,13 @@ export class Stage {
       private _environment: BABYLON.StandardMaterial;
       private _worldPhysics: WorldPhysics;
       private _thisCharacter: Character; // for now this will be a mesh
-      private _characters: Array<Character>;
+      characters: Array<Character>;
 
       constructor(engine: BABYLON.Engine, manifest: UrlManifest) {
             console.log('A magical stage has been created')
             this._engine = engine;
             this._worldPhysics = manifest.world;
-            this._characters = new Array<Character>();
+            this.characters = new Array<Character>();
       }
 
       /**
@@ -136,7 +136,7 @@ export class Stage {
        * @private
        */
       private _updateCharacterMovements() {
-            this._characters.forEach((character: Character) => {
+            this.characters.forEach((character: Character) => {
                   !(character.movementPackage.finished) ? character.updateMovement() : null;
             });
       };
@@ -204,7 +204,7 @@ export class Stage {
             // stub
             let characterManifest;
             this._thisCharacter = new Character(characterManifest, this._scene);
-            this._characters.push(this._thisCharacter);
+            this.characters.push(this._thisCharacter);
       }
 
       /**
@@ -212,6 +212,6 @@ export class Stage {
        * @param character {Character}
        */
       addCharacter(character: Character) {
-            this._characters.push(character);
+            this.characters.push(character);
       }
 }

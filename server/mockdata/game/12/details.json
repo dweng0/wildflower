@@ -1,0 +1,33 @@
+{
+      "id": "12",
+      "note": "This is some test campaign data",
+      "map": {
+            "name": "stargazer",
+            "activePlayers": 8,
+            "description": "oh to gaze into the stars...",
+            "redStartingPointX": 0,
+            "redStartingPointY": 0,
+            "redStartingPointZ": 0,
+            "blueStartingPointX": 150,
+            "blueStartingPointY": 150,
+            "blueStartingPointZ": 150
+      },
+      "redTeam": {
+            "id": "red",
+            "name": "The beetle borgs",
+            "level": 0,
+            "players": []
+      },
+      "blueTeam": {
+            "id": "blue",
+            "name": "Reef dudes",
+            "level": 0,
+            "players": []
+      },
+      "spectatingTeam": {
+            "id": "spectator",
+            "name": "The spectators",
+            "level": 0,
+            "players": []
+      }
+}

@@ -10,6 +10,7 @@ export interface IMovementPackage {
 }
 
 export class Character {
+  private playerId: string;
   private commander: Commander;
   movementPackage: IMovementPackage;
 
@@ -26,6 +27,14 @@ export class Character {
 
   fetchMesh(): BABYLON.AbstractMesh {
     return this.commander.fetchMesh();
+  }
+
+  setPlayerId(id: string) {
+    this.playerId = id;
+  }
+
+  getCommanderName() {
+    return this.commander.getName();
   }
 
   updateMovement() {
