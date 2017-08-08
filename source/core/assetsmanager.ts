@@ -99,13 +99,11 @@ export class AssetsManager {
       }
 
       loadCharacter(url: string, commander: ICommander, manifest: ICharacterData) {
-            debugger;
             let bodyTextureUrl = url + commander.assetsUrl + "/textures" + manifest.textureUrl;
             let meshUrl = url + commander.assetsUrl + manifest.meshUrl;
             let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, manifest.meshes[0]);
             meshTask.onSuccess = function (task: any) {
                   // http://www.html5gamedevs.com/topic/6732-question-about-mesh-impostor/
-                  debugger;
                  let mesh = BABYLON.Mesh.MergeMeshes(task.loadedMeshes)
                  // let mesh = task.loadedMeshes[1];
                   mesh.position = BABYLON.Vector3.Zero();

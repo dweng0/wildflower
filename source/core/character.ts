@@ -8,6 +8,7 @@ import { Player } from '../interface/assets/player';
  */
 export interface IMovementPackage {
   finished: boolean;
+  angleApplied: boolean;
   destination: BABYLON.Vector3;
 }
 
@@ -17,8 +18,7 @@ export class Character {
   private _player: Player;
   movementPackage: IMovementPackage;
 
-  constructor(username: string, campaign: Campaign,  scene: BABYLON.Scene) {
-    debugger;
+  constructor(username: string, campaign: Campaign, scene: BABYLON.Scene) {
     // find user in campaign
     this._player = this.findUserInCampaign(username, campaign);
 
@@ -26,26 +26,26 @@ export class Character {
     this.commander = new Commander(this._player.commander, scene);
     this.movementPackage = {
       finished: true,
+      angleApplied: false,
       destination: new BABYLON.Vector3(0, 0, 0)
     }
   }
 
   findUserInCampaign(username: string, campaign: Campaign): Player {
-    debugger;
     let foundPlayer: Player;
-      campaign.blueTeam.players.forEach((player) => {
-        if (player.username === username) {
-          foundPlayer = player;
-        }
-      });
+    campaign.blueTeam.players.forEach((player) => {
+      if (player.username === username) {
+        foundPlayer = player;
+      }
+    });
 
-      campaign.redTeam.players.forEach((player) => {
-        if (player.username === username) {
-          foundPlayer = player;
-        }
-      });
+    campaign.redTeam.players.forEach((player) => {
+      if (player.username === username) {
+        foundPlayer = player;
+      }
+    });
 
-      return foundPlayer;
+    return foundPlayer;
   }
 
   fetchMesh(): BABYLON.AbstractMesh {
@@ -88,14 +88,29 @@ export class Character {
         this.movementPackage.finished = true;
       }
     }
-    debugger;
     mesh.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(x, 0, z));
+
+    let angle = this.getAngle(hitVector.x, hitVector.y, myPos.x, myPos.y);
+    if (angle !== 0) {
+      if (angle > 180) {
+         mesh.physicsImpostor.setAngularVelocity(new BABYLON.Vector3(0, -1, 0));
+      } else {
+         mesh.physicsImpostor.setAngularVelocity(new BABYLON.Vector3(0, 1, 0));
+      }
+    }
+  }
+
+  getAngle(x1: number, y1: number, x2: number, y2: number): number {
+    let xDiff = x2 - x1;
+    let yDiff = y2 - y1;
+    return Math.atan2(yDiff, xDiff) * 180.0 / Math.PI;
   }
 
   moveByMouse(hitVector: BABYLON.Vector3) {
     this.movementPackage = {
       finished: false,
-      destination: hitVector
+      destination: hitVector,
+      angleApplied: false
     }
   }
 

@@ -195,7 +195,6 @@ export class Game {
             if (this.onReady) {
                   this.onReady();
             }
-            debugger;
             this._stage.setThisPlayer(manifest.playerUsername, campaign);
             this._stage.setCameraOnPlayer("r_mesh");
             this.input.onCharacterReady(this._stage.getCharacter())
