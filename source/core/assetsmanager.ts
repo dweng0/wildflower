@@ -104,13 +104,14 @@ export class AssetsManager {
             let meshUrl = url + commander.assetsUrl + manifest.meshUrl;
             let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, manifest.meshes[0]);
             meshTask.onSuccess = function (task: any) {
-                  let mesh = task.loadedMeshes[0];
+                  // http://www.html5gamedevs.com/topic/6732-question-about-mesh-impostor/
+                  debugger;
+                  let mesh = <BABYLON.AbstractMesh>task.loadedMeshes[1];
                   debugger;
                   mesh.position = BABYLON.Vector3.Zero();
                   mesh.name = commander.name + "_mesh";
-                  mesh.width = 20;
-                  mesh.height = 20;
-                  mesh.position.y = 20;
+                  mesh.outlineWidth = 20;
+
                   mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, {
                         mass: commander.physics.mass,
                         restitution: commander.physics.restitution,
