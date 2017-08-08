@@ -106,10 +106,12 @@ export class AssetsManager {
             meshTask.onSuccess = function (task: any) {
                   // http://www.html5gamedevs.com/topic/6732-question-about-mesh-impostor/
                   debugger;
-                  let mesh = <BABYLON.AbstractMesh>task.loadedMeshes[1];
-                  debugger;
+                 let mesh = BABYLON.Mesh.MergeMeshes(task.loadedMeshes)
+                 // let mesh = task.loadedMeshes[1];
                   mesh.position = BABYLON.Vector3.Zero();
                   mesh.name = commander.name + "_mesh";
+                  mesh.position.y = 20;
+                  mesh.edgesWidth = 20;
                   mesh.outlineWidth = 20;
 
                   mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, {

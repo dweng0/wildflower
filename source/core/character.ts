@@ -88,6 +88,7 @@ export class Character {
         this.movementPackage.finished = true;
       }
     }
+    debugger;
     mesh.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(x, 0, z));
   }
 
