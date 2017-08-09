@@ -54,8 +54,8 @@
                               "mesh": "",
                               "physics":{
                                     "mass":1,
-                                    "restitution":0.2,
-                                    "friction":0.9
+                                    "restitution":1,
+                                    "friction":0.5
                               }
                         },
                         "faction": {
@@ -80,12 +80,12 @@
                               "healingDealt": 0,
                               "healingRecieved": 0
                         },
-                        "username": "beefer",
-                        "commander": {
-                              "name": "R",
-                              "description": "R is a strange fellow...",
+                        "username": "dwengo2",
+                         "commander": {
+                              "name": "Izella",
+                              "description": "Izzy izella",
                               "imgUrl": "some image url",
-                              "assetsUrl": "/r",
+                              "assetsUrl": "/izella",
                               "baseHealth": 0,
                               "baseShield": 0,
                               "basePower": 0,

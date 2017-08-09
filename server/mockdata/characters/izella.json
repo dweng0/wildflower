@@ -1,0 +1,12 @@
+{            
+      "physics": {
+            "mass":1,
+            "friction": 0.8,
+            "restitution": 0.2
+      },
+      "textureUrl": "/texture.jpg",
+      "meshUrl": "/meshes/",
+      "meshes": ["buggy.babylon"],
+      "width": 20,
+      "height": 20
+}
