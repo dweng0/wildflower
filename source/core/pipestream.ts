@@ -28,7 +28,6 @@ export class PipeStream {
       }
 
       setStreamHandlers (functionHooks: StreamHandlingPackage) {
-            
       }
 
       isReady(): boolean {
@@ -51,7 +50,7 @@ export class PipeStream {
 
       /**
        * We get this from the server.
-       * @param result 
+       * @param result
        */
       movePlayerResponse (result: StreamResult) {
             if (result.success) {
