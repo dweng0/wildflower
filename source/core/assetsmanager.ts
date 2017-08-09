@@ -84,8 +84,9 @@ export class AssetsManager {
                   // load red team avatars
                   this._campaign.redTeam.players.forEach((redPlayer) => {
                         WebRequest(url + redPlayer.commander.assetsUrl + "/manifest").then((response: WebRequest.Response) => {
-                              let spaceMaker = (2 * loadCharacter.length);
-                              let redStartingVector = new BABYLON.Vector3(this._campaign.map.redStartingPointX + spaceMaker, this._campaign.map.redStartingPointY, this._campaign.map.redStartingPointZ + spaceMaker);
+                              let spaceMaker = (5 * loadCharacter.length);
+                              let redStartingVector = new BABYLON.Vector3(this._campaign.map.redStartingPointX + spaceMaker, this._campaign.map.redStartingPointY, this._campaign.map.redStartingPointZ);
+                              debugger;
                              if (loadCharacter(redPlayer, redStartingVector, response)) {
                                    resolve(loadedCharacters);
                              }
@@ -95,8 +96,8 @@ export class AssetsManager {
                   // load blue team avatars
                   this._campaign.blueTeam.players.forEach((bluePlayer) => {
                         WebRequest(url + bluePlayer.commander.assetsUrl + "/manifest").then((response: WebRequest.Response) => {
-                              let spaceMaker = (2 * loadCharacter.length);
-                              let blueStartingVector = new BABYLON.Vector3(this._campaign.map.redStartingPointX + spaceMaker, this._campaign.map.redStartingPointY, this._campaign.map.redStartingPointZ);
+                              let spaceMaker = (5 * loadCharacter.length);
+                              let blueStartingVector = new BABYLON.Vector3(this._campaign.map.blueStartingPointX + spaceMaker, this._campaign.map.blueStartingPointY, this._campaign.map.blueStartingPointZ);
                               if (loadCharacter(bluePlayer, blueStartingVector, response)) {
                                    resolve(loadedCharacters);
                              }
