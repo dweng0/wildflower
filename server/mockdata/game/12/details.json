@@ -16,9 +16,9 @@
             "redStartingPointX": 0,
             "redStartingPointY": 0,
             "redStartingPointZ": 0,
-            "blueStartingPointX": 150,
-            "blueStartingPointY": 150,
-            "blueStartingPointZ": 150
+            "blueStartingPointX": 50,
+            "blueStartingPointY": 50,
+            "blueStartingPointZ": 0
       },
       "redTeam": {
             "id": "red",
