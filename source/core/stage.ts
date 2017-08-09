@@ -2,6 +2,7 @@ import * as BABYLON from 'babylonjs';
 import { Character } from './character';
 import { UrlManifest, WorldPhysics } from '../interface/urlmanifest';
 import { Campaign } from '../interface/assets/campaign';
+import {PipeStream, StreamHandlingPackage, StreamResult } from './pipestream';
 /**
  * @classdesc Handles the setting up of scenes, cameras and management of active characters in the scene.
  * The entry point for 'setting up' is 'setTheStage'
@@ -25,21 +26,6 @@ export class Stage {
             this._engine = engine;
             this._worldPhysics = manifest.world;
             this.characters = new Array<Character>();
-      }
-
-      /**
-       * Sets the camera on a specific mesh object
-       * @param meshObjectName {string}
-       */
-      setCameraOnPlayer(meshObjectName: string) {
-            console.log('Locking camera on character');
-            let characterMesh = this._thisCharacter.fetchMesh();
-            if (this._scene.activeCamera instanceof BABYLON.FollowCamera) {
-                  this._scene.activeCamera.lockedTarget = characterMesh;
-            } else {
-                  let newVectoring = new BABYLON.Vector3(characterMesh.position.x, characterMesh.position.y, characterMesh.position.z - 10);
-                  this._scene.activeCamera.position = newVectoring;
-            }
       }
 
       /**
@@ -110,6 +96,20 @@ export class Stage {
        */
       getScene(): BABYLON.Scene {
             return this._scene;
+      }
+
+      pipeUserInput(stream: PipeStream) {
+            let hooks: StreamHandlingPackage = {
+                  movePlayerSuccess: (id: string, point: BABYLON.Vector3) => {
+                        this.characters.forEach((character) => {
+                              (character.playerId === id) ? character.moveByMouse(point) : null;
+                        });
+                  },
+                  movePlayerFailure: () => {},
+                  attackPlayerSuccess: () => {},
+                  attackPlayerFailure: () => {}
+            }
+            stream.setStreamHandlers(hooks);
       }
 
       /**

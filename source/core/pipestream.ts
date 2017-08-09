@@ -17,7 +17,7 @@ export interface StreamHandlingPackage {
 
 export class PipeStream {
       private _signalR: any;
-
+      private _ready: boolean = false;
       private _movePlayerSuccess: (playerId: string, locationRequest: BABYLON.Vector3) => any;
       private _movePlayerFailure: (reason: string) => any;
       private _attackPlayerSuccess: (playerId: string, locationRequest: BABYLON.Vector3) => any;
@@ -28,10 +28,15 @@ export class PipeStream {
       }
 
       setStreamHandlers (functionHooks: StreamHandlingPackage) {
+            this._movePlayerSuccess = functionHooks.movePlayerSuccess;
+            this._movePlayerFailure = functionHooks.movePlayerFailure;
+            this._attackPlayerSuccess = functionHooks.attackPlayerSuccess;
+            this._attackPlayerFailure = functionHooks.attackPlayerFailure;
+            this._ready = true;
       }
 
       isReady(): boolean {
-            return true;
+            return this._ready;
       }
 
       movePlayerRequest (playerId: string, locationRequest: BABYLON.Vector3) {

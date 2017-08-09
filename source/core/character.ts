@@ -22,7 +22,7 @@ export class Character {
   constructor(username: string, campaign: Campaign, scene: BABYLON.Scene) {
     // find user in campaign
     this._player = this.findUserInCampaign(username, campaign);
-
+    this.playerId = this._player.username;
     // create commander
     this.commander = new Commander(this._player.commander, scene);
     this.movementPackage = {
