@@ -5,17 +5,20 @@ import {ICharacterData} from '../interface/assets/characterdata';
 import { IPhysics } from '../interface/physics';
 import {ICommander} from '../interface/assets/commander';
 import { Campaign } from '../interface/assets/campaign';
+import { Team } from '../interface/assets/team';
 
 export class AssetsManager {
       private _assets: BABYLON.AssetsManager;
       private _manifest: UrlManifest;
       private _scene: BABYLON.Scene;
+      private _campaign: Campaign;
       private _loadedAvatarStatistics: Array<ICharacterData>;
       loadingText: string;
 
-      constructor(manifest: UrlManifest, scene: BABYLON.Scene) {
+      constructor(manifest: UrlManifest, scene: BABYLON.Scene, campaign) {
             this._manifest = manifest;
             this._scene = scene;
+            this._campaign = campaign;
       }
 
       /**
@@ -23,7 +26,7 @@ export class AssetsManager {
        * @param loadingText {string} the text shown while the game is loading.
        * @returns {Promise}
        */
-      loadInstanceAssets(engine: BABYLON.Engine, campaign: Campaign): Promise<any> {
+      loadInstanceAssets(engine: BABYLON.Engine): Promise<any> {
 
             return new Promise<Array<string>>((resolve, reject) => {
                   this._assets = new BABYLON.AssetsManager(this._scene);
@@ -33,7 +36,7 @@ export class AssetsManager {
                   engine.loadingUIText = "Distance to touchdown " + numberOfAssets + "000km";
 
                   this.getMapAssets(this._scene, this._manifest, reject);
-                  this.getAvatarStatistics(this._scene, this._manifest, campaign).then((characterData: Array<ICharacterData>) => {
+                  this.getAvatarStatistics(this._scene, this._manifest).then((characterData: Array<ICharacterData>) => {
                         this._loadedAvatarStatistics = characterData;
                         this._assets.load();
                   }).catch(() => {
@@ -62,35 +65,39 @@ export class AssetsManager {
             return 3;
       }
 
-      getAvatarStatistics(scene: BABYLON.Scene, manifest: UrlManifest, campaign: Campaign): Promise<Array<ICharacterData>> {
+      getAvatarStatistics(scene: BABYLON.Scene, manifest: UrlManifest): Promise<Array<ICharacterData>> {
             let url = manifest.baseUrl + "/characters";
             let loadedCharacters = Array<ICharacterData>();
 
-            let loadCharacter = (player: any, response: WebRequest.Response) => {
+            let loadCharacter = (player: any, startingVector: BABYLON.Vector3, response: WebRequest.Response) => {
                   let characterManifest  = <ICharacterData>JSON.parse(response.entity);
-                  this.loadCharacter(url, player.commander, characterManifest);
+                  this.loadCharacter(url, player.commander, characterManifest, startingVector);
                   loadedCharacters.push(characterManifest);
 
                   // when all characters have been loaded into the assets manager, resolve the promise
-                  if (loadedCharacters.length === campaign.redTeam.players.length + campaign.blueTeam.players.length) {
+                  if (loadedCharacters.length === this._campaign.redTeam.players.length + this._campaign.blueTeam.players.length) {
                         return true;
                   }
             }
 
             return new Promise<Array<ICharacterData>>((resolve, reject) => {
                   // load red team avatars
-                  campaign.redTeam.players.forEach((redPlayer) => {
+                  this._campaign.redTeam.players.forEach((redPlayer) => {
                         WebRequest(url + redPlayer.commander.assetsUrl + "/manifest").then((response: WebRequest.Response) => {
-                             if (loadCharacter(redPlayer, response)) {
+                              let spaceMaker = (2 * loadCharacter.length);
+                              let redStartingVector = new BABYLON.Vector3(this._campaign.map.redStartingPointX + spaceMaker, this._campaign.map.redStartingPointY, this._campaign.map.redStartingPointZ);
+                             if (loadCharacter(redPlayer, redStartingVector, response)) {
                                    resolve(loadedCharacters);
                              }
                         }).catch( () => { throw new Error("Failed to load character manifest") });
                   });
 
                   // load blue team avatars
-                  campaign.blueTeam.players.forEach((bluePlayer) => {
+                  this._campaign.blueTeam.players.forEach((bluePlayer) => {
                         WebRequest(url + bluePlayer.commander.assetsUrl + "/manifest").then((response: WebRequest.Response) => {
-                              if (loadCharacter(bluePlayer, response)) {
+                              let spaceMaker = (2 * loadCharacter.length);
+                              let blueStartingVector = new BABYLON.Vector3(this._campaign.map.redStartingPointX + spaceMaker, this._campaign.map.redStartingPointY, this._campaign.map.redStartingPointZ);
+                              if (loadCharacter(bluePlayer, blueStartingVector, response)) {
                                    resolve(loadedCharacters);
                              }
                         }).catch( () => { throw new Error("Failed to load character manifest") });
@@ -98,20 +105,18 @@ export class AssetsManager {
             });
       }
 
-      loadCharacter(url: string, commander: ICommander, manifest: ICharacterData) {
+      loadCharacter(url: string, commander: ICommander, manifest: ICharacterData, startingVector: BABYLON.Vector3) {
             let bodyTextureUrl = url + commander.assetsUrl + "/textures" + manifest.textureUrl;
             let meshUrl = url + commander.assetsUrl + manifest.meshUrl;
             let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, manifest.meshes[0]);
             meshTask.onSuccess = function (task: any) {
                   // http://www.html5gamedevs.com/topic/6732-question-about-mesh-impostor/
-                 let mesh = BABYLON.Mesh.MergeMeshes(task.loadedMeshes)
-                 // let mesh = task.loadedMeshes[1];
+                  let mesh = BABYLON.Mesh.MergeMeshes(task.loadedMeshes)
                   mesh.position = BABYLON.Vector3.Zero();
                   mesh.name = commander.name + "_mesh";
-                  mesh.position.y = 20;
+                  mesh.position = startingVector;
                   mesh.edgesWidth = 20;
                   mesh.outlineWidth = 20;
-
                   mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, {
                         mass: commander.physics.mass,
                         restitution: commander.physics.restitution,
@@ -131,11 +136,7 @@ export class AssetsManager {
                   groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
                   ground.material = groundMaterial;
                   ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0, restitution: 0.8, friction: 0.2 }, scene);
-                  // physics
-                  WebRequest(url + manifest.map.physics).then((response: WebRequest.Response) => {
-                        let physics = <IPhysics>JSON.parse(response.entity);
-                        // ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, physics, scene);
-                  }).catch((reason) => { reject(reason) });
+                  this._campaign.map.groundMesh = ground;
             }, () => { reject(["Failed to load map texture"]) });
       }
 
@@ -149,27 +150,24 @@ export class AssetsManager {
                   groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
                   ground.material = groundMaterial;
                   ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0, restitution: 0.5, friction: 0.8 }, scene);
-                  // physics
-                  WebRequest(url + manifest.map.physics).then((response: any) => {
-                        let physics = <IPhysics>JSON.parse(response.entity);
-                        // ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, physics, scene);
-                  }).catch((reason) => { reject(reason) });
+                  this._campaign.map.groundMesh = ground;
             }, () => { reject(["Failed to load map texture"]) });
       }
 
       setBoxTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
             // Object
-            let g = BABYLON.Mesh.CreateBox("ground", 1600, scene);
-            g.position.y = -20;
-            g.scaling.y = 0.01;
+            let boxedTerrain = BABYLON.Mesh.CreateBox("ground", 1600, scene);
+            boxedTerrain.position.y = -20;
+            boxedTerrain.scaling.y = 0.01;
 
             /** Load ground texture */
             this.loadTexture("ground", url + "/texture" + manifest.map.texture, (asset) => {
                   let groundMaterial = new BABYLON.StandardMaterial("ground", scene);
                   groundMaterial.diffuseTexture = asset.texture;
                   groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-                  g.material = groundMaterial;
-                  g.physicsImpostor = new BABYLON.PhysicsImpostor(g, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5, friction: 0.7 }, scene);
+                  boxedTerrain.material = groundMaterial;
+                  boxedTerrain.physicsImpostor = new BABYLON.PhysicsImpostor(boxedTerrain, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5, friction: 0.7 }, scene);
+                  this._campaign.map.groundMesh = boxedTerrain;
             }, () => { reject(["Failed to load map texture"]) });
       }
 
@@ -195,11 +193,9 @@ export class AssetsManager {
             skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(url + "/skybox" + manifest.map.skybox, scene);
             skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
             skybox.renderingGroupId = 0;
+            this._campaign.map.skyMesh = skybox;
       }
 
-      /**
-       * this creates a sphere testing.
-       */
       setSkyPhere(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
             let skybox = BABYLON.Mesh.CreateSphere("skyBox", 10, 2500, scene);
             let skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
@@ -214,6 +210,7 @@ export class AssetsManager {
             skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(url + "/skybox" + manifest.map.skybox, scene);
             skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
             skybox.renderingGroupId = 0;
+            this._campaign.map.skyMesh = skybox;
       }
 
       /**

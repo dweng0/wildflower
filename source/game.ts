@@ -115,7 +115,7 @@ export class Game {
             console.log('loading babylon files');
             this.loadBabylon(manifest, campaign).then(() => {
                   // at this point we have the scene, so we can set up the assets manager
-                  this._assetsManager = new AssetsManager(manifest, this._stage.getScene());
+                  this._assetsManager = new AssetsManager(manifest, this._stage.getScene(), campaign);
 
                   // and apply the scene to other classes that need it
                   this.input.setScene(this._stage.getScene());
@@ -177,7 +177,7 @@ export class Game {
                   if (!this._interface.manifest) {
                         reject("No Manifest found");
                   }
-                  this._assetsManager.loadInstanceAssets(this._engine, campaign).then(() => { resolve() }).catch((reason) => {
+                  this._assetsManager.loadInstanceAssets(this._engine).then(() => { resolve() }).catch((reason) => {
                         console.log("Assets manager failed.")
                         this.ifAssetsFailedToLoad(reason);
                         reject(reason)
