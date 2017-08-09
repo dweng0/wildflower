@@ -76,7 +76,8 @@ export class Input {
             if (this._scene && !this.isNotReady()) {
                   let pickResult: BABYLON.PickingInfo = this._scene.pick(this._scene.pointerX, this._scene.pointerY);
                   if (pickResult.hit) {
-                      this._character.moveByMouse(pickResult.pickedPoint);
+                        this._stream.movePlayerRequest(this._character.playerId, pickResult.pickedPoint);
+                     //  this._character.moveByMouse(pickResult.pickedPoint);
                   }
             }
       }
