@@ -9,10 +9,10 @@ import * as BABYLON from 'babylonjs';
 import { ICommander } from '../interface/assets/commander';
 
 export class Commander {
-    private _stats: ICommander;
+    stats: ICommander;
     private _mesh: BABYLON.AbstractMesh;
     constructor(commander: ICommander, scene: BABYLON.Scene) {
-        this._stats = commander;
+        this.stats = commander;
         this._mesh = commander.mesh;
     }
 
@@ -20,6 +20,7 @@ export class Commander {
         return this._mesh;
     }
     getName(): string {
-        return this._stats.name;
+        return this.stats.name;
     }
+
 }

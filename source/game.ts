@@ -262,6 +262,12 @@ document.body.addEventListener("mousedown", (e) => {
       console.log("CLICK");
       game.input.onMouseInput(e);
 }),
-      window.addEventListener("keydown", (e) => {
-            game.input.onKeyboardInput(e);
-      });
+
+document.body.addEventListener("mousemove", (e) => {
+      if (e.which === 1) {
+            game.input.onMouseInput(e);
+      }
+})
+window.addEventListener("keydown", (e) => {
+      game.input.onKeyboardInput(e);
+});

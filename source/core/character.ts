@@ -62,27 +62,26 @@ export class Character {
 
   updateMovement() {
     let mesh = this.commander.fetchMesh();
-    // https://gamedevelopment.tutsplus.com/tutorials/quick-tip-smoothly-move-an-entity-to-the-position-of-the-mouse--gamedev-7356
     let myPos = mesh.getAbsolutePosition();
     let hitVector = this.movementPackage.destination;
     let x = 0;
     let z = 0;
     let y;
-    let tolerance = 0.05;
+    let tolerance = 1;
     let xFinished = false;
     let shouldLook = false;
     if (hitVector.x > myPos.x + tolerance) {
-      x = 8
+      x = this.commander.stats.baseSpeed;
     } else if (hitVector.x < myPos.x - tolerance) {
-      x = -8
+      x = -this.commander.stats.baseSpeed;
     } else {
       xFinished = true;
     }
 
     if (hitVector.z > myPos.z + tolerance) {
-      z = 8
+      z = this.commander.stats.baseSpeed;
     } else if (hitVector.z < myPos.z - tolerance) {
-      z = -8
+      z = -this.commander.stats.baseSpeed;
     } else {
       if (xFinished === true) {
         this.movementPackage.finished = true;
@@ -95,26 +94,12 @@ export class Character {
     }
   }
 
-  getAngle(x1: number, y1: number, x2: number, y2: number): number {
-    let xDiff = x2 - x1;
-    let yDiff = y2 - y1;
-    return Math.atan2(yDiff, xDiff) * 180.0 / Math.PI;
-  }
-
   moveByMouse(hitVector: BABYLON.Vector3) {
     this.movementPackage = {
       finished: false,
       destination: hitVector,
       angleApplied: false
     }
-  }
-
-  moveForwardBackward(force: number) {
-    // this.mesh.physicsImpostor.setLinearVelocity(this.calculateForce(Axis.z, force));
-  }
-
-  moveLeftRight(force: number) {
-    // this.mesh.physicsImpostor.setLinearVelocity(this.calculateForce(Axis.x, force));
   }
 
   computeWorldMatrix(): BABYLON.Matrix {

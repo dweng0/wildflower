@@ -39,7 +39,7 @@
                               "baseHealth": 0,
                               "baseShield": 0,
                               "basePower": 0,
-                              "baseSpeed": 0,
+                              "baseSpeed": 20,
                               "baseAgility": 0,
                               "level": 0,
                               "experiencePoints": 0,

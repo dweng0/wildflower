@@ -63,20 +63,6 @@ export class Input {
             }
 
             console.log('Player input logged, a request to move, for now just stub:');
-
-            if (event.keyCode === this._keyboardMapping.forward) {
-                  this.forward();
-            };
-
-            if (event.keyCode === this._keyboardMapping.back) {
-                  this.back();
-            }
-            if (event.keyCode === this._keyboardMapping.strafeLeft) {
-                  this.left();
-            }
-            if (event.keyCode === this._keyboardMapping.strafeRight) {
-                  this.right();
-            }
             if (event.keyCode === this._keyboardMapping.jump) {
                   this.jump();
             }
@@ -91,29 +77,7 @@ export class Input {
             }
       }
 
-      left() {
-            console.log('left');
-            this._character.moveLeftRight(-8);
-      }
-
-      right() {
-            console.log("right");
-            this._character.moveLeftRight(8);
-      }
-
       jump() {
              console.log("jump");
-      }
-      /**
-       * These are stubs this shoudl call an interface to ask the server rather then directly move the character
-       */
-      forward() {
-             console.log("forward");
-             this._character.moveForwardBackward(8);
-      }
-
-      back() {
-              console.log("Backward");
-             this._character.moveForwardBackward(-8);
       }
 }

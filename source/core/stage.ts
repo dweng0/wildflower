@@ -76,7 +76,7 @@ export class Stage {
       setTheStage(canvas: HTMLCanvasElement): Array<string> {
             let errors = new Array<string>();
             this._setScene(errors);
-            this.useCamera("arc", canvas);
+            this.useCamera("free", canvas);
             this._setLighting();
             return errors;
       }
@@ -86,9 +86,15 @@ export class Stage {
        * @param debug {boolean} determines if the debug layer should be shown
        */
       showTime(debug?: boolean): void {
-       //     this._arcCamera.position = this.getCharacter().fetchMesh().absolutePosition;
+            let characterMesh = this.getCharacter().fetchMesh();
+            this._freeCamera.lockedTarget = characterMesh;
+
             this._scene.registerBeforeRender(() => {
                   this._updateCharacterMovements();
+
+                  // update camera as player moves
+                  let newCamPos = new BABYLON.Vector3((characterMesh.position.x + 50), (characterMesh.position.y + 80), (characterMesh.position.z + 60));
+                  this._freeCamera.position = newCamPos
             });
             this._scene.render();
             if (debug) {
@@ -111,13 +117,8 @@ export class Stage {
       setDebugCamera(canvas: HTMLCanvasElement): any {
             this._freeCamera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 15, -45), this._scene);
 
-            // for debugging the scene
-            this._freeCamera.keysUp = [38];
-            this._freeCamera.keysDown = [40];
-            this._freeCamera.keysLeft = [37];
-            this._freeCamera.keysRight = [39];
-            this._freeCamera.attachControl(canvas)
             this._freeCamera.speed = 3.0;
+            window['camera'] = this._freeCamera;
             // camera positioning
             // this._freeCamera.setTarget(this._thisCharacter.fetchMesh().position);
             this._freeCamera.attachControl(canvas, true);
@@ -151,11 +152,11 @@ export class Stage {
       private _setCamera(canvas: HTMLCanvasElement): BABYLON.FollowCamera {
 
             this._camera = new BABYLON.FollowCamera("Follow", new BABYLON.Vector3(0, 15, 45), this._scene);
-            this._camera.radius = 50; // how far from the object to follow
-            this._camera.heightOffset = 50; // how high above the object to place the camera
+            this._camera.radius = 70; // how far from the object to follow
+            this._camera.heightOffset = 70; // how high above the object to place the camera
             this._camera.rotationOffset = 720; // the viewing angle
             this._camera.cameraAcceleration = 0.7 // how fast to move
-            this._camera.maxCameraSpeed = 20 // speed limit
+            this._camera.maxCameraSpeed = 1 // speed limit
 
             this._camera.attachControl(canvas, true);
             window['camera'] = this._camera;
