@@ -70,7 +70,7 @@ export class Character {
     let y;
     let tolerance = 0.05;
     let xFinished = false;
-
+    let shouldLook = false;
     if (hitVector.x > myPos.x + tolerance) {
       x = 8
     } else if (hitVector.x < myPos.x - tolerance) {
@@ -90,13 +90,8 @@ export class Character {
     }
     mesh.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(x, 0, z));
 
-    let angle = this.getAngle(hitVector.x, hitVector.y, myPos.x, myPos.y);
-    if (angle !== 0) {
-      if (angle > 180) {
-         mesh.physicsImpostor.setAngularVelocity(new BABYLON.Vector3(0, -1, 0));
-      } else {
-         mesh.physicsImpostor.setAngularVelocity(new BABYLON.Vector3(0, 1, 0));
-      }
+    if (!xFinished) {
+      mesh.lookAt(hitVector);
     }
   }
 
