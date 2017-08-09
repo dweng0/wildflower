@@ -15,7 +15,7 @@ export class AssetsManager {
       private _loadedAvatarStatistics: Array<ICharacterData>;
       loadingText: string;
 
-      constructor(manifest: UrlManifest, scene: BABYLON.Scene, campaign) {
+      constructor(manifest: UrlManifest, scene: BABYLON.Scene, campaign: Campaign) {
             this._manifest = manifest;
             this._scene = scene;
             this._campaign = campaign;
@@ -85,7 +85,7 @@ export class AssetsManager {
                   this._campaign.redTeam.players.forEach((redPlayer) => {
                         WebRequest(url + redPlayer.commander.assetsUrl + "/manifest").then((response: WebRequest.Response) => {
                               let spaceMaker = (2 * loadCharacter.length);
-                              let redStartingVector = new BABYLON.Vector3(this._campaign.map.redStartingPointX + spaceMaker, this._campaign.map.redStartingPointY, this._campaign.map.redStartingPointZ);
+                              let redStartingVector = new BABYLON.Vector3(this._campaign.map.redStartingPointX + spaceMaker, this._campaign.map.redStartingPointY, this._campaign.map.redStartingPointZ + spaceMaker);
                              if (loadCharacter(redPlayer, redStartingVector, response)) {
                                    resolve(loadedCharacters);
                              }
@@ -127,7 +127,8 @@ export class AssetsManager {
       }
 
       setTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
-            let ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", url + "/heightmap" + manifest.map.heightMap, 300, 250, 100, 0, 12, scene, true);
+             let map = this._campaign.map
+            let ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", url + "/heightmap" + manifest.map.heightMap, map.width, map.height, map.subDivisions, 0, 12, scene, true);
 
             /** Load ground texture */
             this.loadTexture("ground", url + "/texture" + manifest.map.texture, (asset) => {
@@ -135,39 +136,23 @@ export class AssetsManager {
                   groundMaterial.diffuseTexture = asset.texture;
                   groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
                   ground.material = groundMaterial;
-                  ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0, restitution: 0.8, friction: 0.2 }, scene);
+                  ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor,  { mass: map.physics.mass, restitution: map.physics.restitution, friction: map.physics.friction }, scene);
                   this._campaign.map.groundMesh = ground;
             }, () => { reject(["Failed to load map texture"]) });
       }
 
       setFlatTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
-            let ground = BABYLON.Mesh.CreateGround("ground", 300, 250, 100, scene, true);
-
+            let map = this._campaign.map
+            let ground = BABYLON.Mesh.CreateGround("ground", map.width, map.height, map.subDivisions, scene, true);
+            ground.position.y = -0.1;
             /** Load ground texture */
             this.loadTexture("ground", url + "/texture" + manifest.map.texture, (asset) => {
                   let groundMaterial = new BABYLON.StandardMaterial("ground", scene);
                   groundMaterial.diffuseTexture = asset.texture;
                   groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
                   ground.material = groundMaterial;
-                  ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0, restitution: 0.5, friction: 0.8 }, scene);
+                  ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: map.physics.mass, restitution: map.physics.restitution, friction: map.physics.friction }, scene);
                   this._campaign.map.groundMesh = ground;
-            }, () => { reject(["Failed to load map texture"]) });
-      }
-
-      setBoxTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
-            // Object
-            let boxedTerrain = BABYLON.Mesh.CreateBox("ground", 1600, scene);
-            boxedTerrain.position.y = -20;
-            boxedTerrain.scaling.y = 0.01;
-
-            /** Load ground texture */
-            this.loadTexture("ground", url + "/texture" + manifest.map.texture, (asset) => {
-                  let groundMaterial = new BABYLON.StandardMaterial("ground", scene);
-                  groundMaterial.diffuseTexture = asset.texture;
-                  groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-                  boxedTerrain.material = groundMaterial;
-                  boxedTerrain.physicsImpostor = new BABYLON.PhysicsImpostor(boxedTerrain, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5, friction: 0.7 }, scene);
-                  this._campaign.map.groundMesh = boxedTerrain;
             }, () => { reject(["Failed to load map texture"]) });
       }
 
@@ -223,9 +208,7 @@ export class AssetsManager {
       getMapAssets(scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
             let url = manifest.baseUrl + "/map" + manifest.map.baseUrl;
 
-            // this.setTerrain(url, scene, manifest, reject);
             this.setFlatTerrain(url, scene, manifest, reject);
-            // this.setSkyBox(url, scene, manifest, reject);
             this.setSkyPhere(url, scene, manifest, reject);
       }
 

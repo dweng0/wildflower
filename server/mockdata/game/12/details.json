@@ -3,10 +3,18 @@
       "note": "This is some test campaign data",
       "map": {
             "name": "stargazer",
+            "physics":{
+                  "mass": 0,
+                  "restitution": 0.5,
+                  "friction": 0.9
+            },
+            "width": 300,
+            "height": 300,
+            "subDivisions": 2,
             "activePlayers": 8,
             "description": "oh to gaze into the stars...",
-            "redStartingPointX": 0,
-            "redStartingPointY": 0,
+            "redStartingPointX": 50,
+            "redStartingPointY": 30,
             "redStartingPointZ": 0,
             "blueStartingPointX": 150,
             "blueStartingPointY": 150,
@@ -58,6 +66,48 @@
                         "x": 0,
                         "y": 0,
                         "z": 0
+                  },
+                  {
+                        "id": "somerandomid2",
+                        "stats": {
+                              "state": "ready",
+                              "deaths": 0,
+                              "kills": 0,
+                              "experience": 0,
+                              "gold": 0,
+                              "damageDealt": 0,
+                              "damageReceived": 0,
+                              "healingDealt": 0,
+                              "healingRecieved": 0
+                        },
+                        "username": "beefer",
+                        "commander": {
+                              "name": "R",
+                              "description": "R is a strange fellow...",
+                              "imgUrl": "some image url",
+                              "assetsUrl": "/r",
+                              "baseHealth": 0,
+                              "baseShield": 0,
+                              "basePower": 0,
+                              "baseSpeed": 20,
+                              "baseAgility": 0,
+                              "level": 0,
+                              "experiencePoints": 0,
+                              "mesh": "",
+                              "physics":{
+                                    "mass":1,
+                                    "restitution":0.2,
+                                    "friction":0.9
+                              }
+                        },
+                        "faction": {
+                              "id":"somethingId",
+                              "name": "SomethingName",
+                              "logo": "SomethingLogo"
+                        },
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
                   }
             ]
       },
@@ -65,7 +115,50 @@
             "id": "blue",
             "name": "Reef dudes",
             "level": 0,
-            "players": []
+            "players": [
+                  {
+                        "id": "somerandomid3",
+                        "stats": {
+                              "state": "ready",
+                              "deaths": 0,
+                              "kills": 0,
+                              "experience": 0,
+                              "gold": 0,
+                              "damageDealt": 0,
+                              "damageReceived": 0,
+                              "healingDealt": 0,
+                              "healingRecieved": 0
+                        },
+                        "username": "dwengo3",
+                        "commander": {
+                              "name": "R",
+                              "description": "R is a strange fellow...",
+                              "imgUrl": "some image url",
+                              "assetsUrl": "/r",
+                              "baseHealth": 0,
+                              "baseShield": 0,
+                              "basePower": 0,
+                              "baseSpeed": 20,
+                              "baseAgility": 0,
+                              "level": 0,
+                              "experiencePoints": 0,
+                              "mesh": "",
+                              "physics":{
+                                    "mass":1,
+                                    "restitution":0.2,
+                                    "friction":0.9
+                              }
+                        },
+                        "faction": {
+                              "id":"somethingId",
+                              "name": "SomethingName",
+                              "logo": "SomethingLogo"
+                        },
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                  }
+            ]
       },
       "spectatingTeam": {
             "id": "spectator",
