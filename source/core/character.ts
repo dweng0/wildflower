@@ -69,7 +69,6 @@ export class Character {
     let y;
     let tolerance = 1;
     let xFinished = false;
-    let shouldLook = false;
     if (hitVector.x > myPos.x + tolerance) {
       x = this.commander.stats.baseSpeed;
     } else if (hitVector.x < myPos.x - tolerance) {

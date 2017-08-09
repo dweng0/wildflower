@@ -114,6 +114,7 @@ export class AssetsManager {
                   let mesh = BABYLON.Mesh.MergeMeshes(task.loadedMeshes)
                   mesh.position = BABYLON.Vector3.Zero();
                   mesh.name = commander.name + "_mesh";
+                  mesh.showBoundingBox = true;
                   mesh.position = startingVector;
                   mesh.edgesWidth = 20;
                   mesh.outlineWidth = 20;
@@ -144,7 +145,7 @@ export class AssetsManager {
       setFlatTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
             let map = this._campaign.map
             let ground = BABYLON.Mesh.CreateGround("ground", map.width, map.height, map.subDivisions, scene, true);
-            ground.position.y = -0.1;
+            ground.position.y = 1;
             /** Load ground texture */
             this.loadTexture("ground", url + "/texture" + manifest.map.texture, (asset) => {
                   let groundMaterial = new BABYLON.StandardMaterial("ground", scene);

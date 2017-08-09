@@ -78,6 +78,7 @@ export class Stage {
             this._setScene(errors);
             this.useCamera("free", canvas);
             this._setLighting();
+            // this._setShadows();
             return errors;
       }
 
@@ -137,6 +138,13 @@ export class Stage {
        */
       getCharacter(): Character {
             return this._thisCharacter;
+      }
+
+      private _setShadows(): void {
+            let dl = new BABYLON.DirectionalLight("dir", new BABYLON.Vector3(1, -1, -0.5), this._scene);
+            dl.position = new BABYLON.Vector3(0, 60, 0);
+            let shadow = new BABYLON.ShadowGenerator(768, dl);
+            shadow.useBlurVarianceShadowMap = true;
       }
 
       /**
