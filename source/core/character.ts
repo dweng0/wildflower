@@ -13,10 +13,11 @@ export interface IMovementPackage {
 }
 
 export class Character {
-  private playerId: string;
   private commander: Commander;
   private _player: Player;
+
   movementPackage: IMovementPackage;
+  playerId: string;
 
   constructor(username: string, campaign: Campaign, scene: BABYLON.Scene) {
     // find user in campaign

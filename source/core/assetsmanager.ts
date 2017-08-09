@@ -84,9 +84,8 @@ export class AssetsManager {
                   // load red team avatars
                   this._campaign.redTeam.players.forEach((redPlayer) => {
                         WebRequest(url + redPlayer.commander.assetsUrl + "/manifest").then((response: WebRequest.Response) => {
-                              let spaceMaker = (5 * loadCharacter.length);
+                              let spaceMaker = (6 * loadCharacter.length);
                               let redStartingVector = new BABYLON.Vector3(this._campaign.map.redStartingPointX + spaceMaker, this._campaign.map.redStartingPointY, this._campaign.map.redStartingPointZ);
-                              debugger;
                              if (loadCharacter(redPlayer, redStartingVector, response)) {
                                    resolve(loadedCharacters);
                              }

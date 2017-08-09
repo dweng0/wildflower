@@ -15,7 +15,7 @@
             "description": "oh to gaze into the stars...",
             "redStartingPointX": 0,
             "redStartingPointY": 0,
-            "redStartingPointZ": 0,
+            "redStartingPointZ": 12,
             "blueStartingPointX": 50,
             "blueStartingPointY": 50,
             "blueStartingPointZ": 0

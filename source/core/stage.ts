@@ -87,7 +87,6 @@ export class Stage {
        * @param debug {boolean} determines if the debug layer should be shown
        */
       showTime(debug?: boolean): void {
-            this.placeCharacters();
             let characterMesh = this.getCharacter().fetchMesh();
             this._freeCamera.lockedTarget = characterMesh;
 
@@ -99,6 +98,7 @@ export class Stage {
                   this._freeCamera.position = newCamPos
             });
             this._scene.render();
+             this._scene.debugLayer.show();
             if (debug) {
                   this._scene.debugLayer.show();
             }
@@ -110,10 +110,6 @@ export class Stage {
        */
       getScene(): BABYLON.Scene {
             return this._scene;
-      }
-
-      placeCharacters(): void {
-         console.log('place character stub');
       }
 
       /**

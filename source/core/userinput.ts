@@ -1,5 +1,6 @@
 import * as BABYLON from 'babylonjs';
 import { Character } from './character';
+import { PipeStream } from './pipestream';
 
 export interface KeyboardMapping {
       forward: number;
@@ -19,12 +20,13 @@ export class Input {
       private _character: Character;
       private _keyboardMapping: KeyboardMapping;
       private _scene: BABYLON.Scene;
+      private _stream: PipeStream;
 
       /**
        * TODO we really need to place a 'character' class that can just be told to move, the character class will then get the necessary data
        * such as the matric
        */
-      constructor() {
+      constructor(stream: PipeStream) {
             // set to WASD
             this.updateKeyboardMaps({
                   forward: 87,
@@ -39,6 +41,8 @@ export class Input {
                   fourthAbility: 52, // 4
                   fithAbility: 53 // 5
             })
+
+            this._stream = stream;
       }
 
       updateKeyboardMaps(mapping: KeyboardMapping) {

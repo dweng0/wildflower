@@ -5,6 +5,7 @@ import { StatisticsHandler } from './core/statisticshandler';
 import { Interface } from './core/interface';
 import { Stage } from './core/stage';
 import { Input } from './core/userinput';
+import { PipeStream } from './core/pipestream';
 import { Campaign } from './interface/assets/campaign';
 
 import { UrlManifest } from './interface/urlmanifest';
@@ -19,6 +20,7 @@ export class Game {
       private _statisticsHandler: StatisticsHandler;
       private _debug: true;
       private _stage: Stage;
+      private _stream: PipeStream;
 
       _canvas: HTMLCanvasElement;
       _assetsManager: AssetsManager;
@@ -52,7 +54,8 @@ export class Game {
             this._canvas = domHandler.getCanvas();
             this._interface = new Interface(this._url, campaignId);
             this._campaignId = campaignId;
-            this.input = new Input();
+            this._stream = new PipeStream();
+            this.input = new Input(this._stream);
             this._statisticsHandler = new StatisticsHandler();
             this.ifAssetsFailedToLoad = () => { console.log('stub function ifAssetsFailedToLoad') }
             this.ifBabylonFailedToLoad = () => { console.log('stub function ifBabylonFailedToLoad') }
