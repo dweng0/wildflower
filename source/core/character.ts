@@ -34,13 +34,13 @@ export class Character {
   }
 
   zoomOut(): void {
-    if (this.zoom < 50) {
+    if (this.zoom < 70) {
       this.zoom  += 4;
     }
   }
 
   zoomIn(): void {
-    if (this.zoom > 0) {
+    if (this.zoom > -10) {
        this.zoom -= 4;
     }
   }

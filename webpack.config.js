@@ -49,7 +49,6 @@ module.exports = {
         new CopyWebpackPlugin([
              {from:"node_modules/babylonjs/dist/preview release/babylon.max.js", to:"vendors/babylon.js"},
               {from:"node_modules/babylonjs/dist/preview release/oimo.js", to:"vendors/oimo.js"},
-              {from:"lib/**/*", to:"../.io/dweng0.github.io/"}
         ]),
         new TypedocWebpackPlugin({
             name: "WildFlower",
