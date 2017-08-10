@@ -83,6 +83,15 @@ export class Input {
             }
       }
 
+      onMouseScroll(event: any) {
+            debugger;
+            if (event.wheelDelta / 120 > 0) {
+                  this._character.zoomIn();
+            } else {
+                 this._character.zoomOut();
+            }
+      }
+
       jump() {
              console.log("jump");
       }

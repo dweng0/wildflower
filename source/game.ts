@@ -274,3 +274,6 @@ document.body.addEventListener("mousemove", (e) => {
 window.addEventListener("keydown", (e) => {
       game.input.onKeyboardInput(e);
 });
+window.addEventListener("wheel", (e) => {
+      game.input.onMouseScroll(e);
+})

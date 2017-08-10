@@ -101,4 +101,5 @@ app.use('/vendors', express.static(path.join(__dirname, "../lib/vendors")))
 
 app.listen(3000, function () {
     console.log('Test server running on 3000');
+    console.log('Have you run webpack to compile the latest changes?');
 })

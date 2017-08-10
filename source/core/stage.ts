@@ -78,9 +78,9 @@ export class Stage {
 
             this._scene.registerBeforeRender(() => {
                   this._updateCharacterMovements();
-
+                  let zoom = this.getCharacter().zoom;
                   // update camera as player moves
-                  let newCamPos = new BABYLON.Vector3((characterMesh.position.x + 50), (characterMesh.position.y + 80), (characterMesh.position.z + 60));
+                  let newCamPos = new BABYLON.Vector3((characterMesh.position.x  + 50), (characterMesh.position.y + zoom + 80), (characterMesh.position.z + 60));
                   this._freeCamera.position = newCamPos
             });
             this._scene.render();

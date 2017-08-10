@@ -18,6 +18,7 @@ export class Character {
 
   movementPackage: IMovementPackage;
   playerId: string;
+  zoom: number = 0;
 
   constructor(username: string, campaign: Campaign, scene: BABYLON.Scene) {
     // find user in campaign
@@ -29,6 +30,18 @@ export class Character {
       finished: true,
       angleApplied: false,
       destination: new BABYLON.Vector3(0, 0, 0)
+    }
+  }
+
+  zoomOut(): void {
+    if (this.zoom < 50) {
+      this.zoom  += 4;
+    }
+  }
+
+  zoomIn(): void {
+    if (this.zoom > 0) {
+       this.zoom -= 4;
     }
   }
 
