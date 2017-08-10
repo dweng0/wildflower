@@ -1,7 +1,5 @@
 import * as BABYLON from 'babylonjs';
-/**
- * More like pipe dream HUE HUE HUE
- */
+
 export interface StreamResult {
       success: boolean;
       message: string;
@@ -15,6 +13,9 @@ export interface StreamHandlingPackage {
       attackPlayerFailure: (reason: string) => any;
 }
 
+/**
+ * @classdesc More like pipe dream HUE HUE HUE
+ */
 export class PipeStream {
       private _signalR: any;
       private _ready: boolean = false;
