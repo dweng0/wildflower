@@ -1,7 +1,10 @@
 import * as BABYLON from 'babylonjs';
 import {IPhysics} from '../physics';
 export interface Map {
+      id: number;
       name: string;
+      imageUrl: string;
+      maxPlayers: number;
       width: number;
       height: number;
       subDivisions: number;

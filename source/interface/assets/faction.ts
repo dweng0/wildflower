@@ -4,5 +4,11 @@
 export interface Faction {
       id: number;
       name: string;
-      logo: string;
+      imgUrl: string;
+      factionAbilities: any;
+      timespicked: number;
+      wins: number;
+      losses: number;
+      description: string;
+      winPercentage: number;
 }

@@ -1,4 +1,5 @@
 import {Player} from './player';
+import {Faction} from './faction';
 
 export interface Team {
     id: string;
@@ -7,5 +8,6 @@ export interface Team {
      * The teams level
      */
     level: number;
-    players: Array<Player>
+    faction: Faction;
+    players: Array<Player>;
 }
