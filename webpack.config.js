@@ -48,7 +48,9 @@ module.exports = {
         }),
         new CopyWebpackPlugin([
              {from:"node_modules/babylonjs/dist/preview release/babylon.max.js", to:"vendors/babylon.js"},
-              {from:"node_modules/babylonjs/dist/preview release/oimo.js", to:"vendors/oimo.js"},
+             {from:"node_modules/babylonjs/dist/preview release/oimo.js", to:"vendors/oimo.js"},
+            {from:"lib/static", to:"D:/old/edgroundwars/EDWars/Scripts/wildflower/static", force: true},
+              
         ]),
         new TypedocWebpackPlugin({
             name: "WildFlower",

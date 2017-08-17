@@ -2,9 +2,6 @@ import * as WebRequest from 'rest';
 import * as mime from 'rest/interceptor/mime';
 import {UrlManifest} from '../interface/urlmanifest';
 
-/** dummy data */
-import {DummyManifestData} from '../../test/data/urlmanifest';
-
 /**
  * Handles the loading of files for the game, does not handle web sockets or real time streams
  */
@@ -15,7 +12,7 @@ export class Interface {
       _handShakeUrl: string;
       _manifestUrl: string;
       manifest: UrlManifest;
-     constructor(url: string, campaignId: string, testMode?: boolean) {
+     constructor(url: string, campaignId: number, testMode?: boolean) {
       this._manifestUrl = url + "/manifest/" + campaignId;
       this._testMode = testMode;
       if (this._handShakeUrl === null) {
@@ -45,8 +42,9 @@ export class Interface {
                   throw new Error("No manifest url found. Handshake with server is requried");
             }
             this.fetch(this._manifestUrl, (data) => {
-                  this.manifest = data;
-                  callback(data);
+                  debugger;
+                  this.manifest = <UrlManifest>JSON.parse(data.entity);
+                  callback(this.manifest);
             }, (err) => {
                   if (errCall) {
                         errCall(err);
@@ -64,20 +62,7 @@ export class Interface {
        * @param errorCallback {function} the error callback
        */
      fetch(url: string, successCallback: (data: any) => any, errorCallback: (data: any) => any) {
-            let request;
-            if (this._testMode) {
-                  if (url === this._testFailUrl) {
-                        return errorCallback({message:  "failure test"});
-                  }
-                  if (this._manifestUrl) {
-                        return successCallback(new DummyManifestData());
-                  } else if (this._handShakeUrl) {
-                         return successCallback({message: "manifesturl.com"});
-                  }
-            } else {
-                  request =  WebRequest(url).then(successCallback).catch(errorCallback);
-            }
-           return request;
+           return  WebRequest(url).then(successCallback).catch(errorCallback);
      }
 
       /**

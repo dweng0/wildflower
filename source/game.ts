@@ -7,7 +7,7 @@ import { Stage } from './core/stage';
 import { Input } from './core/userinput';
 import { PipeStream } from './core/pipestream';
 import { Campaign } from './interface/assets/campaign';
-
+import { TransportLayer } from './core/transportlayer';
 import { UrlManifest } from './interface/urlmanifest';
 
 /**
@@ -21,6 +21,7 @@ export class Game {
       private _debug: true;
       private _stage: Stage;
       private _stream: PipeStream;
+      private _transport: TransportLayer;
 
       _canvas: HTMLCanvasElement;
       _assetsManager: AssetsManager;
@@ -49,11 +50,12 @@ export class Game {
        * @param campaignId {number} the campaing instance id used for loading map assets and players
        * @param canvasId {string} the canvas element id string
        */
-      constructor(campaignId: string, canvasId?: string) {
+      constructor(campaignId: number, canvasId?: string) {
             let domHandler = new DomHandler(canvasId);
             this._canvas = domHandler.getCanvas();
             this._interface = new Interface(this._url, campaignId);
             this._campaignId = campaignId;
+            this._transport = new TransportLayer(campaignId, () => {console.log('success')}, () => {console.log('fail')});
             this._stream = new PipeStream();
             this.input = new Input(this._stream);
             this._statisticsHandler = new StatisticsHandler();
@@ -84,13 +86,14 @@ export class Game {
             console.log('loading started');
             return new Promise<boolean>((resolve, reject) => {
                   this._interface.fetchManifest((response: any) => {
-                        resolve(JSON.parse(response.entity));
+                        resolve(response);
                   }, (err) => { reject(err.error) });
             });
       }
 
       onBeginLoadGameData(manifest: UrlManifest) {
             console.log('loading game data');
+            debugger;
             this.onLoadGameData(manifest)
                   .then((campaign: Campaign) => {
                         this.onLoadBabylon(manifest, campaign);
@@ -105,6 +108,8 @@ export class Game {
             if (this.onBeforeLoadGameData) {
                   this.onBeforeLoadGameData();
             }
+
+            debugger;
             return this._statisticsHandler.loadCampaign(manifest, this._campaignId);
       }
 
@@ -256,24 +261,4 @@ export class Game {
       }
 }
 
-let game = new Game("12", 'renderCanvas');
-window.addEventListener('DOMContentLoaded', () => {
-      game.start();
-});
-
-document.body.addEventListener("mousedown", (e) => {
-      console.log("CLICK");
-      game.input.onMouseInput(e);
-}),
-
-document.body.addEventListener("mousemove", (e) => {
-      if (e.which === 1) {
-            game.input.onMouseInput(e);
-      }
-})
-window.addEventListener("keydown", (e) => {
-      game.input.onKeyboardInput(e);
-});
-window.addEventListener("wheel", (e) => {
-      game.input.onMouseScroll(e);
-})
+window['Game'] = Game;

@@ -1,8 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "module": "commonjs",
-    "outDir": "./compiledtests",
+    "module": "commonjs",   
     "baseUrl": "source",
     "sourceMap": true,
     "declaration": true,
@@ -16,8 +15,5 @@
       "es6",
       "es2015"
     ] 
-  },
-   "include":[
-      "test/**/*.ts"
-    ]
+  }
 }
