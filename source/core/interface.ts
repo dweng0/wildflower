@@ -42,7 +42,6 @@ export class Interface {
                   throw new Error("No manifest url found. Handshake with server is requried");
             }
             this.fetch(this._manifestUrl, (data) => {
-                  debugger;
                   this.manifest = <UrlManifest>JSON.parse(data.entity);
                   callback(this.manifest);
             }, (err) => {

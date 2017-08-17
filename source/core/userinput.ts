@@ -76,7 +76,6 @@ export class Input {
             if (this._scene && !this.isNotReady()) {
                   let pickResult: BABYLON.PickingInfo = this._scene.pick(this._scene.pointerX, this._scene.pointerY);
                   if (pickResult.hit) {
-                        debugger;
                         this._stream.movePlayerRequest(this._character.playerId, pickResult.pickedPoint);
                      //  this._character.moveByMouse(pickResult.pickedPoint);
                   }
@@ -84,7 +83,6 @@ export class Input {
       }
 
       onMouseScroll(event: any) {
-            debugger;
             if (event.wheelDelta / 120 > 0) {
                   this._character.zoomIn();
             } else {

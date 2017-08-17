@@ -106,9 +106,9 @@ export class AssetsManager {
       }
 
       loadCharacter(url: string, commander: ICommander, manifest: ICharacterData, startingVector: BABYLON.Vector3) {
-            let bodyTextureUrl = url + commander.assetsUrl + "/textures" + manifest.textureUrl;
+            let bodyTextureUrl = url + commander.assetsUrl + "/textures/" + manifest.textureUrl;
             let meshUrl = url + commander.assetsUrl + manifest.meshUrl;
-            let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, manifest.meshes[0]);
+            let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, "buggy.babylon");
             meshTask.onSuccess = function (task: any) {
                   // http://www.html5gamedevs.com/topic/6732-question-about-mesh-impostor/
                   let mesh = BABYLON.Mesh.MergeMeshes(task.loadedMeshes)
@@ -176,7 +176,7 @@ export class AssetsManager {
 
             skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
             skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-            skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(url + "/skybox" + manifest.map.skybox, scene);
+            skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(url + "/skybox" + manifest.map.skyBox, scene);
             skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
             skybox.renderingGroupId = 0;
             this._campaign.map.skyMesh = skybox;
@@ -193,7 +193,7 @@ export class AssetsManager {
 
             skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
             skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-            skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(url + "/skybox" + manifest.map.skybox, scene);
+            skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(url + "/skybox" + manifest.map.skyBox, scene);
             skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
             skybox.renderingGroupId = 0;
             this._campaign.map.skyMesh = skybox;

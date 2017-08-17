@@ -93,7 +93,6 @@ export class Game {
 
       onBeginLoadGameData(manifest: UrlManifest) {
             console.log('loading game data');
-            debugger;
             this.onLoadGameData(manifest)
                   .then((campaign: Campaign) => {
                         this.onLoadBabylon(manifest, campaign);
@@ -108,8 +107,6 @@ export class Game {
             if (this.onBeforeLoadGameData) {
                   this.onBeforeLoadGameData();
             }
-
-            debugger;
             return this._statisticsHandler.loadCampaign(manifest, this._campaignId);
       }
 

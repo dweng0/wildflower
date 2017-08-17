@@ -25,7 +25,7 @@ export interface MapManifest {
       baseUrl: string;
       texture: string;
       heightMap: string;
-      skybox: string;
+      skyBox: string;
       physics?: string; // The phsycs object contains options needed for the physics imposter
 }
 
