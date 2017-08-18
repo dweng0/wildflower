@@ -23,5 +23,26 @@
 </head>
 <body>
     <canvas id="renderCanvas"></canvas>
+    <script>
+   let game = new Game("12", 'renderCanvas');
+    window.addEventListener('DOMContentLoaded', () => {
+        game.start();
+    });
+    document.body.addEventListener("mousedown", function(e) {
+        console.log("CLICK");
+        game.input.onMouseInput(e);
+    }),
+        document.body.addEventListener("mousemove", function(e) {
+            if (e.which === 1) {
+                game.input.onMouseInput(e);
+            }
+        });
+    window.addEventListener("keydown", function (e) {
+        game.input.onKeyboardInput(e);
+    });
+    window.addEventListener("wheel", function(e) {
+        game.input
+    });
+    </script>
 </body>
 </html>

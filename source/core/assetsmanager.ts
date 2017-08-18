@@ -111,19 +111,19 @@ export class AssetsManager {
             let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, "buggy.babylon");
             meshTask.onSuccess = function (task: any) {
                   // http://www.html5gamedevs.com/topic/6732-question-about-mesh-impostor/
-                  let mesh = BABYLON.Mesh.MergeMeshes(task.loadedMeshes)
-                  mesh.position = BABYLON.Vector3.Zero();
-                  mesh.name = commander.name + "_mesh";
-                  mesh.showBoundingBox = true;
-                  mesh.position = startingVector;
-                  mesh.edgesWidth = 20;
-                  mesh.outlineWidth = 20;
-                  mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, {
+                 commander.mesh  = BABYLON.Mesh.MergeMeshes(task.loadedMeshes)
+
+                 commander.mesh.position = BABYLON.Vector3.Zero();
+                 commander.mesh.name = commander.name + "_mesh";
+                 commander.mesh.showBoundingBox = true;
+                 commander.mesh.position = startingVector;
+                 commander.mesh.edgesWidth = 20;
+                 commander.mesh.outlineWidth = 20;
+                 commander.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(commander.mesh, BABYLON.PhysicsImpostor.BoxImpostor, {
                         mass: commander.physics.mass,
                         restitution: commander.physics.restitution,
                         friction: commander.physics.friction
                   }, this._scene);
-                  commander.mesh = mesh;
             }
       }
 

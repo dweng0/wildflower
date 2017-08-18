@@ -21,6 +21,7 @@ export class Character {
   zoom: number = 0;
 
   constructor(username: string, campaign: Campaign, scene: BABYLON.Scene) {
+    debugger;
     // find user in campaign
     this._player = this.findUserInCampaign(username, campaign);
     this.playerId = this._player.username;
