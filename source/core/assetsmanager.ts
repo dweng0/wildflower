@@ -128,7 +128,7 @@ export class AssetsManager {
       }
 
       setTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
-             let map = this._campaign.map
+            let map = this._campaign.map
             let ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", url + "/heightmap" + manifest.map.heightMap, map.width, map.height, map.subDivisions, 0, 12, scene, true);
 
             /** Load ground texture */
