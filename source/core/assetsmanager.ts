@@ -39,8 +39,8 @@ export class AssetsManager {
                   this.getAvatarStatistics(this._scene, this._manifest).then((characterData: Array<ICharacterData>) => {
                         this._loadedAvatarStatistics = characterData;
                         this._assets.load();
-                  }).catch(() => {
-                        throw new Error('Failed to load Players');
+                  }).catch((error) => {
+                        throw error;
                   });
 
                   this._assets.onFinish = (tasks: Array<BABYLON.IAssetTask>) => {
@@ -89,7 +89,7 @@ export class AssetsManager {
                              if (loadCharacter(redPlayer, redStartingVector, response)) {
                                    resolve(loadedCharacters);
                              }
-                        }).catch( () => { throw new Error("Failed to load character manifest") });
+                        }).catch( (error) => { throw error });
                   });
 
                   // load blue team avatars
@@ -100,7 +100,7 @@ export class AssetsManager {
                               if (loadCharacter(bluePlayer, blueStartingVector, response)) {
                                    resolve(loadedCharacters);
                              }
-                        }).catch( () => { throw new Error("Failed to load character manifest") });
+                        }).catch( (error) => { throw error });
                   });
             });
       }
@@ -120,9 +120,9 @@ export class AssetsManager {
                  commander.mesh.edgesWidth = 20;
                  commander.mesh.outlineWidth = 20;
                  commander.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(commander.mesh, BABYLON.PhysicsImpostor.BoxImpostor, {
-                        mass: commander.physics.mass,
-                        restitution: commander.physics.restitution,
-                        friction: commander.physics.friction
+                        mass: manifest.physics.mass,
+                        restitution: manifest.physics.restitution,
+                        friction: manifest.physics.friction
                   }, this._scene);
             }
       }
