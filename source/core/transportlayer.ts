@@ -11,20 +11,18 @@ export class TransportLayer {
       private clientHub: any;
       private campaignId: number;
       // set up the ajax request
-      constructor(campaignId: number, getCampaignDataComplete: any, handShakeComplete: any) {
+      constructor(campaignId: number, responseFunctions: any, getCampaignDataComplete: any, handShakeComplete: any) {
             // setting up transport layer
             console.log('Requesting campaign data from server, campaign:', campaignId);
             this.onComplete = handShakeComplete;
             this.campaignId = campaignId;
-            this.handshake();
+            this.handshake(responseFunctions);
             this.onComplete = handShakeComplete;
       }
 
-      handshake() {
+      handshake(responseFunctions: any) {
             this.clientHub = $.signalR.hub.createHubProxy('game');
-            this.clientHub.client = {
-                  beef: function () { debugger }
-            };
+            this.clientHub.client = responseFunctions;
             console.log('Handshaking....');
             $.signalR.hub.logging = this.logging;
             $.signalR.hub.start().done(this.handshakeSuccess.bind(this)).fail(this.handshakeError);

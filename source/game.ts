@@ -200,7 +200,7 @@ export class Game {
                   this.onReady();
             }
 
-            this._transport = new TransportLayer(this._campaignId, () => {console.log('success')}, () => {console.log('fail')});
+            this._transport = new TransportLayer(this._campaignId, this._stream.getResponseFunctions, () => {console.log('success')}, () => {console.log('fail')});
             this._stage.pipeUserInput(this._stream);
             this._stage.setThisPlayer(manifest.playerUsername, campaign);
             this.input.onCharacterReady(this._stage.getCharacter())

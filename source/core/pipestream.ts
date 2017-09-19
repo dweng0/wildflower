@@ -28,6 +28,14 @@ export class PipeStream {
             // provide signal R here, it should already be connected to the server the connection process should not be handled by this class
       }
 
+      getResponseFunctions(): any {
+            // return an object of functions for use in setting up signalr
+            return {
+                  movePlayerResponse: this.movePlayerResponse,
+                  attackPlayerResponse: this.attackPlayerResponse
+            }
+      }
+
       setStreamHandlers (functionHooks: StreamHandlingPackage) {
             this._movePlayerSuccess = functionHooks.movePlayerSuccess;
             this._movePlayerFailure = functionHooks.movePlayerFailure;
