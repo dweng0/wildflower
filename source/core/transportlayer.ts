@@ -32,7 +32,6 @@ export class TransportLayer {
 
       // if handshake was succesfull, provide back the api signalR interface
       handshakeSuccess() {
-            debugger
             this.clientHub.server.registerPlayer(this.campaignId);
             // set up client hub functions...
             // this.clientHub.client <=== should containg functions to the server

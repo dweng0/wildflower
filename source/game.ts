@@ -55,7 +55,6 @@ export class Game {
             this._canvas = domHandler.getCanvas();
             this._interface = new Interface(this._url, campaignId);
             this._campaignId = campaignId;
-            this._transport = new TransportLayer(campaignId, () => {console.log('success')}, () => {console.log('fail')});
             this._stream = new PipeStream();
             this.input = new Input(this._stream);
             this._statisticsHandler = new StatisticsHandler();
@@ -200,6 +199,8 @@ export class Game {
             if (this.onReady) {
                   this.onReady();
             }
+
+            this._transport = new TransportLayer(this._campaignId, () => {console.log('success')}, () => {console.log('fail')});
             this._stage.pipeUserInput(this._stream);
             this._stage.setThisPlayer(manifest.playerUsername, campaign);
             this.input.onCharacterReady(this._stage.getCharacter())
