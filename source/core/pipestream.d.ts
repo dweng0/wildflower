@@ -21,6 +21,7 @@ export declare class PipeStream {
     private _attackPlayerSuccess;
     private _attackPlayerFailure;
     constructor();
+    getResponseFunctions(): any;
     setStreamHandlers(functionHooks: StreamHandlingPackage): void;
     isReady(): boolean;
     movePlayerRequest(playerId: string, locationRequest: BABYLON.Vector3): void;

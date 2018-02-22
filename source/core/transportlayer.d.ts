@@ -10,8 +10,8 @@ export declare class TransportLayer {
     private onComplete;
     private clientHub;
     private campaignId;
-    constructor(campaignId: number, getCampaignDataComplete: any, handShakeComplete: any);
-    handshake(): void;
+    constructor(campaignId: number, responseFunctions: any, getCampaignDataComplete: any, handShakeComplete: any);
+    handshake(responseFunctions: any): void;
     handshakeSuccess(): void;
     handshakeError(): void;
 }
