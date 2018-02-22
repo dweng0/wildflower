@@ -6,7 +6,7 @@
             "baseUrl": "/stargazer",
             "texture": "/ground.jpg",
             "heightMap": "/heightmap.png",
-            "skybox": "/skybox",
+            "skyBox": "/skybox",
             "physics": "/physics"
       },
       "world":{    

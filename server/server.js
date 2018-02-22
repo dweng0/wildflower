@@ -22,7 +22,7 @@ app.get('/game/manifest/:id', function (req, res) {
 app.get('/game/map/:id/skybox/:name', function (req, res) {
     let mapName = req.params.id;
     let skyboxName = req.params.name;
-    res.sendFile(path.join(__dirname, "../assets/maps/" + mapName + "/skybox/" + skyboxName));
+    res.sendFile(path.join(__dirname, "../lib/dist/assets/maps/" + mapName + "/skybox/" + skyboxName));
 })
 
 
@@ -38,13 +38,13 @@ app.get('/game/map/:id/physics', function (req, res) {
 app.get('/game/map/:id/texture/:name', function (req, res) {
     let mapName = req.params.id;
     let textureName = req.params.name;
-    res.sendFile(path.join(__dirname, "../assets/maps/" + mapName + "/" + textureName));
+    res.sendFile(path.join(__dirname, "../lib/dist/assets/maps/" + mapName + "/" + textureName));
 })
 
 app.get('/game/map/:id/heightmap/:name', function (req, res) {
     let mapName = req.params.id;
     let heightMapName = req.params.name;
-    res.sendFile(path.join(__dirname, "../assets/maps/" + mapName + "/" + heightMapName));
+    res.sendFile(path.join(__dirname, "../lib/dist/assets/maps/" + mapName + "/" + heightMapName));
 })
 
 /**
@@ -59,20 +59,20 @@ app.get('/game/map/:id/heightmap/:name', function (req, res) {
 app.get('/game/characters/:id/textures/:name', function (req, res) {
     let id = req.params.id;
     let name = req.params.name;
-    res.sendFile(path.join(__dirname, "../assets/commanders/" + id + "/textures/" + name));
+    res.sendFile(path.join(__dirname, "../lib/dist/assets/commanders/" + id + "/textures/" + name));
 })
 
 app.get('/game/characters/:id/sounds/:name', function (req, res) {
     let id = req.params.id;
     let name = req.params.name;
-    res.sendFile(path.join(__dirname, "../assets/commanders/" + id + "/sounds/" + name));
+    res.sendFile(path.join(__dirname, "../lib/dist/assets/commanders/" + id + "/sounds/" + name));
 });
 
 
 app.get('/game/characters/:id/meshes/:name', function (req, res) {
     let id = req.params.id;
     let name = req.params.name;
-    res.sendFile(path.join(__dirname, "../assets/commanders/" + id + "/meshes/" + name));
+    res.sendFile(path.join(__dirname, "../lib/dist/assets/commanders/" + id + "/meshes/" + name));
 })
 
 
@@ -96,8 +96,8 @@ app.get('/game/campaign/:id', function (req, res) {
     res.sendFile(path.join(__dirname, "./mockdata/game/" + id + "/details.json"));
 })
 
-app.use('/static', express.static(path.join(__dirname, "../lib/static")))
-app.use('/vendors', express.static(path.join(__dirname, "../lib/vendors")))
+app.use('/dist/static', express.static(path.join(__dirname, "../lib/dist/static")))
+app.use('/dist/vendors', express.static(path.join(__dirname, "../lib/dist/vendors")))
 
 app.listen(3000, function () {
     console.log('Test server running on 3000');

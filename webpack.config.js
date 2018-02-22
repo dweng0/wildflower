@@ -9,7 +9,7 @@ var pjson = require('./package.json');
 module.exports = {
     entry: "./source/game.ts",
     output: {
-        filename: "static/bundle.js",
+        filename: "dist/static/bundle.js",
         path: __dirname + "/lib"
     },
 
@@ -47,11 +47,9 @@ module.exports = {
             "cache": false
         }),
         new CopyWebpackPlugin([
-             {from:"node_modules/babylonjs/dist/preview release/babylon.max.js", to:"vendors/babylon.js"},
-             {from:"node_modules/babylonjs/dist/preview release/oimo.js", to:"vendors/oimo.js"},
-            {from:"lib/static", to:"D:/old/edgroundwars/EDWars/Scripts/wildflower/static", force: true},
-             {from:"assets", to:"D:/old/edgroundwars/EDWars/assets", force: true},
-              
+             {from:"node_modules/babylonjs/dist/preview release/babylon.max.js", to:"dist/vendors/babylon.js"},
+             {from:"node_modules/babylonjs/dist/preview release/oimo.js", to:"dist/vendors/oimo.js"},
+             {from:"assets", to:"dist/assets"}
         ]),
         new TypedocWebpackPlugin({
             name: "WildFlower",

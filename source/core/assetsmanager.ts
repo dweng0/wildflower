@@ -106,7 +106,7 @@ export class AssetsManager {
       }
 
       loadCharacter(url: string, commander: ICommander, manifest: ICharacterData, startingVector: BABYLON.Vector3) {
-            let bodyTextureUrl = url + commander.assetsUrl + "/textures/" + manifest.textureUrl;
+            let bodyTextureUrl = url + commander.assetsUrl + "/textures" + manifest.textureUrl;
             let meshUrl = url + commander.assetsUrl + manifest.meshUrl;
             let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, "buggy.babylon");
             meshTask.onSuccess = function (task: any) {
@@ -207,6 +207,7 @@ export class AssetsManager {
        * @param errors {Array<string>} The list of errors, if any incurred in this code path.
        */
       getMapAssets(scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
+            
             let url = manifest.baseUrl + "/map" + manifest.map.baseUrl;
 
             this.setFlatTerrain(url, scene, manifest, reject);
