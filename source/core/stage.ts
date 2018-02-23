@@ -84,7 +84,7 @@ export class Stage {
                   this._freeCamera.position = newCamPos
             });
             this._scene.render();
-             this._scene.debugLayer.show();
+            // this._scene.debugLayer.show();
             if (debug) {
                   this._scene.debugLayer.show();
             }

@@ -12,6 +12,9 @@ export interface StreamHandlingPackage {
 }
 /**
  * @classdesc More like pipe dream HUE HUE HUE
+ *
+ * What it does:
+ * Handles connections between client and server
  */
 export declare class PipeStream {
     private _signalR;

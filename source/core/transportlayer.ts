@@ -21,11 +21,11 @@ export class TransportLayer {
       }
 
       handshake(responseFunctions: any) {
-            this.clientHub = $.signalR.hub.createHubProxy('game');
+           /** this.clientHub = $.signalR.hub.createHubProxy('game');
             this.clientHub.client = responseFunctions;
             console.log('Handshaking....');
             $.signalR.hub.logging = this.logging;
-            $.signalR.hub.start().done(this.handshakeSuccess.bind(this)).fail(this.handshakeError);
+            $.signalR.hub.start().done(this.handshakeSuccess.bind(this)).fail(this.handshakeError); */
       }
 
       // if handshake was succesfull, provide back the api signalR interface
