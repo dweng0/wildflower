@@ -11,11 +11,18 @@ export interface IMovementPackage {
   angleApplied: boolean;
   destination: BABYLON.Vector3;
 }
+/**
+ * Handles the current size for an object
+ */
+export interface ICurrentSize {
+  width: number;
+  height: number;
+}
 
 export class Character {
   private commander: Commander;
   private _player: Player;
-
+  private currentSize: ICurrentSize;
   movementPackage: IMovementPackage;
   playerId: string;
   zoom: number = 0;
@@ -31,17 +38,20 @@ export class Character {
       angleApplied: false,
       destination: new BABYLON.Vector3(0, 0, 0)
     }
+
+    // set the curent size
+    // this.currentSize.height
   }
 
   zoomOut(): void {
     if (this.zoom < 70) {
-      this.zoom  += 4;
+      this.zoom += 4;
     }
   }
 
   zoomIn(): void {
     if (this.zoom > -10) {
-       this.zoom -= 4;
+      this.zoom -= 4;
     }
   }
 
@@ -74,6 +84,10 @@ export class Character {
     return this.commander.getName();
   }
 
+  /**
+  * This functionality needs improving, the character keeps tipping when moved
+  */
+
   updateMovement() {
     let mesh = this.commander.fetchMesh();
     let myPos = mesh.getAbsolutePosition();
@@ -100,13 +114,26 @@ export class Character {
         this.movementPackage.finished = true;
       }
     }
-    mesh.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(x, 0, z));
+
+    if (!this.clickingSelf(x, z)) {
+      mesh.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(x, 0, z));
+    } else {
+      xFinished = true;
+    }
 
     if (!xFinished) {
       mesh.lookAt(hitVector);
     }
   }
 
+  /**
+   * TODO add logic that lets us know if the x y coords fall inside this characters hitbox area
+   * @param x
+   * @param z
+   */
+  clickingSelf(x: number, z: number): boolean {
+    return false;
+  }
   moveByMouse(hitVector: BABYLON.Vector3) {
     this.movementPackage = {
       finished: false,

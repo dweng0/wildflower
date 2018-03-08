@@ -36,4 +36,6 @@ export interface ICommander {
     mesh: any;
     physics: IPhysics;
     abilities: Array<ICommandeAbility>;
+    width: number;
+    height: number;
 }

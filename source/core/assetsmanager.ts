@@ -1,9 +1,9 @@
 import * as BABYLON from 'babylonjs';
 import * as WebRequest from 'rest';
-import { UrlManifest, CharacterManifest} from '../interface/urlmanifest';
-import {ICharacterData} from '../interface/assets/characterdata';
+import { UrlManifest, CharacterManifest } from '../interface/urlmanifest';
+import { ICharacterData } from '../interface/assets/characterdata';
 import { IPhysics } from '../interface/physics';
-import {ICommander} from '../interface/assets/commander';
+import { ICommander } from '../interface/assets/commander';
 import { Campaign } from '../interface/assets/campaign';
 import { Team } from '../interface/assets/team';
 
@@ -70,7 +70,7 @@ export class AssetsManager {
             let loadedCharacters = Array<ICharacterData>();
 
             let loadCharacter = (player: any, startingVector: BABYLON.Vector3, response: WebRequest.Response) => {
-                  let characterManifest  = <ICharacterData>JSON.parse(response.entity);
+                  let characterManifest = <ICharacterData>JSON.parse(response.entity);
                   this.loadCharacter(url, player.commander, characterManifest, startingVector);
                   loadedCharacters.push(characterManifest);
 
@@ -86,10 +86,10 @@ export class AssetsManager {
                         WebRequest(url + redPlayer.commander.assetsUrl + "/manifest").then((response: WebRequest.Response) => {
                               let spaceMaker = (6 * loadCharacter.length);
                               let redStartingVector = new BABYLON.Vector3(this._campaign.map.redStartingPointX + spaceMaker, this._campaign.map.redStartingPointY, this._campaign.map.redStartingPointZ);
-                             if (loadCharacter(redPlayer, redStartingVector, response)) {
-                                   resolve(loadedCharacters);
-                             }
-                        }).catch( (error) => { throw error });
+                              if (loadCharacter(redPlayer, redStartingVector, response)) {
+                                    resolve(loadedCharacters);
+                              }
+                        }).catch((error) => { throw error });
                   });
 
                   // load blue team avatars
@@ -98,9 +98,9 @@ export class AssetsManager {
                               let spaceMaker = (5 * loadCharacter.length);
                               let blueStartingVector = new BABYLON.Vector3(this._campaign.map.blueStartingPointX + spaceMaker, this._campaign.map.blueStartingPointY, this._campaign.map.blueStartingPointZ);
                               if (loadCharacter(bluePlayer, blueStartingVector, response)) {
-                                   resolve(loadedCharacters);
-                             }
-                        }).catch( (error) => { throw error });
+                                    resolve(loadedCharacters);
+                              }
+                        }).catch((error) => { throw error });
                   });
             });
       }
@@ -109,17 +109,20 @@ export class AssetsManager {
             let bodyTextureUrl = url + commander.assetsUrl + "/textures" + manifest.textureUrl;
             let meshUrl = url + commander.assetsUrl + manifest.meshUrl;
             let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, "buggy.babylon");
+
+            commander.width = manifest.width;
+            commander.height = manifest.height;
             meshTask.onSuccess = function (task: any) {
                   // http://www.html5gamedevs.com/topic/6732-question-about-mesh-impostor/
-                 commander.mesh  = BABYLON.Mesh.MergeMeshes(task.loadedMeshes)
+                  commander.mesh = BABYLON.Mesh.MergeMeshes(task.loadedMeshes)
 
-                 commander.mesh.position = BABYLON.Vector3.Zero();
-                 commander.mesh.name = commander.name + "_mesh";
-                 commander.mesh.showBoundingBox = true;
-                 commander.mesh.position = startingVector;
-                 commander.mesh.edgesWidth = 20;
-                 commander.mesh.outlineWidth = 20;
-                 commander.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(commander.mesh, BABYLON.PhysicsImpostor.BoxImpostor, {
+                  commander.mesh.position = BABYLON.Vector3.Zero();
+                  commander.mesh.name = commander.name + "_mesh";
+                  commander.mesh.showBoundingBox = true;
+                  commander.mesh.position = startingVector;
+                  commander.mesh.edgesWidth = commander.width;
+                  commander.mesh.outlineWidth = commander.height;
+                  commander.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(commander.mesh, BABYLON.PhysicsImpostor.BoxImpostor, {
                         mass: manifest.physics.mass,
                         restitution: manifest.physics.restitution,
                         friction: manifest.physics.friction
@@ -137,7 +140,7 @@ export class AssetsManager {
                   groundMaterial.diffuseTexture = asset.texture;
                   groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
                   ground.material = groundMaterial;
-                  ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor,  { mass: map.physics.mass, restitution: map.physics.restitution, friction: map.physics.friction }, scene);
+                  ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: map.physics.mass, restitution: map.physics.restitution, friction: map.physics.friction }, scene);
                   this._campaign.map.groundMesh = ground;
             }, () => { reject(["Failed to load map texture"]) });
       }
@@ -207,9 +210,7 @@ export class AssetsManager {
        * @param errors {Array<string>} The list of errors, if any incurred in this code path.
        */
       getMapAssets(scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void {
-            
             let url = manifest.baseUrl + "/map" + manifest.map.baseUrl;
-
             this.setFlatTerrain(url, scene, manifest, reject);
             this.setSkyPhere(url, scene, manifest, reject);
       }
