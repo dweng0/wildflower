@@ -119,7 +119,7 @@ export class AssetsManager {
                  commander.mesh.position = startingVector;
                  commander.mesh.edgesWidth = 20;
                  commander.mesh.outlineWidth = 20;
-                 commander.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(commander.mesh, BABYLON.PhysicsImpostor.BoxImpostor, {
+                 commander.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(commander.mesh, BABYLON.PhysicsImpostor.SphereImpostor, {
                         mass: manifest.physics.mass,
                         restitution: manifest.physics.restitution,
                         friction: manifest.physics.friction
@@ -137,7 +137,7 @@ export class AssetsManager {
                   groundMaterial.diffuseTexture = asset.texture;
                   groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
                   ground.material = groundMaterial;
-                  ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor,  { mass: map.physics.mass, restitution: map.physics.restitution, friction: map.physics.friction }, scene);
+                  ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor,  { mass: map.physics.mass, restitution: map.physics.restitution, friction: map.physics.friction }, scene);
                   this._campaign.map.groundMesh = ground;
             }, () => { reject(["Failed to load map texture"]) });
       }

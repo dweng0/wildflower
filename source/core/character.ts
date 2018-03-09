@@ -15,6 +15,7 @@ export interface IMovementPackage {
 export class Character {
   private commander: Commander;
   private _player: Player;
+  private movementThreshold: number = 5;
 
   movementPackage: IMovementPackage;
   playerId: string;
@@ -35,13 +36,13 @@ export class Character {
 
   zoomOut(): void {
     if (this.zoom < 70) {
-      this.zoom  += 4;
+      this.zoom += 4;
     }
   }
 
   zoomIn(): void {
     if (this.zoom > -10) {
-       this.zoom -= 4;
+      this.zoom -= 4;
     }
   }
 
@@ -71,40 +72,33 @@ export class Character {
   }
 
   getCommanderName() {
-    return this.commander.getName();
+    return this.commander.getName(); 
   }
 
+  /**
+   * Move a player by applying an impulse
+   */
   updateMovement() {
+
     let mesh = this.commander.fetchMesh();
-    let myPos = mesh.getAbsolutePosition();
-    let hitVector = this.movementPackage.destination;
-    let x = 0;
-    let z = 0;
-    let y;
-    let tolerance = 1;
-    let xFinished = false;
-    if (hitVector.x > myPos.x + tolerance) {
-      x = this.commander.stats.baseSpeed;
-    } else if (hitVector.x < myPos.x - tolerance) {
-      x = -this.commander.stats.baseSpeed;
-    } else {
-      xFinished = true;
+    let direction = this.movementPackage.destination.subtract(mesh.position);    
+        direction = direction.normalize();
+    let tolerance =5;
+    let destinationX = this.movementPackage.destination.x;
+    let destinationY = this.movementPackage.destination.y;
+    let position = mesh.position;
+    if (position.x > destinationX && position.x < (destinationX + tolerance) && position.y > destinationY && position.y < (destinationY + tolerance) ) 
+    {
+      this.movementPackage.finished = true;
     }
 
-    if (hitVector.z > myPos.z + tolerance) {
-      z = this.commander.stats.baseSpeed;
-    } else if (hitVector.z < myPos.z - tolerance) {
-      z = -this.commander.stats.baseSpeed;
-    } else {
-      if (xFinished === true) {
-        this.movementPackage.finished = true;
-      }
-    }
-    mesh.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(x, 0, z));
+    mesh.lookAt(this.movementPackage.destination);
+    mesh.physicsImpostor.setLinearVelocity(direction);
 
-    if (!xFinished) {
-      mesh.lookAt(hitVector);
-    }
+    // Give it a bit more power (scale the normalized direction).
+    var impulse = direction.scale(this.commander.stats.baseSpeed);
+    // Apply the impulse (and throw the ball). 
+    mesh.applyImpulse(impulse, new BABYLON.Vector3(0, 0, 0));
   }
 
   moveByMouse(hitVector: BABYLON.Vector3) {

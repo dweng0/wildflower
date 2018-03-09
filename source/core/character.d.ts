@@ -12,6 +12,7 @@ export interface IMovementPackage {
 export declare class Character {
     private commander;
     private _player;
+    private movementThreshold;
     movementPackage: IMovementPackage;
     playerId: string;
     zoom: number;
@@ -22,6 +23,9 @@ export declare class Character {
     fetchMesh(): BABYLON.AbstractMesh;
     setPlayerId(id: string): void;
     getCommanderName(): string;
+    /**
+     * Move a player by applying an impulse
+     */
     updateMovement(): void;
     moveByMouse(hitVector: BABYLON.Vector3): void;
     computeWorldMatrix(): BABYLON.Matrix;
