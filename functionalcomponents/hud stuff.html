@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Babylon.js sample code</title>
+        <!-- Babylon.js -->
+        <script src="https://www.babylonjs.com/hand.minified-1.2.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.js"></script>
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/cannon.js"></script>
+        <script src="https://preview.babylonjs.com/draco_decoder.js" type="text/x-draco-decoder"></script>
+        <script src="https://preview.babylonjs.com/oimo.js"></script>
+        
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+    </head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+        var engine = new BABYLON.Engine(canvas, true);
+
+        var getMesh = function(scene){    
+            var mesh = BABYLON.Mesh.CreateBox("box1", 2, scene);    
+                mesh.position.y = 40;
+        
+            var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+                myMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
+                myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);     
+                myMaterial.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
+                mesh.material = myMaterial;
+                mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.SphereImpostor, {
+                    mass:1,
+                    restitution: 0.7,
+                    friction: 0.2
+                }, scene);
+            return mesh;
+        }
+        
+        var getGround = function(scene) {
+            var ground = BABYLON.Mesh.CreateBox("ground1", 50, scene);
+                ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.SphereImpostor, {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }, scene);
+            return ground;
+        }
+        
+        var createLabel = function(mesh, name) {
+              // GUI
+            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ui1");
+            
+            var label = new BABYLON.GUI.Rectangle("label for " + name);
+            label.background = "black"
+            label.height = "30px";
+            label.alpha = 0.5;
+            label.width = "100px";
+            label.cornerRadius = 20;
+            label.thickness = 1;
+            label.linkOffsetY = 30;
+            advancedTexture.addControl(label); 
+            label.linkWithMesh(mesh);
+        
+            var text1 = new BABYLON.GUI.TextBlock();
+            text1.text = name;
+            text1.color = "white";
+            label.addControl(text1);  
+        }  
+        
+        var healthPanel = function(scene, camera) {
+             // GUI
+            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ui1");
+            var panel3 = new BABYLON.GUI.StackPanel();
+            panel3.width = "300px";
+            panel3.fontSize = "14px";
+            
+            panel3.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            panel3.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+            advancedTexture.addControl(panel3);
+        
+            var header = new BABYLON.GUI.TextBlock();
+            header.text = "PlayerName";
+            header.height = "40px";
+            header.color = "white";
+            header.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            header.paddingTop = "10px";
+            panel3.addControl(header); 
+        
+            var line = new BABYLON.GUI.Line();
+            line.x1 = 1;
+            line.y1 = 60;
+            line.x2 = 250;
+            line.y2 = 60;
+            line.lineWidth = 34;
+            line.color = "green";
+        
+            var rect1 = new BABYLON.GUI.Rectangle();
+            
+            rect1.width = 1;
+            rect1.height = "24px";
+            rect1.cornerRadius = 12;
+            rect1.color = "Orange";
+            rect1.thickness = 3;
+            rect1.background = "red";
+            rect1.addControl(line);
+            panel3.addControl(rect1);
+        
+        }
+        
+        var getCamera = function(scene){
+            // This creates and positions a free camera (non-mesh)
+            var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(50, 70, -29), scene);	
+            return camera;
+        }
+        
+        var applyImpulse = function(mesh, destination) {    
+            var position = mesh.getAbsolutePosition();
+        
+             // Calculate the direction using the picked point and the ball's position. 
+            var direction = destination.subtract(mesh.position);
+            // To be able to apply scaling correctly, normalization is required.
+            direction = direction.normalize();
+           // direction.y = 0.2;
+            mesh.lookAt(destination);                        
+            mesh.physicsImpostor.setLinearVelocity(direction);
+        
+             // Give it a bit more power (scale the normalized direction).
+            var impulse = direction.scale(15);
+            // Apply the impulse (and throw the ball). 
+            mesh.applyImpulse(impulse, new BABYLON.Vector3(0, 0, 0));
+        }
+        
+        var createScene = function () {
+            var movementpoint = new BABYLON.PickingInfo();
+            // This creates a basic Babylon Scene object (non-mesh)
+            var scene = new BABYLON.Scene(engine);
+        
+            var camera = getCamera(scene);
+            healthPanel(scene, camera);
+            // This targets the camera to scene origin
+            camera.setTarget(BABYLON.Vector3.Zero());
+        
+            // This attaches the camera to the canvas
+            camera.attachControl(canvas, true);
+        
+            // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+            var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+        
+            // Default intensity is 1. Let's dim the light a small amount
+            light.intensity = 0.7;
+            
+            var gravityVector = new BABYLON.Vector3(0, -20, 0);
+            scene.enablePhysics(gravityVector, new BABYLON.OimoJSPlugin());
+        
+            //set up mesh and ground
+            var mesh = getMesh(scene);
+            createLabel(mesh, 'player1');
+            var ground = getGround(scene);
+            
+            scene.registerBeforeRender(() => {
+                var tolerance = 5
+                var position = mesh.getAbsolutePosition();
+             
+                if(movementpoint.pickedPoint != null)
+                {
+                    var destinationX = movementpoint.pickedPoint.x;
+                    var destinationY = movementpoint.pickedPoint.y;
+                    /**if (position.x > destinationX && position.x < (destinationX + tolerance) && position.y > destinationY && position.y < (destinationY + tolerance) ) 
+                    {
+                        movementpoint.hit = false;
+                    }*/
+                }      
+        
+                if(movementpoint.hit)
+                {
+                    debugger;
+                    var destination = movementpoint.pickedPoint;
+                    applyImpulse(mesh, destination);
+                }
+        
+               
+            });
+            
+            var onPointerDown = function(){        
+                movementpoint = scene.pick(scene.pointerX, scene.pointerY);
+            }
+        
+            canvas.addEventListener("pointerdown", onPointerDown, false); 
+        
+            scene.onDispose = function () {
+                canvas.removeEventListener("pointerdown", onPointerDown);
+            }
+            
+            return scene;
+        
+        };
+        
+        var scene = createScene()
+
+        engine.runRenderLoop(function () {
+            scene.render();
+        });
+
+        // Resize
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+</body>
+</html>
