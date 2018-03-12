@@ -85,16 +85,9 @@ export class Character {
     // To be able to apply scaling correctly, normalization is required.
     direction = direction.normalize();
 
-    if (direction.x > direction.x && direction.x < (direction.x + tolerance) && direction.y > direction.y && direction.y < (direction.y + tolerance)) {
-      this.movementPackage.finished = true;
-      var impulse = direction.scale(0);
-        mesh.physicsImpostor.setLinearVelocity(impulse);
-    }
-    else {
-      var impulse = direction.scale(20);
-      mesh.lookAt(this.movementPackage.destination);
-      mesh.physicsImpostor.setLinearVelocity(impulse);
-    }
+    var impulse = direction.scale(20);
+    mesh.lookAt(this.movementPackage.destination);
+    mesh.physicsImpostor.setLinearVelocity(impulse);
   }
 
   moveByMouse(hitVector: BABYLON.Vector3) {
