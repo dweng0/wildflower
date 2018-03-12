@@ -15,9 +15,11 @@ export declare class Stage {
     private _camera;
     private _arcCamera;
     private _freeCamera;
+    private _targetCamera;
     private _activeCamera;
     private _environment;
     private _worldPhysics;
+    private canvas;
     private _thisCharacter;
     characters: Array<Character>;
     constructor(engine: BABYLON.Engine, manifest: UrlManifest);

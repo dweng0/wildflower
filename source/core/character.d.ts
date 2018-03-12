@@ -23,6 +23,7 @@ export declare class Character {
     fetchMesh(): BABYLON.AbstractMesh;
     setPlayerId(id: string): void;
     getCommanderName(): string;
+    applyImpulse(destination: any): void;
     /**
      * Move a player by applying an impulse to match the movementpackage
      */

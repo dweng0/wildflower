@@ -114,8 +114,12 @@ export class AssetsManager {
             let meshTask = this._assets.addMeshTask("skull task", "", meshUrl, "buggy.babylon");
             meshTask.onSuccess = function (task: any) {
                   // http://www.html5gamedevs.com/topic/6732-question-about-mesh-impostor/
+                  commander.mesh = BABYLON.Mesh.CreateBox("test", 5, this._scene);
+                  /**
                   commander.mesh = BABYLON.Mesh.MergeMeshes(task.loadedMeshes)
-
+                  */
+                 debugger;
+             //    commander.mesh.MergeMeshes(task.loadedMeshes)
                   commander.mesh.position = BABYLON.Vector3.Zero();
                   commander.mesh.name = commander.name + "_mesh";
                   commander.mesh.showBoundingBox = true;
@@ -127,6 +131,7 @@ export class AssetsManager {
                         restitution: manifest.physics.restitution,
                         friction: manifest.physics.friction
                   }, this._scene);
+                 
             }
       }
       /**

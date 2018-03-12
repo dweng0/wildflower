@@ -15,9 +15,11 @@ export class Stage {
       private _camera: BABYLON.FollowCamera;
       private _arcCamera: BABYLON.ArcRotateCamera;
       private _freeCamera: BABYLON.FreeCamera;
+      private _targetCamera: BABYLON.TargetCamera;
       private _activeCamera: any;
       private _environment: BABYLON.StandardMaterial;
       private _worldPhysics: WorldPhysics;
+      private canvas: any;
       private _thisCharacter: Character; // for now this will be a mesh
       characters: Array<Character>;
 
@@ -61,6 +63,7 @@ export class Stage {
        */
       setTheStage(canvas: HTMLCanvasElement): Array<string> {
             let errors = new Array<string>();
+            this.canvas = canvas;
             this._setScene(errors);
             this.useCamera("free", canvas);
             this._setLighting();
@@ -73,22 +76,59 @@ export class Stage {
        * @param debug {boolean} determines if the debug layer should be shown
        */
       showTime(debug?: boolean): void {
-            debug = true;
-            let characterMesh = this.getCharacter().fetchMesh();
-            this._freeCamera.lockedTarget = characterMesh;
+            let movementpoint = new BABYLON.PickingInfo();
+            let character = this.getCharacter();
+            let mesh = character.fetchMesh();
+            let scene = this._scene;
+            //this._freeCamera.lockedTarget = mesh;
 
             this._scene.registerBeforeRender(() => {
-                  this._updateCharacterMovements();
+                /**  this._updateCharacterMovements(); */
                   let zoom = this.getCharacter().zoom;
                   // update camera as player moves
-                  let newCamPos = new BABYLON.Vector3((characterMesh.position.x  + 50), (characterMesh.position.y + zoom + 80), (characterMesh.position.z + 60));
+                  let newCamPos = new BABYLON.Vector3((mesh.position.x  + 50), (mesh.position.y + zoom + 80), (mesh.position.z - 60));
+                  //ector3 {x: 0.8936124147595585, y: -0.8981434387572087, z: 0}
+                  let rotation = new BABYLON.Vector3(0.8, -0.8, 0);
+                  //this._freeCamera.parent = mesh;
                   this._freeCamera.position = newCamPos
+                  this._freeCamera.rotation = rotation;
+                  
+               
+                 let tolerance = 5
+                 let position = mesh.getAbsolutePosition();
+              
+                 if(movementpoint.pickedPoint != null)
+                 {
+                     let destinationX = movementpoint.pickedPoint.x;
+                     let destinationY = movementpoint.pickedPoint.y;
+                     if (position.x > destinationX - tolerance && position.x < (destinationX + tolerance) && position.y > destinationY - tolerance && position.y < (destinationY + tolerance) ) 
+                     {
+                          let destination = movementpoint.pickedPoint;
+                        
+                         mesh.physicsImpostor.forceUpdate();
+                         character.applyImpulse(destination);
+                         movementpoint.hit = false;
+                         movementpoint.pickedPoint = null;
+                     }
+                 }      
+         
+                 if(movementpoint.hit)
+                 {
+                     let destination = movementpoint.pickedPoint;
+                     character.applyImpulse(destination);
+                 }
+         
             });
-            this._scene.render();
-            // this._scene.debugLayer.show();
-            if (debug) {
-            //      this._scene.debugLayer.show();
+
+            let onPointerDown = function(){
+                  movementpoint = scene.pick(scene.pointerX, scene.pointerY);
             }
+
+            this.canvas.addEventListener("pointerdown", onPointerDown, false);
+            this._scene.onDispose = function() {
+                  this.canvas.removeEventListener("pointerdown", onPointerDown);
+            }
+            this._scene.render();           
       }
 
       /**

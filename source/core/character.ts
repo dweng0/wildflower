@@ -75,6 +75,25 @@ export class Character {
     return this.commander.getName();
   }
 
+  applyImpulse(destination) {
+    let mesh = this.fetchMesh();
+      let position = mesh.getAbsolutePosition();
+
+     // Calculate the direction using the picked point and the ball's position. 
+    let direction = destination.subtract(mesh.position);
+    // To be able to apply scaling correctly, normalization is required.
+    direction = direction.normalize();
+    //direction.y = 0.1;
+    mesh.lookAt(destination);                        
+   //
+
+     // Give it a bit more power (scale the normalized direction).
+    let impulse = direction.scale(20);
+    // Apply the impulse (and throw the ball). 
+    //mesh.applyImpulse(impulse, new BABYLON.Vector3(0, 0, 0));
+     mesh.physicsImpostor.setLinearVelocity(impulse);
+  }
+
   /**
    * Move a player by applying an impulse to match the movementpackage
    */

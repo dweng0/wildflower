@@ -1,8 +1,8 @@
 {            
       "physics": {
-            "mass":1,
-            "friction": 0,
-            "restitution": 0.2
+            "mass":6.8,
+            "friction": 0.7,
+            "restitution": 0.5
       },
       "textureUrl": "/texture.jpg",
       "meshUrl": "/meshes/",
