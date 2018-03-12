@@ -37,45 +37,112 @@
         var getMesh = function(scene){    
             var mesh = BABYLON.Mesh.CreateBox("box1", 2, scene);    
                 mesh.position.y = 40;
-        
             var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
                 myMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
                 myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);     
                 myMaterial.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
                 mesh.material = myMaterial;
-                mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.SphereImpostor, {
-                                mass:1,
-                                restitution: 0,
-                                friction: 0.2
-                          }, scene);
+                mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, {
+                    mass:1,
+                    restitution: 0.7,
+                    friction: 0.2
+                }, scene);
             return mesh;
         }
         
         var getGround = function(scene) {
             var ground = BABYLON.Mesh.CreateBox("ground1", 50, scene);
-                ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.SphereImpostor, {
+                ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, {
                     mass:0,
-                    restitution: 0,
+                    restitution: 0.3,
                     friction: 0.7
                 }, scene);
             return ground;
         }
         
-        var applyImpulse = function(mesh, destination) {    
-            var position = mesh.getAbsolutePosition();
+        var createLabel = function(mesh, name) {
+              // GUI
+            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ui1");
+            
+            var label = new BABYLON.GUI.Rectangle("label for " + name);
+            label.background = "black"
+            label.height = "30px";
+            label.alpha = 0.5;
+            label.width = "100px";
+            label.cornerRadius = 20;
+            label.thickness = 1;
+            label.linkOffsetY = 30;
+            advancedTexture.addControl(label); 
+            label.linkWithMesh(mesh);
+        
+            var text1 = new BABYLON.GUI.TextBlock();
+            text1.text = name;
+            text1.color = "white";
+            label.addControl(text1);  
+        }  
+        
+        var healthPanel = function(scene, camera) {
+             // GUI
+            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ui1");
+            var panel3 = new BABYLON.GUI.StackPanel();
+            panel3.width = "300px";
+            panel3.fontSize = "14px";
+            
+            panel3.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            panel3.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+            advancedTexture.addControl(panel3);
+        
+            var header = new BABYLON.GUI.TextBlock();
+            header.text = "PlayerName";
+            header.height = "40px";
+            header.color = "white";
+            header.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            header.paddingTop = "10px";
+            panel3.addControl(header); 
+        
+            var line = new BABYLON.GUI.Line();
+            line.x1 = 1;
+            line.y1 = 60;
+            line.x2 = 250;
+            line.y2 = 60;
+            line.lineWidth = 34;
+            line.color = "green";
+        
+            var rect1 = new BABYLON.GUI.Rectangle();
+            
+            rect1.width = 1;
+            rect1.height = "24px";
+            rect1.cornerRadius = 12;
+            rect1.color = "Orange";
+            rect1.thickness = 3;
+            rect1.background = "red";
+            rect1.addControl(line);
+            panel3.addControl(rect1);
+        
+        }
+        
+        var getCamera = function(scene){
+            // This creates and positions a free camera (non-mesh)
+            var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(50, 70, -29), scene);	
+            return camera;
+        }
+        
+        var applyImpulse = function(mesh, destination, final) {    
+             var position = mesh.getAbsolutePosition();
         
              // Calculate the direction using the picked point and the ball's position. 
             var direction = destination.subtract(mesh.position);
             // To be able to apply scaling correctly, normalization is required.
             direction = direction.normalize();
-           
+            //direction.y = 0.2;
             mesh.lookAt(destination);                        
-            mesh.physicsImpostor.setLinearVelocity(direction);
+           //
         
              // Give it a bit more power (scale the normalized direction).
-            var impulse = direction.scale(20);
+            var impulse = direction.scale(15);
             // Apply the impulse (and throw the ball). 
-            mesh.applyImpulse(impulse, new BABYLON.Vector3(0, 0, 0));
+            //mesh.applyImpulse(impulse, new BABYLON.Vector3(0, 0, 0));
+             mesh.physicsImpostor.setLinearVelocity(impulse);
         }
         
         var createScene = function () {
@@ -83,9 +150,8 @@
             // This creates a basic Babylon Scene object (non-mesh)
             var scene = new BABYLON.Scene(engine);
         
-            // This creates and positions a free camera (non-mesh)
-            var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(50, 70, -29), scene);
-        
+            var camera = getCamera(scene);
+            healthPanel(scene, camera);
             // This targets the camera to scene origin
             camera.setTarget(BABYLON.Vector3.Zero());
         
@@ -103,22 +169,30 @@
         
             //set up mesh and ground
             var mesh = getMesh(scene);
+            createLabel(mesh, 'player1');
             var ground = getGround(scene);
             
             scene.registerBeforeRender(() => {
-              
+                var tolerance = 5
                 var position = mesh.getAbsolutePosition();
+             
                 if(movementpoint.pickedPoint != null)
                 {
-                     if(position.x == movementpoint.pickedPoint.x && position.y == movementpoint.pickedPoint.y)
+                    var destinationX = movementpoint.pickedPoint.x;
+                    var destinationY = movementpoint.pickedPoint.y;
+                    if (position.x > destinationX - tolerance && position.x < (destinationX + tolerance) && position.y > destinationY - tolerance && position.y < (destinationY + tolerance) ) 
                     {
+                         var destination = movementpoint.pickedPoint;
+                        mesh.getPhysicsImpostor.get
+                        mesh.physicsImpostor.forceUpdate();
+                          applyImpulse(mesh, destination, true);
                         movementpoint.hit = false;
+                        movementpoint.pickedPoint = null;
                     }
                 }      
         
                 if(movementpoint.hit)
                 {
-                    debugger;
                     var destination = movementpoint.pickedPoint;
                     applyImpulse(mesh, destination);
                 }

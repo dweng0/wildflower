@@ -73,6 +73,7 @@ export class Stage {
        * @param debug {boolean} determines if the debug layer should be shown
        */
       showTime(debug?: boolean): void {
+            debug = true;
             let characterMesh = this.getCharacter().fetchMesh();
             this._freeCamera.lockedTarget = characterMesh;
 
@@ -86,7 +87,7 @@ export class Stage {
             this._scene.render();
             // this._scene.debugLayer.show();
             if (debug) {
-                  this._scene.debugLayer.show();
+            //      this._scene.debugLayer.show();
             }
       }
 

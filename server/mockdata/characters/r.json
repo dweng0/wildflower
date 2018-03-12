@@ -1,7 +1,7 @@
 {            
       "physics": {
             "mass":1,
-            "friction": 0.8,
+            "friction": 0,
             "restitution": 0.2
       },
       "textureUrl": "/texture.jpg",

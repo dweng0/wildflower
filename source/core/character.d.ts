@@ -24,7 +24,7 @@ export declare class Character {
     setPlayerId(id: string): void;
     getCommanderName(): string;
     /**
-     * Move a player by applying an impulse
+     * Move a player by applying an impulse to match the movementpackage
      */
     updateMovement(): void;
     moveByMouse(hitVector: BABYLON.Vector3): void;

@@ -19,8 +19,21 @@ export declare class AssetsManager {
     loadInstanceAssets(engine: BABYLON.Engine): Promise<any>;
     countAllAssets(manifest: UrlManifest): number;
     getAvatarStatistics(scene: BABYLON.Scene, manifest: UrlManifest): Promise<Array<ICharacterData>>;
+    /**
+     * Loads character based on data provided
+     */
     loadCharacter(url: string, commander: ICommander, manifest: ICharacterData, startingVector: BABYLON.Vector3): void;
+    /**
+     * loads the terrain assets and loads the ground texture
+     */
     setTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void;
+    /**
+     * Sets up a flat terrain using a mesh box for better physics interactions
+     * @param url the url from which to load the texture
+     * @param scene the scene to push the terrain into
+     * @param manifest the url manifest for loading map json data
+     * @param reject the reject function to call if the call fails
+     */
     setFlatTerrain(url: string, scene: BABYLON.Scene, manifest: UrlManifest, reject: any): void;
     /**
      * Sets the skybox

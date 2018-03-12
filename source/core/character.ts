@@ -72,33 +72,29 @@ export class Character {
   }
 
   getCommanderName() {
-    return this.commander.getName(); 
+    return this.commander.getName();
   }
 
   /**
-   * Move a player by applying an impulse
+   * Move a player by applying an impulse to match the movementpackage
    */
   updateMovement() {
-
     let mesh = this.commander.fetchMesh();
-    let direction = this.movementPackage.destination.subtract(mesh.position);    
-        direction = direction.normalize();
-    let tolerance =5;
-    let destinationX = this.movementPackage.destination.x;
-    let destinationY = this.movementPackage.destination.y;
-    let position = mesh.position;
-    if (position.x > destinationX && position.x < (destinationX + tolerance) && position.y > destinationY && position.y < (destinationY + tolerance) ) 
-    {
+    let direction = this.movementPackage.destination.subtract(mesh.position);
+    let tolerance = 5;
+    // To be able to apply scaling correctly, normalization is required.
+    direction = direction.normalize();
+
+    if (direction.x > direction.x && direction.x < (direction.x + tolerance) && direction.y > direction.y && direction.y < (direction.y + tolerance)) {
       this.movementPackage.finished = true;
+      var impulse = direction.scale(0);
+        mesh.physicsImpostor.setLinearVelocity(impulse);
     }
-
-    mesh.lookAt(this.movementPackage.destination);
-    mesh.physicsImpostor.setLinearVelocity(direction);
-
-    // Give it a bit more power (scale the normalized direction).
-    var impulse = direction.scale(this.commander.stats.baseSpeed);
-    // Apply the impulse (and throw the ball). 
-    mesh.applyImpulse(impulse, new BABYLON.Vector3(0, 0, 0));
+    else {
+      var impulse = direction.scale(20);
+      mesh.lookAt(this.movementPackage.destination);
+      mesh.physicsImpostor.setLinearVelocity(impulse);
+    }
   }
 
   moveByMouse(hitVector: BABYLON.Vector3) {
