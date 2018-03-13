@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Babylon.js sample code</title>
+        <!-- Babylon.js -->
+        <script src="https://www.babylonjs.com/hand.minified-1.2.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.js"></script>
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/cannon.js"></script>
+        <script src="https://preview.babylonjs.com/draco_decoder.js" type="text/x-draco-decoder"></script>
+        <script src="https://preview.babylonjs.com/oimo.js"></script>
+        
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+    </head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+        var engine = new BABYLON.Engine(canvas, true);
+
+        //handles the loading of map data, the items in the array could be objects that hold material data, and physics for each segment on the world map, an id is needed so we can offload segments that are not in view
+        var worldMap =[
+              [
+                {
+                id: 1,
+                material: new BABYLON.Color3(1, 0, 0),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            },  
+            {
+                id: 1,
+                material: new BABYLON.Color3(1, 0, 0),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            }, 
+              {
+                id: 1,
+                material: new BABYLON.Color3(1, 0, 0),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            },   {
+                id: 1,
+                material: new BABYLON.Color3(0, 1, 0),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            } 
+            ],
+            [
+                {
+                id: 1,
+                material: new BABYLON.Color3(0, 1, 0),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            },  
+            {
+                id: 1,
+                material: new BABYLON.Color3(0, 0,1),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            }, 
+              {
+                id: 1,
+                material: new BABYLON.Color3(1, 0, 0),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            },   {
+                id: 1,
+                material: new BABYLON.Color3(1, 1, 0),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            } 
+            ],
+            [
+                {
+                id: 1,
+                material: new BABYLON.Color3(1, 0, 1),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            },  
+            {
+                id: 1,
+                material: new BABYLON.Color3(1, 0, 0),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            }, 
+              {
+                id: 1,
+                material: new BABYLON.Color3(1, 0, 0),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            },   {
+                id: 1,
+                material: new BABYLON.Color3(1, 0, 0),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            } 
+            ],
+             [
+                {
+                id: 1,
+                material: new BABYLON.Color3(1, 0, 1),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            },  
+            {
+                id: 1,
+                material: new BABYLON.Color3(1, 0, 0),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            }, 
+              {
+                id: 1,
+                material: new BABYLON.Color3(1, 0, 0),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            },   {
+                id: 1,
+                material: new BABYLON.Color3(1, 0, 0),
+                physics: {
+                    mass:0,
+                    restitution: 0.3,
+                    friction: 0.7
+                }
+            } 
+            ]
+        ];
+        
+        
+        var lat = 1;
+        var lng = 1;
+        
+        //prevent the edge test being run every frame (only runs on pointer down)
+        var renderCheck = false;
+        var edgingTolerance = 10;
+        
+        var getMesh = function(scene){    
+            var mesh = BABYLON.Mesh.CreateBox("box1", 2, scene);    
+                mesh.position.y = 40;
+            var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+                myMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
+                myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);     
+                myMaterial.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
+                mesh.material = myMaterial;
+                mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, {
+                    mass:1,
+                    restitution: 0.7,
+                    friction: 0.2
+                }, scene);
+            return mesh;
+        }
+        
+        //loads ground
+        var loadGround = function(scene, worldMapData, x, z){
+         var ground = BABYLON.Mesh.CreateGround("ground1", 50, 50, 1, scene);
+            ground.setPositionWithLocalVector(new BABYLON.Vector3(x, 0, z));
+            ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, worldMapData.physics, scene);
+            ground.setPositionWithLocalVector(new BABYLON.Vector3(x, 0, z));
+             //Creation of a repeated textured material
+            var materialPlane = new BABYLON.StandardMaterial("texturePlane", scene);
+          
+            materialPlane.diffuseColor = worldMapData.material;    
+             ground.material = materialPlane
+            return ground;
+        }
+        
+        var createLabel = function(mesh, name) {
+            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ui1");
+            
+            var label = new BABYLON.GUI.Rectangle("label for " + name);
+            label.background = "black"
+            label.height = "30px";
+            label.alpha = 0.5;
+            label.width = "100px";
+            label.cornerRadius = 20;
+            label.thickness = 1;
+            label.linkOffsetY = 30;
+            advancedTexture.addControl(label); 
+            label.linkWithMesh(mesh);
+        
+            var text1 = new BABYLON.GUI.TextBlock();
+            text1.text = name;
+            text1.color = "white";
+            label.addControl(text1);  
+        }
+        
+        var applyImpulse = function(mesh, destination, final) {    
+            var position = mesh.getAbsolutePosition();
+            var direction = destination.subtract(mesh.position);
+                direction = direction.normalize();
+                mesh.lookAt(destination);                        
+          
+            var impulse = direction.scale(15);
+             mesh.physicsImpostor.setLinearVelocity(impulse);
+        }
+        
+        
+        var createScene = function () {
+            var movementpoint = new BABYLON.PickingInfo();
+            var scene = new BABYLON.Scene(engine);
+            var camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), scene);
+                camera.setPosition(new BABYLON.Vector3(0, 100, 50));
+                camera.target = new BABYLON.Vector3(3, 0, 0);
+                camera.attachControl(canvas, true);
+        
+            var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+                light.intensity = 0.7;
+            
+            var gravityVector = new BABYLON.Vector3(0, -20, 0);
+            scene.enablePhysics(gravityVector, new BABYLON.OimoJSPlugin());
+             
+            var mesh = getMesh(scene);    
+                camera.setTarget(mesh);
+        
+            createLabel(mesh, 'player1');
+            var ground = loadGround(scene, worldMap[lat][lng],0, 0);
+            scene.registerBeforeRender(() => {
+                var edgingTolerance = 5
+                var position = mesh.getAbsolutePosition();
+             
+                if(movementpoint.pickedPoint != null)
+                {
+                    var destinationX = movementpoint.pickedPoint.x;
+                    var destinationY = movementpoint.pickedPoint.y;
+                    if (position.x > destinationX - edgingTolerance && position.x < (destinationX + edgingTolerance) && position.y > destinationY - edgingTolerance && position.y < (destinationY + edgingTolerance) ) 
+                    {
+                         var destination = movementpoint.pickedPoint;
+                        mesh.getPhysicsImpostor.get
+                        mesh.physicsImpostor.forceUpdate();
+                          applyImpulse(mesh, destination, true);
+                        movementpoint.hit = false;
+                        movementpoint.pickedPoint = null;
+                    }
+                }    
+                
+                if(movementpoint.hit)
+                {   
+                    //we use the picked point to determine when to load, but we could replace the destination with the meshPos and that will mean it would load if the mesh
+                    //itself had reached the edge
+                    var destination = movementpoint.pickedPoint;
+                     applyImpulse(mesh, destination);
+                    if(renderCheck)
+                    {               
+                        var min = ground.getBoundingInfo().minimum;
+                        var max = ground.getBoundingInfo().maximum;
+                        var sizeX = Math.abs(min.x) + Math.abs(max.x);
+                        var sizeZ = Math.abs(min.z) + Math.abs(max.z);
+                        var groundPos = ground.absolutePosition;                
+                        var meshPos = mesh.absolutePosition;
+                  
+                        var newLat = lat, newLng = lng;
+                        var x = 0, z = 0;
+                        console.log(groundPos.z);
+                        renderCheck = false;
+                        if(destination.x > groundPos.x + (sizeX / 2) - edgingTolerance)
+                        {
+                            console.log('load left, minus on the lng');
+                            newLng--;
+                            x = groundPos.x + (sizeX);
+                        }
+                        else if(destination.x < groundPos.x - (sizeX / 2) + edgingTolerance)
+                        {
+                            console.log('load right, plus on the lng');
+                            newLng++;
+                            x = groundPos.x - (sizeX);
+                        }
+        
+                       if(destination.z > groundPos.z + (sizeZ / 2) - edgingTolerance)
+                        {
+                            console.log('load bottom, plus on the lat');
+                            newLat++;
+                            z = groundPos.z + sizeZ;
+                        }
+                        else if(destination.z < groundPos.z - (sizeZ / 2) + edgingTolerance)
+                        {
+                            console.log('load top, minus on the lat');
+                            newLat--;
+                           
+                            z = groundPos.z - sizeZ;
+                        }
+        
+                        //if there are changes to lat/lng, update ground
+                        if(newLat !== lat || newLng !== lng)
+                        {
+                            lat = newLat;
+                            lng = newLng;
+                             console.log('new pos', x, z);
+                           ground = loadGround(scene, worldMap[lat][lng], x, z)
+                        }
+                    }
+                }
+        
+               
+            });
+            
+            var onPointerDown = function(){     
+                renderCheck = true;   
+                movementpoint = scene.pick(scene.pointerX, scene.pointerY);
+            }
+        
+            canvas.addEventListener("pointerdown", onPointerDown, false); 
+        
+            scene.onDispose = function () {
+                canvas.removeEventListener("pointerdown", onPointerDown);
+            }
+            
+            return scene;
+        
+        };
+        
+        var scene = createScene()
+
+        engine.runRenderLoop(function () {
+            scene.render();
+        });
+
+        // Resize
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+</body>
+</html>
