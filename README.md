@@ -34,7 +34,7 @@ This file can be fouund in `lib/static/bundle/js`.
 
 A map is also included for easier debugging on the test server.
 
-Webpack also compiles the html webpage into the `lib` folder.
+Webpack also compiles the html webpage into the `lib` folder. 
 
 ### Test configuration
 
